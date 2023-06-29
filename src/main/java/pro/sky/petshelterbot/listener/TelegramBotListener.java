@@ -42,8 +42,11 @@ public class TelegramBotListener implements UpdatesListener {
     private void processMessage(Message message) {
         if (message.text() != null && message.text().equals("/start")) {
             String firstName = message.chat().firstName();
+            logger.info("Received /start command from user: " + firstName);
             SendMessage welcomeMessage = new SendMessage(message.chat().id(), "Здравствуйте, " + firstName);
             telegramBot.execute(welcomeMessage);
+        } else {
+            logger.info("Received message from user: " + message.text());
         }
     }
 
