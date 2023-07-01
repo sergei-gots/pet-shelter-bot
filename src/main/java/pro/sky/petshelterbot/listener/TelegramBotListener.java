@@ -87,7 +87,8 @@ public class TelegramBotListener implements UpdatesListener {
 
     private void handleStart(Chat chat, String userFirstName) {
         logger.info("- Received /start command from user: " + userFirstName);
-        SendMessage welcomeMessage = new SendMessage(chat.id(), "Здравствуйте, " + firstName);
+        SendMessage welcomeMessage = new SendMessage(
+                chat.id(), "Здравствуйте, " + userFirstName);
         telegramBot.execute(welcomeMessage);
     }
 
