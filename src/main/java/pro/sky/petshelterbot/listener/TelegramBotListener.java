@@ -9,6 +9,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pro.sky.petshelterbot.service.CatService;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -20,9 +21,11 @@ public class TelegramBotListener implements UpdatesListener {
 
 
     final private TelegramBot telegramBot;
+    final private CatService catService;
 
-    public TelegramBotListener(TelegramBot telegramBot) {
+    public TelegramBotListener(TelegramBot telegramBot, CatService catService) {
         this.telegramBot = telegramBot;
+        this.catService = catService;
     }
 
     @PostConstruct
@@ -65,6 +68,15 @@ public class TelegramBotListener implements UpdatesListener {
             logger.info("- Received /start command from user: " + firstName);
             SendMessage welcomeMessage = new SendMessage(chat.id(), "Здравствуйте, " + firstName);
             telegramBot.execute(welcomeMessage);
+            return;
+        }
+
+        if (("/test-save-cat").equals(text)) {
+            logger.info("- Received /test-save-cat command from user: " + firstName);
+            String catInfo = catService.addTestCatToDb().toString();
+            logger.info("- Test-cat={} was added to db", catInfo);
+            SendMessage testCatAddedMessage = new SendMessage(chat.id(), "Added " + catInfo);
+            telegramBot.execute(testCatAddedMessage);
             return;
         }
 
