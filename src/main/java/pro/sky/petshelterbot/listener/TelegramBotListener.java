@@ -65,23 +65,30 @@ public class TelegramBotListener implements UpdatesListener {
         String firstName = chat.firstName();
 
         if ("/start".equals(text)) {
-            logger.info("- Received /start command from user: " + firstName);
-            SendMessage welcomeMessage = new SendMessage(chat.id(), "Здравствуйте, " + firstName);
-            telegramBot.execute(welcomeMessage);
+            handleStart(chat, firstName);
             return;
         }
-
         if (("/test-save-cat").equals(text)) {
-            logger.info("- Received /test-save-cat command from user: " + firstName);
-            String catInfo = catService.addTestCatToDb().toString();
-            logger.info("- Test-cat={} was added to db", catInfo);
-            SendMessage testCatAddedMessage = new SendMessage(chat.id(), "Added " + catInfo);
-            telegramBot.execute(testCatAddedMessage);
+            handleTestSaveCat(chat, firstName);
             return;
         }
 
         logger.info("- There is no suitable handler for text=\"{}\" received from user={}",
                 firstName, text);
+    }
+
+    private void handleTestSaveCat(Chat chat, String firstName) {
+        logger.info("- Received /test-save-cat command from user: " + firstName);
+        String catInfo = catService.addTestCatToDb().toString();
+        logger.info("- Test-cat={} was added to db", catInfo);
+        SendMessage testCatAddedMessage = new SendMessage(chat.id(), "Added " + catInfo);
+        telegramBot.execute(testCatAddedMessage);
+    }
+
+    private void handleStart(Chat chat, String userFirstName) {
+        logger.info("- Received /start command from user: " + userFirstName);
+        SendMessage welcomeMessage = new SendMessage(chat.id(), "Здравствуйте, " + firstName);
+        telegramBot.execute(welcomeMessage);
     }
 
     private void processCallbackQuery(CallbackQuery callbackQuery) {
