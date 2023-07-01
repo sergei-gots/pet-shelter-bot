@@ -1,6 +1,7 @@
 package pro.sky.petshelterbot.entity;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @MappedSuperclass
 abstract class Pet {
@@ -15,6 +16,16 @@ abstract class Pet {
      * Default value is true
      */
     private boolean disabled;
+
+    /** Date of adoption could have the next values:
+     * - null when the pet is in shelter;
+     * - in the future when the pet either on trial or supposed to be on trial;
+     * - in the past when the pet is successfully adopted
+     **/
+    private LocalDate adoptionDate;
+
+
+
 
     public Pet() {
     }
@@ -58,6 +69,16 @@ abstract class Pet {
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
     }
+
+    public LocalDate getAdoptionDate() {
+        return adoptionDate;
+    }
+
+    public void setAdoptionDate(LocalDate adoptionDate) {
+        this.adoptionDate = adoptionDate;
+    }
+
+
 
     @Override
     public String toString() {
