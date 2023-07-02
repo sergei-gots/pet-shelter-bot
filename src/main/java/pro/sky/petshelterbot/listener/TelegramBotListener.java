@@ -1,4 +1,5 @@
 package pro.sky.petshelterbot.listener;
+
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.CallbackQuery;
@@ -9,6 +10,9 @@ import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pro.sky.petshelterbot.handler.Handler;
+import pro.sky.petshelterbot.handler.SergeiDevStageHandler;
+import pro.sky.petshelterbot.handler.VolunteerHandler;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -17,12 +21,17 @@ import java.util.List;
 public class TelegramBotListener implements UpdatesListener {
 
     final private Logger logger = LoggerFactory.getLogger(TelegramBotListener.class);
-
-
     final private TelegramBot telegramBot;
 
-    public TelegramBotListener(TelegramBot telegramBot) {
+    final private Handler[] handlers;
+
+    public TelegramBotListener(TelegramBot telegramBot, VolunteerHandler volunteerHandler, SergeiDevStageHandler sergeiDevStageHandler) {
         this.telegramBot = telegramBot;
+        handlers = new Handler[]{
+                this::handleStart,
+                volunteerHandler,
+                sergeiDevStageHandler
+        };
     }
 
     @PostConstruct
@@ -44,7 +53,7 @@ public class TelegramBotListener implements UpdatesListener {
                     processCallbackQuery(update.callbackQuery());
                 }
             });
-        } catch(Exception e) {
+        } catch (Exception e) {
             logger.error("process()-Method: Exception` e={} was caught", e, e);
             e.printStackTrace();
         }
@@ -54,31 +63,38 @@ public class TelegramBotListener implements UpdatesListener {
     private void processMessage(Message message) {
         logger.info("processMessage({})-Method", message);
 
-        String text = message.text();
-        if(text == null) {
-            return;
+        if (message.text() == null) {
+            throw new IllegalArgumentException("Message.text() is null");
+        }
+
+        for (Handler handler : handlers) {
+            if (handler.handle(message)) {
+                return;
+            }
+        }
+
+        logger.info("- There is no suitable handler for text=\"{}\" received from user={}", message.chat().firstName(), message.text());
+    }
+
+
+    /** @return true if the command is /start **/
+    private boolean handleStart(Message message) {
+        if (!message.text().equals("/start")) {
+            return false;
         }
         Chat chat = message.chat();
         String firstName = chat.firstName();
-
-        if ("/start".equals(text)) {
-            logger.info("- Received /start command from user: " + firstName);
-            SendMessage welcomeMessage = new SendMessage(chat.id(), "Здравствуйте, " + firstName);
-            telegramBot.execute(welcomeMessage);
-            return;
-        }
-
-        logger.info("- There is no suitable handler for text=\"{}\" received from user={}",
-                firstName, text);
+        logger.info("- Received /start command from user: " + firstName);
+        SendMessage welcomeMessage = new SendMessage(chat.id(), "Здравствуйте, " + firstName);
+        telegramBot.execute(welcomeMessage);
+        return true;
     }
 
     private void processCallbackQuery(CallbackQuery callbackQuery) {
         logger.info("processCallbackQuery({})-Method", callbackQuery);
 
         if ("start".equals(callbackQuery.data())) {
-            SendMessage welcomeMessage = new SendMessage(
-                    callbackQuery.message().chat().id(),
-                    "Здравствуйте, " + callbackQuery.from().firstName());
+            SendMessage welcomeMessage = new SendMessage(callbackQuery.message().chat().id(), "Здравствуйте, " + callbackQuery.from().firstName());
             telegramBot.execute(welcomeMessage);
         }
     }

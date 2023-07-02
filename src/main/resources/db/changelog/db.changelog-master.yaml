@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/init/create-table-cat-adopters.xml
+  - include:
+      file: db/changelog/init/create-table-cats.xml
