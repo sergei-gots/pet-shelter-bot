@@ -9,7 +9,7 @@ import pro.sky.petshelterbot.service.CatService;
 
 /**
  * Development stage class for debugging/testing
- * functionality being implementing by Sergei
+ * functionality being implementing within Cats/CatAdopters workflow
  */
 @Component
 public class CatsDevStageHandler extends AbstractHandler{
