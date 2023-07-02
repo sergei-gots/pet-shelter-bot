@@ -9,6 +9,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pro.sky.petshelterbot.handler.Handler;
 import pro.sky.petshelterbot.handler.SergeiDevStageHandler;
 import pro.sky.petshelterbot.handler.VolunteerHandler;
 
@@ -23,10 +24,16 @@ public class TelegramBotListener implements UpdatesListener {
     final private VolunteerHandler volunteerHandler;
     final private SergeiDevStageHandler sergeiDevStageHandler;
 
+    final private Handler[] handlers;
+
     public TelegramBotListener(TelegramBot telegramBot, VolunteerHandler volunteerHandler, SergeiDevStageHandler sergeiDevStageHandler) {
         this.telegramBot = telegramBot;
         this.volunteerHandler = volunteerHandler;
         this.sergeiDevStageHandler = sergeiDevStageHandler;
+        handlers = new Handler[] {
+                volunteerHandler,
+                sergeiDevStageHandler
+        };
     }
 
     @PostConstruct
@@ -69,9 +76,11 @@ public class TelegramBotListener implements UpdatesListener {
             handleStart(chat, firstName);
             return;
         }
-        if (text.startsWith("/sergei-test-")) {
-            sergeiDevStageHandler.handle(message);
-            return;
+
+        for (Handler handler: handlers) {
+            if(handler.handle(message)) {
+                return;
+            }
         }
 
         logger.info("- There is no suitable handler for text=\"{}\" received from user={}",
