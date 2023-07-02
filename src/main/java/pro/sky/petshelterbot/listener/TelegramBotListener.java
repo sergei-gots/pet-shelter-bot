@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.petshelterbot.handler.Handler;
-import pro.sky.petshelterbot.handler.SergeiDevStageHandler;
+import pro.sky.petshelterbot.handler.CatsDevStageHandler;
 import pro.sky.petshelterbot.handler.VolunteerHandler;
 
 import javax.annotation.PostConstruct;
@@ -25,7 +25,7 @@ public class TelegramBotListener implements UpdatesListener {
 
     final private Handler[] handlers;
 
-    public TelegramBotListener(TelegramBot telegramBot, VolunteerHandler volunteerHandler, SergeiDevStageHandler sergeiDevStageHandler) {
+    public TelegramBotListener(TelegramBot telegramBot, VolunteerHandler volunteerHandler, CatsDevStageHandler sergeiDevStageHandler) {
         this.telegramBot = telegramBot;
         handlers = new Handler[]{
                 this::handleStart,
