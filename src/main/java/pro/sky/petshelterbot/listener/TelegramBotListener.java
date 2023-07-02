@@ -9,7 +9,8 @@ import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import pro.sky.petshelterbot.service.CatService;
+import pro.sky.petshelterbot.handler.SergeiDevStageHandler;
+import pro.sky.petshelterbot.handler.VolunteerHandler;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -18,14 +19,14 @@ import java.util.List;
 public class TelegramBotListener implements UpdatesListener {
 
     final private Logger logger = LoggerFactory.getLogger(TelegramBotListener.class);
-
-
     final private TelegramBot telegramBot;
-    final private CatService catService;
+    final private VolunteerHandler volunteerHandler;
+    final private SergeiDevStageHandler sergeiDevStageHandler;
 
-    public TelegramBotListener(TelegramBot telegramBot, CatService catService) {
+    public TelegramBotListener(TelegramBot telegramBot, VolunteerHandler volunteerHandler, SergeiDevStageHandler sergeiDevStageHandler) {
         this.telegramBot = telegramBot;
-        this.catService = catService;
+        this.volunteerHandler = volunteerHandler;
+        this.sergeiDevStageHandler = sergeiDevStageHandler;
     }
 
     @PostConstruct
@@ -68,21 +69,13 @@ public class TelegramBotListener implements UpdatesListener {
             handleStart(chat, firstName);
             return;
         }
-        if (("/test-save-cat").equals(text)) {
-            handleTestSaveCat(chat, firstName);
+        if (text.startsWith("/sergei-test-")) {
+            sergeiDevStageHandler.handle(message);
             return;
         }
 
         logger.info("- There is no suitable handler for text=\"{}\" received from user={}",
                 firstName, text);
-    }
-
-    private void handleTestSaveCat(Chat chat, String firstName) {
-        logger.info("- Received /test-save-cat command from user: " + firstName);
-        String catInfo = catService.addTestCatToDb().toString();
-        logger.info("- Test-cat={} was added to db", catInfo);
-        SendMessage testCatAddedMessage = new SendMessage(chat.id(), "Added " + catInfo);
-        telegramBot.execute(testCatAddedMessage);
     }
 
     private void handleStart(Chat chat, String userFirstName) {
