@@ -7,9 +7,9 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class ShelterHandler {
 
     final private Logger logger = LoggerFactory.getLogger(ShelterHandler.class);
@@ -24,20 +24,20 @@ public class ShelterHandler {
 
         String data = callbackQuery.data();
         Message message = callbackQuery.message();
-        long chatId = message.chat().id();// Проверяем, какую кнопку выбрал пользователь
+        long chatId = message.chat().id();// Check which buttons pick user
         if (data.equals("cat_shelter") || data.equals("dog_shelter")) {
             handleShelterCommand(Long.toString(chatId));
         }
     }
 
     public void handleShelterCommand(String chatId) {
-        // Создаем кнопки выбора действия
+        // Create buttons
         InlineKeyboardButton button1 = new InlineKeyboardButton("Узнать информацию о приюте").callbackData("shelter_info");
         InlineKeyboardButton button2 = new InlineKeyboardButton("Как взять животное из приюта").callbackData("adoption_info");
         InlineKeyboardButton button3 = new InlineKeyboardButton("Прислать отчет о питомце").callbackData("report_info");
         InlineKeyboardButton button4 = new InlineKeyboardButton("Позвать волонтера").callbackData("volunteer_info");
 
-        // Создаем объект InlineKeyboardMarkup и передаем в него кнопки
+        // Create InlineKeyboardMarkup and give it buttons
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup(
                 new InlineKeyboardButton[] {button1},
                 new InlineKeyboardButton[] {button2},
@@ -45,7 +45,7 @@ public class ShelterHandler {
                 new InlineKeyboardButton[] {button4}
         );
 
-        // Отправляем кнопки пользователю
+        // Send buttons to user
         telegramBot.execute(new SendMessage(chatId, "Выберите действие:")
                 .replyMarkup(markup));
     }

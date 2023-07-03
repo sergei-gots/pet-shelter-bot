@@ -4,16 +4,10 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
-import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import pro.sky.petshelterbot.handler.Handler;
-import pro.sky.petshelterbot.handler.CatsDevStageHandler;
-import pro.sky.petshelterbot.handler.ShelterHandler;
-import pro.sky.petshelterbot.handler.VolunteerHandler;
+import pro.sky.petshelterbot.handler.*;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -25,20 +19,22 @@ public class TelegramBotListener implements UpdatesListener {
     final private TelegramBot telegramBot;
 
     final private Handler[] handlers;
-
     private final ShelterHandler shelterHandler;
+
 
     public TelegramBotListener(TelegramBot telegramBot,
                                VolunteerHandler volunteerHandler,
                                CatsDevStageHandler catsDevStageHandler,
+                               StartHandler startHandler,
                                ShelterHandler shelterHandler) {
         this.telegramBot = telegramBot;
         handlers = new Handler[]{
-                this::handleStart,
+                startHandler,
                 volunteerHandler,
                 catsDevStageHandler
         };
         this.shelterHandler = shelterHandler;
+
     }
 
     @PostConstruct
@@ -74,6 +70,7 @@ public class TelegramBotListener implements UpdatesListener {
             throw new IllegalArgumentException("Message.text() is null");
         }
 
+
         for (Handler handler : handlers) {
             if (handler.handle(message)) {
                 return;
@@ -85,24 +82,6 @@ public class TelegramBotListener implements UpdatesListener {
     }
 
 
-    // @return true if the command is /start /
-    private boolean handleStart(Message message) {
-        if (!message.text().equals("/start")) {
-            return false;
-        }
-        SendMessage welcomeMessage = new SendMessage(message.chat().id(), "Здравствуйте, " + message.chat().firstName());
-        telegramBot.execute(welcomeMessage);
 
-        // Создаем кнопки выбора приюта
-        InlineKeyboardMarkup markup = new InlineKeyboardMarkup(
-                new InlineKeyboardButton("Приют для кошек").callbackData("cat_shelter"),
-                new InlineKeyboardButton("Приют для собак").callbackData("dog_shelter"));
-
-        // Отправляем кнопки пользователю
-        telegramBot.execute(new SendMessage(message.chat().id(), "Выберите приют:")
-                .replyMarkup(markup));
-
-        return true;
-    }
 
 }
