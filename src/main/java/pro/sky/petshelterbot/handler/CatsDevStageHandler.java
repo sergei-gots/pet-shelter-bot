@@ -24,7 +24,7 @@ public class CatsDevStageHandler extends AbstractHandler{
     public boolean handle(Message message) {
 
         String text = message.text();
-        if(!text.startsWith("/sergei-test-")) {
+        if(!text.startsWith("/dev-test-")) {
             return false;
         }
 
