@@ -9,8 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 /**
- * Handles send user menu
- * after choosing a shelter
+ * Handles user's pressing a button and sends a suitable menu to the user
  */
 @Component
 public class ShelterHandler {

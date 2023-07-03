@@ -7,8 +7,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Component;
 
 /**
- * Handles send user welcome message
- * and suggest to choose a shelter
+ * Handles '/start' and sends to the user welcome message and menu
  */
 @Component
 public class StartHandler extends AbstractHandler {
