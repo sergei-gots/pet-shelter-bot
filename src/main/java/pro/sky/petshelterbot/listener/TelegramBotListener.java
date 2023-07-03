@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.petshelterbot.handler.*;
 
+
 import javax.annotation.PostConstruct;
 import java.util.List;
 
@@ -44,9 +45,7 @@ public class TelegramBotListener implements UpdatesListener {
 
     @Override
     public int process(List<Update> updates) {
-
         logger.info("process(updates)-Method invoked");
-
         try {
             updates.forEach(update -> {
                 logger.info("- Processing update: {}", update);
@@ -65,23 +64,15 @@ public class TelegramBotListener implements UpdatesListener {
 
     private void processMessage(Message message) {
         logger.info("processMessage({})-Method", message);
-
         if (message.text() == null) {
             throw new IllegalArgumentException("Message.text() is null");
         }
-
-
         for (Handler handler : handlers) {
             if (handler.handle(message)) {
                 return;
             }
         }
-
         logger.info("- There is no suitable handler for text=\"{}\" received from user={}",
                 message.chat().firstName(), message.text());
     }
-
-
-
-
 }

@@ -4,21 +4,18 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.request.SendMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import pro.sky.petshelterbot.listener.TelegramBotListener;
 import pro.sky.petshelterbot.service.CatService;
 
 /**
  * Development stage class for debugging/testing
- * functionality being implementing by Sergei
+ * functionality being implementing within Cats/CatAdopters workflow
  */
 @Component
-public class SergeiDevStageHandler extends AbstractHandler{
+public class CatsDevStageHandler extends AbstractHandler{
     private final CatService catService;
 
-    public SergeiDevStageHandler(TelegramBot telegramBot, CatService catService) {
+    public CatsDevStageHandler(TelegramBot telegramBot, CatService catService) {
         super(telegramBot);
         this.catService = catService;
     }
@@ -27,7 +24,7 @@ public class SergeiDevStageHandler extends AbstractHandler{
     public boolean handle(Message message) {
 
         String text = message.text();
-        if(!text.startsWith("/sergei-test-")) {
+        if(!text.startsWith("/dev-test-")) {
             return false;
         }
 
