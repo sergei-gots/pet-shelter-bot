@@ -31,7 +31,7 @@ public class CatsDevStageHandler extends AbstractHandler{
         Chat chat = message.chat();
         logger.info("- Received {} command from user {}", text, chat.firstName());
 
-        if(text.equals("/sergei-test-save-cat")) {
+        if(text.equals("/test-save-cat")) {
             String catInfo = catService.addTestCatToDb().toString();
             logger.info("- Test-cat={} was added to db", catInfo);
             SendMessage testCatAddedMessage = new SendMessage(chat.id(), "Added " + catInfo);
