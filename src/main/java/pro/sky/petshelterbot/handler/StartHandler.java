@@ -6,6 +6,10 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Component;
 
+/**
+ * Handles send user welcome message
+ * and suggest to choose a shelter
+ */
 @Component
 public class StartHandler extends AbstractHandler {
 
@@ -16,7 +20,7 @@ public class StartHandler extends AbstractHandler {
         this.telegramBot = telegramBot;
     }
 
-    // @return true if the command is /start /
+    /** handles command '/start' */
     public boolean handle(Message message) {
         if (!message.text().equals("/start")) {
             return false;
