@@ -1,5 +1,7 @@
 databaseChangeLog:
   - include:
-      file: db/changelog/init/create-table-cat-adopters.xml
+      file: db/changelog/init/create-table-shelters.xml
   - include:
       file: db/changelog/init/create-table-pets.xml
+  - include:
+      file: db/changelog/init/create-table-adopters.xml

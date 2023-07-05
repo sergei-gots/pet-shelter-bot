@@ -5,27 +5,21 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
             http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd"
 >
-    <changeSet id="create-table-pets" author="S">
+    <changeSet id="create-table-shelters" author="S">
         <preConditions>
             <not>
-                <tableExists tableName="pets"/>
+                <tableExists tableName="shelters"/>
             </not>
         </preConditions>
 
-        <createTable tableName="pets">
-            <column name="id" type="BIGINT" autoIncrement="true">
+        <createTable tableName="shelters">
+            <column name="id" type="BIGINT">
+                <!-- Shelters within current app are added by factual ID -->
                 <constraints primaryKey="true"/>
-            </column>
-            <column name="species" type="TINYINT">
-                <constraints nullable="false"/>
             </column>
             <column name="name" type="VARCHAR">
                 <constraints nullable="false"/>
             </column>
-            <column name="disabled" type="BOOLEAN" defaultValue="false"/>
-            <column name="adoption_date" type="DATE">
-                <constraints nullable="true" />
-             </column>
         </createTable>
     </changeSet>
 
