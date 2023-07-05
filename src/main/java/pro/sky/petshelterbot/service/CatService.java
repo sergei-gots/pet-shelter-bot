@@ -2,13 +2,13 @@ package pro.sky.petshelterbot.service;
 
 import org.springframework.stereotype.Service;
 import pro.sky.petshelterbot.entity.Pet;
-import pro.sky.petshelterbot.repository.CatRepository;
+import pro.sky.petshelterbot.repository.PetRepository;
 
 @Service
 public class CatService {
-    final private CatRepository catRepository;
+    final private PetRepository catRepository;
 
-    public CatService(CatRepository catRepository) {
+    public CatService(PetRepository catRepository) {
         this.catRepository = catRepository;
     }
 
