@@ -4,6 +4,8 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,7 @@ public class TelegramBotListener implements UpdatesListener {
                                StartHandler startHandler,
                                ShelterHandler shelterHandler) {
         this.telegramBot = telegramBot;
+
         handlers = new Handler[]{
                 startHandler,
                 volunteerHandler,
@@ -73,6 +76,6 @@ public class TelegramBotListener implements UpdatesListener {
             }
         }
         logger.info("- There is no suitable handler for text=\"{}\" received from user={}",
-                message.chat().firstName(), message.text());
+                            message.chat().firstName(), message.text());
     }
 }
