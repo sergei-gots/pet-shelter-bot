@@ -6,7 +6,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "cat_adopters")
-public class CatAdopter extends Adopter {
+public class CatAdopter extends AbstractAdopter {
 
     public CatAdopter() {
     }

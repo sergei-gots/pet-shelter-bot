@@ -1,7 +1,7 @@
 package pro.sky.petshelterbot.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pro.sky.petshelterbot.entity.Cat;
+import pro.sky.petshelterbot.entity.Pet;
 
-public interface CatRepository extends JpaRepository<Cat,Long> {
+public interface CatRepository extends JpaRepository<Pet,Long> {
 }

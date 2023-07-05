@@ -3,11 +3,18 @@ package pro.sky.petshelterbot.entity;
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@MappedSuperclass
-abstract class Pet {
+@Entity
+@Table(name = "pets")
+public class Pet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    public enum Species {
+        CAT, DOG
+    }
+
+    private Species species;
 
     private String name;
 
@@ -17,7 +24,8 @@ abstract class Pet {
      */
     private boolean disabled;
 
-    /** Date of adoption could have the next values:
+    /**
+     * Date of adoption could have the next values:
      * - null when the pet is in shelter;
      * - in the future when the pet either on trial or supposed to be on trial;
      * - in the past when the pet is successfully adopted
@@ -26,17 +34,16 @@ abstract class Pet {
     private LocalDate adoptionDate;
 
 
-
-
     public Pet() {
     }
 
-    public Pet(String name) {
-        this(-1, name, false);
+    public Pet(Species species, String name) {
+        this(-1, species, name, false);
     }
 
-    public Pet(long id, String name, boolean disabled) {
+    public Pet(long id, Species species, String name, boolean disabled) {
         this.id = id;
+        this.species = species;
         this.name = name;
         this.disabled = disabled;
     }
@@ -47,6 +54,14 @@ abstract class Pet {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Species getSpecies() {
+        return species;
+    }
+
+    public void setSpecies(Species species) {
+        this.species = species;
     }
 
     public String getName() {
@@ -80,14 +95,20 @@ abstract class Pet {
     }
 
 
-
     @Override
     public String toString() {
-        return  "id=" + id +
+        return "Pet{" +
+                "id=" + id +
+                ", the " +
+                ((species == Species.CAT) ?
+                        "cat" : "dog" + species
+                ) +
                 ", name='" + name + '\'' +
-                ((disabled)?
-                    ", with some disabilities":
-                    ", without any disabilities"
-                );
+                ", disabled=" + disabled +
+                ((disabled) ?
+                        ", with some disabilities" :
+                        ", without any disabilities"
+                ) +
+                '}';
     }
 }

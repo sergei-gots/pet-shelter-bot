@@ -3,11 +3,11 @@ package pro.sky.petshelterbot.entity;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public abstract class Adopter extends Person {
-    public Adopter() {
+public abstract class AbstractAdopter extends AbstractPerson {
+    public AbstractAdopter() {
     }
 
-    public Adopter(long chatId, String firstName) {
+    public AbstractAdopter(long chatId, String firstName) {
         super(chatId, firstName);
     }
 

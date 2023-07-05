@@ -73,6 +73,6 @@ public class TelegramBotListener implements UpdatesListener {
             }
         }
         logger.info("- There is no suitable handler for text=\"{}\" received from user={}",
-                message.chat().firstName(), message.text());
+                message.text(), message.chat().firstName());
     }
 }
