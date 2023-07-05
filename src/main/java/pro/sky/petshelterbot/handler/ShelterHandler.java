@@ -4,10 +4,12 @@ import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
 /**
  * Handles user's pressing a button and sends a suitable menu to the user
  */
@@ -29,11 +31,14 @@ public class ShelterHandler {
         String data = callbackQuery.data();
         Message message = callbackQuery.message();
         long chatId = message.chat().id();
+        int messageId = message.messageId();
 
         if (data.equals("shelter_info")) {
             shelterInfoHandler.sendShelterInfo(Long.toString(chatId));
+            telegramBot.execute(new DeleteMessage(chatId, messageId));
         } else if (data.equals("cat_shelter") || data.equals("dog_shelter")) {
             handleShelterCommand(Long.toString(chatId));
+            telegramBot.execute(new DeleteMessage(chatId, messageId));
         }
     }
 
@@ -57,6 +62,4 @@ public class ShelterHandler {
         telegramBot.execute(new SendMessage(chatId, "Выберите действие:")
                 .replyMarkup(markup));
     }
-
-
 }
