@@ -37,4 +37,13 @@
                                  referencedTableName="cat_adopters"/>
     </changeSet>
 
+    <changeSet id="add_column_adoption_date" author="Sergei Gots">
+        <addColumn tableName="cats">
+            <column name="adoptionDate"
+                    type="DATE">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
