@@ -22,6 +22,7 @@ abstract class Pet {
      * - in the future when the pet either on trial or supposed to be on trial;
      * - in the past when the pet is successfully adopted
      **/
+    @Column(name = "adoption_date")
     private LocalDate adoptionDate;
 
 
