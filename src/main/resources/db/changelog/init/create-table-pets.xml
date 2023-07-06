@@ -5,36 +5,28 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
             http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd"
 >
-    <changeSet id="create-table-cats" author="Sergei Gots">
+    <changeSet id="create-table-pets" author="S">
         <preConditions>
             <not>
-                <tableExists tableName="cats"/>
+                <tableExists tableName="pets"/>
             </not>
         </preConditions>
 
-        <createTable tableName="cats">
+        <createTable tableName="pets">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true"/>
+            </column>
+            <column name="species" type="TINYINT">
+                <constraints nullable="false"/>
             </column>
             <column name="name" type="VARCHAR">
                 <constraints nullable="false"/>
             </column>
             <column name="disabled" type="BOOLEAN" defaultValue="false"/>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="add_fk_cat_adopter_id" author="Sergei Gots">
-        <addColumn tableName="cats">
-            <column name="cat_adopter_id"
-                    type="BIGINT">
+            <column name="adoption_date" type="DATE">
                 <constraints nullable="true" />
-            </column>
-        </addColumn>
-        <addForeignKeyConstraint baseColumnNames="cat_adopter_id"
-                                 baseTableName="cats"
-                                 constraintName="fk_cat_adopter_id"
-                                 referencedColumnNames="chat_id"
-                                 referencedTableName="cat_adopters"/>
+             </column>
+        </createTable>
     </changeSet>
 
 </databaseChangeLog>

@@ -4,7 +4,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public abstract class Person {
+public abstract class AbstractPerson {
     /**
      * Person will be identified by its chat_id which is persistent within
      * Telegram
@@ -13,10 +13,10 @@ public abstract class Person {
     private long chatId;
     private String firstName;
 
-    public Person() {
+    public AbstractPerson() {
     }
 
-    public Person(long chatId, String firstName) {
+    public AbstractPerson(long chatId, String firstName) {
         this.chatId = chatId;
         this.firstName = firstName;
     }

@@ -5,14 +5,14 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
             http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd"
 >
-    <changeSet id="create-table-cat-adopters" author="Sergei Gots">
+    <changeSet id="create-table-adopters" author="S">
         <preConditions>
             <not>
-                <tableExists tableName="cat_adopters"/>
+                <tableExists tableName="adopters"/>
             </not>
         </preConditions>
 
-        <createTable tableName="cat_adopters">
+        <createTable tableName="adopters">
             <column name="chat_id" type="BIGINT">
                 <constraints primaryKey="true"/>
             </column>

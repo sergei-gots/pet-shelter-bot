@@ -1,9 +1,13 @@
 package pro.sky.petshelterbot.entity;
 
-import javax.persistence.MappedSuperclass;
 
-@MappedSuperclass
-public abstract class Adopter extends Person {
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "adopters")
+public class Adopter extends AbstractPerson {
+
     public Adopter() {
     }
 
@@ -18,3 +22,5 @@ public abstract class Adopter extends Person {
                 "}";
     }
 }
+
+

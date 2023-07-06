@@ -28,7 +28,7 @@ public class TelegramBotListener implements UpdatesListener {
 
     public TelegramBotListener(TelegramBot telegramBot,
                                VolunteerHandler volunteerHandler,
-                               CatsDevStageHandler catsDevStageHandler,
+                               DevStageDBHandler catsDevStageHandler,
                                StartHandler startHandler,
                                CatShelterHandler catShelterHandler,
                                DogShelterHandler dogShelterHandler) {
