@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.petshelterbot.handler.*;
+import pro.sky.petshelterbot.handler.cat.CatShelterHandler;
+import pro.sky.petshelterbot.handler.dog.DogShelterHandler;
 
 
 import javax.annotation.PostConstruct;
@@ -20,14 +22,16 @@ public class TelegramBotListener implements UpdatesListener {
     final private TelegramBot telegramBot;
 
     final private Handler[] handlers;
-    private final ShelterHandler shelterHandler;
+    private final CatShelterHandler catShelterHandler;
+    private final DogShelterHandler dogShelterHandler;
 
 
     public TelegramBotListener(TelegramBot telegramBot,
                                VolunteerHandler volunteerHandler,
                                CatsDevStageHandler catsDevStageHandler,
                                StartHandler startHandler,
-                               ShelterHandler shelterHandler) {
+                               CatShelterHandler catShelterHandler,
+                               DogShelterHandler dogShelterHandler) {
         this.telegramBot = telegramBot;
 
         handlers = new Handler[]{
@@ -35,7 +39,8 @@ public class TelegramBotListener implements UpdatesListener {
                 volunteerHandler,
                 catsDevStageHandler
         };
-        this.shelterHandler = shelterHandler;
+        this.catShelterHandler = catShelterHandler;
+        this.dogShelterHandler = dogShelterHandler;
 
     }
 
@@ -52,8 +57,10 @@ public class TelegramBotListener implements UpdatesListener {
                 logger.info("- Processing update: {}", update);
                 if (update.message() != null) {
                     processMessage(update.message());
-                } else if (update.callbackQuery() != null) {
-                    shelterHandler.processCallbackQuery(update.callbackQuery());
+                } else if (update.callbackQuery().data().contains("cat_")) {
+                    catShelterHandler.processCallbackQuery(update.callbackQuery());
+                } else if (update.callbackQuery().data().contains("dog_")){
+                    dogShelterHandler.processCallbackQuery(update.callbackQuery());
                 }
             });
         } catch (Exception e) {
