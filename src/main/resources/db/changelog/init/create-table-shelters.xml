@@ -13,7 +13,7 @@
         </preConditions>
 
         <createTable tableName="shelters">
-            <column name="id" type="BIGINT">
+            <column name="id" type="VARCHAR">
                 <!-- Shelters within current app are added by factual ID -->
                 <constraints primaryKey="true"/>
             </column>

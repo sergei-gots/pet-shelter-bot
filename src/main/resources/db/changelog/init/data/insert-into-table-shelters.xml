@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd"
+>
+    <changeSet id="insert-into-table-shelters" author="S">
+        <insert tableName="shelters">
+            <column name="id" value="CAT_SHELTER"/>
+            <column name="name" value="Cat-Shelter"/>
+        </insert>
+        <insert tableName="shelters">
+            <column name="id" value="DOG_SHELTER"/>
+            <column name="name" value="Dog-Shelter"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

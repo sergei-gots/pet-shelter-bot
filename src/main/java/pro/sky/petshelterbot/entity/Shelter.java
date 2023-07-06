@@ -1,7 +1,6 @@
 package pro.sky.petshelterbot.entity;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "shelters")
@@ -12,6 +11,7 @@ public class Shelter {
     }
 
     @Id
+    @Enumerated(EnumType.STRING)
     private SHELTER_ID id;
 
     private String name;

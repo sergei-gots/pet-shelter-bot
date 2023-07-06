@@ -14,6 +14,7 @@ public class Pet {
         CAT, DOG
     }
 
+    @Enumerated(EnumType.STRING)
     private Species species;
 
 
@@ -101,9 +102,7 @@ public class Pet {
         return "Pet{" +
                 "id=" + id +
                 ", the " +
-                ((species == Species.CAT) ?
-                        "cat" : "dog" + species
-                ) +
+                species.name().toLowerCase() +
                 ", name='" + name + '\'' +
                 ", disabled=" + disabled +
                 ((disabled) ?
