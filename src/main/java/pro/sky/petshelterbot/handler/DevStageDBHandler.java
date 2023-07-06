@@ -5,9 +5,8 @@ import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Component;
-import pro.sky.petshelterbot.entity.Pet;
 import pro.sky.petshelterbot.entity.Shelter;
-import pro.sky.petshelterbot.repository.PetRepository;
+import pro.sky.petshelterbot.service.PetService;
 import pro.sky.petshelterbot.repository.ShelterRepository;
 
 /**
@@ -19,13 +18,13 @@ import pro.sky.petshelterbot.repository.ShelterRepository;
  */
 @Component
 public class DevStageDBHandler extends AbstractHandler{
-    private final PetRepository petRepository;
+    private final PetService petService;
     private final ShelterRepository shelterRepository;
 
 
-    public DevStageDBHandler(TelegramBot telegramBot, PetRepository petRepository, ShelterRepository shelterRepository) {
+    public DevStageDBHandler(TelegramBot telegramBot, PetService petRepository, ShelterRepository shelterRepository) {
         super(telegramBot);
-        this.petRepository = petRepository;
+        this.petService = petRepository;
         this.shelterRepository = shelterRepository;
     }
 
@@ -52,7 +51,7 @@ public class DevStageDBHandler extends AbstractHandler{
     }
 
     private boolean createCat(Chat chat) {
-        String catInfo =petRepository.save(new Pet (Pet.Species.CAT, "Муська"))
+        String catInfo = petService.createCat("Муська")
                 .toString();
         logger.info("- Test-cat={} was added to db", catInfo);
         SendMessage testCatAddedMessage = new SendMessage(chat.id(), "Added " + catInfo);

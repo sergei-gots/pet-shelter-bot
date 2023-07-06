@@ -12,4 +12,12 @@ public class PetService {
         this.petRepository = catRepository;
     }
 
+    public Pet createCat(String name) {
+        return petRepository.save(new Pet (Pet.Species.CAT, name));
+    }
+
+    public Pet createDog(String name) {
+        return petRepository.save(new Pet (Pet.Species.DOG, name));
+    }
+
 }
