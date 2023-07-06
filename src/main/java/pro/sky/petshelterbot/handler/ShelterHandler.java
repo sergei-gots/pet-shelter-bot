@@ -8,17 +8,19 @@ import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
 /**
  * Handles user's pressing a button and sends a suitable menu to the user
  */
 @Component
 public class ShelterHandler {
-
     final private Logger logger = LoggerFactory.getLogger(ShelterHandler.class);
     final private TelegramBot telegramBot;
+    final private ShelterInfoHandler shelterInfoHandler;
 
-    public ShelterHandler(TelegramBot telegramBot) {
+    public ShelterHandler(TelegramBot telegramBot, ShelterInfoHandler shelterInfoHandler) {
         this.telegramBot = telegramBot;
+        this.shelterInfoHandler = shelterInfoHandler;
     }
 
     public void processCallbackQuery(CallbackQuery callbackQuery) {
@@ -26,9 +28,21 @@ public class ShelterHandler {
 
         String data = callbackQuery.data();
         Message message = callbackQuery.message();
-        long chatId = message.chat().id();// Check which buttons pick user
-        if (data.equals("cat_shelter") || data.equals("dog_shelter")) {
+        long chatId = message.chat().id();
+        int messageId = message.messageId();
+
+        if (data.equals("shelter_info")) {
+            shelterInfoHandler.sendShelterInfo(Long.toString(chatId));
+        } else if (data.equals("cat_shelter") || data.equals("dog_shelter")) {
             handleShelterCommand(Long.toString(chatId));
+        } else if (data.equals("schedule_info")) {
+            shelterInfoHandler.sendScheduleInfo(Long.toString(chatId));
+        } else if (data.equals("security_info")) {
+            shelterInfoHandler.sendSecurityInfo(Long.toString(chatId));
+        } else if (data.equals("safety_info")) {
+            shelterInfoHandler.sendSafetyInfo(Long.toString(chatId));
+        } else if (data.equals("contact_info")) {
+            shelterInfoHandler.sendContactInfo(Long.toString(chatId));
         }
     }
 
@@ -38,6 +52,7 @@ public class ShelterHandler {
         InlineKeyboardButton button2 = new InlineKeyboardButton("Как взять животное из приюта").callbackData("adoption_info");
         InlineKeyboardButton button3 = new InlineKeyboardButton("Прислать отчет о питомце").callbackData("report_info");
         InlineKeyboardButton button4 = new InlineKeyboardButton("Позвать волонтера").callbackData("volunteer_info");
+
 
         // Create InlineKeyboardMarkup and give it buttons
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup(
@@ -51,5 +66,4 @@ public class ShelterHandler {
         telegramBot.execute(new SendMessage(chatId, "Выберите действие:")
                 .replyMarkup(markup));
     }
-
 }

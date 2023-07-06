@@ -29,6 +29,7 @@ public class TelegramBotListener implements UpdatesListener {
                                StartHandler startHandler,
                                ShelterHandler shelterHandler) {
         this.telegramBot = telegramBot;
+
         handlers = new Handler[]{
                 startHandler,
                 volunteerHandler,
@@ -73,6 +74,6 @@ public class TelegramBotListener implements UpdatesListener {
             }
         }
         logger.info("- There is no suitable handler for text=\"{}\" received from user={}",
-                message.chat().firstName(), message.text());
+                message.text(), message.chat().firstName());
     }
 }
