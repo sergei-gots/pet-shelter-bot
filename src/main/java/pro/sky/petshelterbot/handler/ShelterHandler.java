@@ -4,7 +4,6 @@ import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ShelterHandler {
-
     final private Logger logger = LoggerFactory.getLogger(ShelterHandler.class);
     final private TelegramBot telegramBot;
     final private ShelterInfoHandler shelterInfoHandler;
@@ -35,10 +33,16 @@ public class ShelterHandler {
 
         if (data.equals("shelter_info")) {
             shelterInfoHandler.sendShelterInfo(Long.toString(chatId));
-            telegramBot.execute(new DeleteMessage(chatId, messageId));
         } else if (data.equals("cat_shelter") || data.equals("dog_shelter")) {
             handleShelterCommand(Long.toString(chatId));
-            telegramBot.execute(new DeleteMessage(chatId, messageId));
+        } else if (data.equals("schedule_info")) {
+            shelterInfoHandler.sendScheduleInfo(Long.toString(chatId));
+        } else if (data.equals("security_info")) {
+            shelterInfoHandler.sendSecurityInfo(Long.toString(chatId));
+        } else if (data.equals("safety_info")) {
+            shelterInfoHandler.sendSafetyInfo(Long.toString(chatId));
+        } else if (data.equals("contact_info")) {
+            shelterInfoHandler.sendContactInfo(Long.toString(chatId));
         }
     }
 

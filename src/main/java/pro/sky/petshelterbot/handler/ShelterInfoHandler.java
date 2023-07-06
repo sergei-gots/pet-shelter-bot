@@ -6,6 +6,8 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Component;
 
+
+
 /**
  * Handles user's pressing a button and sends information about the shelter
  */
@@ -40,5 +42,34 @@ public class ShelterInfoHandler {
                 .replyMarkup(markup));
     }
 
+    public void sendScheduleInfo(String chatId) {
+        // Send schedule information to user
+        telegramBot.execute(new SendMessage(chatId, "Расписание работы и адрес приюта:\n" +
+                "Понедельник-пятница: 9:00-18:00\n" +
+                "Адрес: ул. Пушкина, 123"));
+    }
 
+    public void sendSecurityInfo(String chatId) {
+        // Send security contact information to user
+        telegramBot.execute(new SendMessage(chatId, "Контактные данные охраны приюта:\n" +
+                "Телефон: +7 (123) 456-78-90\n" +
+                "Email: security@shelter.com"));
+    }
+
+    public void sendSafetyInfo(String chatId) {
+        // Send safety recommendations to user
+        telegramBot.execute(new SendMessage(chatId, "Рекомендации по безопасности при общении с животными:\n" +
+                "- Не подходите к животному сзади\n" +
+                "- Не трогайте животное во время его еды или сна\n" +
+                "- Обращайте внимание на жесты и мимику животного"));
+    }
+
+    public void sendContactInfo(String chatId) {
+        // Send contact information request to user
+        telegramBot.execute(new SendMessage(chatId, "Оставьте свои контактные данные и наш сотрудник свяжется с вами"));
+    }
 }
+
+
+
+
