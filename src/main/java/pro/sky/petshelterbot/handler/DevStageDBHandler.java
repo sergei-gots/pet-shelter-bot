@@ -14,7 +14,7 @@ import pro.sky.petshelterbot.repository.ShelterRepository;
  * functionality being implementing within Cats/CatAdopters workflow
  * handles commands starting with '/dev-:
  *     - '/dev-dev-create-cat' adds to the DB a new Cat;
- *     - '/dev-create-shelters' creates shelters in the DB if they weren't created earlier.
+ *     - '/dev-create-shelters' creates shelters in the DB if they have not been created before.
  */
 @Component
 public class DevStageDBHandler extends AbstractHandler{
