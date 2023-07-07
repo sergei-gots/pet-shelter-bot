@@ -1,5 +1,7 @@
 package pro.sky.petshelterbot.entity;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 
 @Entity
@@ -20,12 +22,16 @@ public class UserMessage {
     private Key key;
 
     @Lob
-    @Column(name = "text", columnDefinition="CLOB")
+    @Type(type = "org.hibernate.type.TextType")
     private String text;
 
     public UserMessage() {
     }
 
+    public UserMessage(Key key, String text) {
+        this.key = key;
+        this.text = text;
+    }
 
     public Key getKey() {
         return key;

@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.entity.UserMessage;
 import pro.sky.petshelterbot.repository.UserMessageRepository;
 
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 /**
  * Handles user's pressing a button and sends information about how to adopt a pet
  */
@@ -80,10 +83,11 @@ public class CatAdoptionInfoHandler {
     }
 
     public void sendHouseInfo(Long chatId) {
-        UserMessage userMessage = userMessageRepository.
-                findById(UserMessage.Key.CAT_SHELTER_INFO_KITTY_AT_HOME).get();
-        telegramBot.execute(new SendMessage(
-                chatId, userMessage.getText()
+                 UserMessage userMessage = userMessageRepository.
+                findById(UserMessage.Key.CAT_SHELTER_INFO_KITTY_AT_HOME)
+                         .orElseThrow();
+                telegramBot.execute(new SendMessage(
+                    chatId, userMessage.getText()
                 ));
         /*telegramBot.execute(new SendMessage(chatId, " Рекомендации по обустройству дома для котенка:\n" +
                 "   - Создайте безопасную зону для игр и отдыха.\n" +
