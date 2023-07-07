@@ -4,6 +4,9 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Component;
+import pro.sky.petshelterbot.entity.UserMessage;
+import pro.sky.petshelterbot.repository.UserMessageRepository;
+
 /**
  * Handles user's pressing a button and sends information about how to adopt a pet
  */
@@ -11,8 +14,11 @@ import org.springframework.stereotype.Component;
 public class CatAdoptionInfoHandler {
     final private TelegramBot telegramBot;
 
-    public CatAdoptionInfoHandler(TelegramBot telegramBot) {
+    final private UserMessageRepository userMessageRepository;
+
+    public CatAdoptionInfoHandler(TelegramBot telegramBot, UserMessageRepository userMessageRepository) {
         this.telegramBot = telegramBot;
+        this.userMessageRepository = userMessageRepository;
     }
 
     public void sendAdoptionInfo(Long chatId) {
@@ -74,10 +80,17 @@ public class CatAdoptionInfoHandler {
     }
 
     public void sendHouseInfo(Long chatId) {
-        telegramBot.execute(new SendMessage(chatId, " Рекомендации по обустройству дома для котенка:\n" +
+        UserMessage userMessage = userMessageRepository.
+                findById(UserMessage.Key.CAT_SHELTER_INFO_KITTY_AT_HOME).get();
+        telegramBot.execute(new SendMessage(
+                chatId, userMessage.getText()
+                ));
+        /*telegramBot.execute(new SendMessage(chatId, " Рекомендации по обустройству дома для котенка:\n" +
                 "   - Создайте безопасную зону для игр и отдыха.\n" +
                 "   - Подготовьте место для кормления и сна.\n" +
                 "   - Уберите опасные предметы и растения из доступа животного."));
+
+         */
     }
 
     public void sendHouseInfoAdult(Long chatId) {

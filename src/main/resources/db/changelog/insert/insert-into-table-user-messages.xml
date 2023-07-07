@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd"
+>
+    <changeSet id="insert-into-table-user-messages" author="S">
+        <insert tableName="user_messages">
+            <column name="key" value="CAT_SHELTER_INFO_ABOUT"/>
+            <column name="text"
+                    valueClobFile="../../../data/shelters/cat/cat-shelter-info-about.txt"/>
+        </insert>
+        <insert tableName="user_messages">
+            <column name="key" value="CAT_SHELTER_INFO_KITTY_AT_HOME"/>
+            <column name="text"
+                    valueClobFile="../../../data/shelters/cat/cat-shelter-info-about.txt"/>
+        </insert>
+        <insert tableName="user_messages">
+            <column name="key" value="SHORT_MESSAGE_TEXT_EXAMPLE"/>
+            <column name="text" value="Также текст сообщения может быть находиться непосредственно в файле миграции"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
