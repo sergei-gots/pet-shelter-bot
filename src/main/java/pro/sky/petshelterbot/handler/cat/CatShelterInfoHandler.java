@@ -5,6 +5,10 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Component;
+import pro.sky.petshelterbot.entity.Button;
+import pro.sky.petshelterbot.repository.ButtonsRepository;
+
+import java.util.Collection;
 
 /**
  * Handles user's pressing a button and sends information about the shelter
@@ -12,33 +16,30 @@ import org.springframework.stereotype.Component;
 @Component
 public class CatShelterInfoHandler {
 
-    final private TelegramBot telegramBot;
+    private final TelegramBot telegramBot;
+    private final ButtonsRepository buttonsRepository;
 
-    public CatShelterInfoHandler(TelegramBot telegramBot) {
+    public CatShelterInfoHandler(TelegramBot telegramBot, ButtonsRepository buttonsRepository) {
         this.telegramBot = telegramBot;
+        this.buttonsRepository = buttonsRepository;
     }
 
     public void sendShelterInfo(Long chatId) {
         // Create buttons
-        InlineKeyboardButton button1 = new InlineKeyboardButton("Расписание работы и адрес").callbackData("cat_schedule_info");
-        InlineKeyboardButton button2 = new InlineKeyboardButton("Контактные данные охраны").callbackData("cat_security_info");
-        InlineKeyboardButton button3 = new InlineKeyboardButton("Рекомендации по безопасности").callbackData("cat_safety_info");
-        InlineKeyboardButton button4 = new InlineKeyboardButton("Оставить контактные данные").callbackData("cat_contact_info");
-        InlineKeyboardButton button5 = new InlineKeyboardButton("Позвать волонтера").callbackData("cat_volunteer_info");
 
-        // Create InlineKeyboardMarkup and give it buttons
-        InlineKeyboardMarkup markup = new InlineKeyboardMarkup(
-                new InlineKeyboardButton[] {button1},
-                new InlineKeyboardButton[] {button2},
-                new InlineKeyboardButton[] {button3},
-                new InlineKeyboardButton[] {button4},
-                new InlineKeyboardButton[] {button5}
-        );
+        Collection<Button> buttons = buttonsRepository.getButtonsByShelterId("cat", "shelter_info");
+
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        buttons.stream()
+                .forEach(button -> {
+                    markup.addRow(new InlineKeyboardButton(button.getText()).callbackData(button.getKey()));
+                });
 
         // Send buttons to user
         telegramBot.execute(new SendMessage(chatId, "Выберите, что вас интересует:")
                 .replyMarkup(markup));
     }
+
     public void sendScheduleInfo(Long chatId) {
         // Send schedule information to user
         telegramBot.execute(new SendMessage(chatId, "Расписание работы и адрес приюта:\n" +
