@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.handler.VolunteerChatHandler;
+import pro.sky.petshelterbot.repository.UserMessageRepository;
 
 /**
  * Handles user's pressing a button and sends a suitable menu to the user
@@ -20,15 +21,18 @@ public class CatShelterHandler {
     final private CatShelterInfoHandler catShelterInfoHandler;
     final private CatAdoptionInfoHandler catadoptionInfoHandler;
     final private VolunteerChatHandler volunteerChatHandler;
+    private final UserMessageRepository userMessageRepository;
 
     public CatShelterHandler(TelegramBot telegramBot,
                              CatShelterInfoHandler catShelterInfoHandler,
                              CatAdoptionInfoHandler catadoptionInfoHandler,
-                             VolunteerChatHandler volunteerChatHandler) {
+                             VolunteerChatHandler volunteerChatHandler,
+                             UserMessageRepository userMessageRepository) {
         this.telegramBot = telegramBot;
         this.catShelterInfoHandler = catShelterInfoHandler;
         this.catadoptionInfoHandler = catadoptionInfoHandler;
         this.volunteerChatHandler = volunteerChatHandler;
+        this.userMessageRepository = userMessageRepository;
     }
 
     public void processCallbackQuery(CallbackQuery callbackQuery) {
@@ -60,30 +64,14 @@ public class CatShelterHandler {
             case "cat_adoption_info":
                 catadoptionInfoHandler.sendAdoptionInfo(chatId);
                 break;
-            case "cat_adoption_steps":
-                catadoptionInfoHandler.sendAdoptionSteps(chatId);
-                break;
-            case "cat_requirements_info":
-                catadoptionInfoHandler.sendRequirements(chatId);
-                break;
-            case "cat_documents_info":
-                catadoptionInfoHandler.sendDocuments(chatId);
-                break;
-            case "cat_transfer_info":
-                catadoptionInfoHandler.sendTransfer(chatId);
-                break;
-            case "cat_house_info":
-                catadoptionInfoHandler.sendHouseInfo(chatId);
-                break;
-            case "cat_house_adult_info":
-                catadoptionInfoHandler.sendHouseInfoAdult(chatId);
-                break;
-            case "cat_house_disabled_info":
-                catadoptionInfoHandler.sendHouseInfoDisabled(chatId);
-                break;
             default:
                 // Handle unknown data
                 break;
+        }
+
+        String userMessage = userMessageRepository.getMessageByKey(data);
+        if (userMessage != null) {
+            telegramBot.execute(new SendMessage(chatId, userMessage));
         }
     }
 

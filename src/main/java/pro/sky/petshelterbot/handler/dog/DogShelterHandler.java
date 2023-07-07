@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.handler.cat.CatShelterHandler;
+import pro.sky.petshelterbot.repository.UserMessageRepository;
 
 /**
  * Handles user's pressing a button and sends a suitable menu to the user
@@ -20,12 +21,16 @@ public class DogShelterHandler {
     final private DogShelterInfoHandler dogShelterInfoHandler;
     final private DogAdoptionInfoHandler dogAdoptionInfoHandler;
 
+    private final UserMessageRepository userMessageRepository;
+
     public DogShelterHandler(TelegramBot telegramBot,
                              DogShelterInfoHandler dogShelterInfoHandler,
-                             DogAdoptionInfoHandler dogAdoptionInfoHandler) {
+                             DogAdoptionInfoHandler dogAdoptionInfoHandler,
+                             UserMessageRepository userMessageRepository) {
         this.telegramBot = telegramBot;
         this.dogShelterInfoHandler = dogShelterInfoHandler;
         this.dogAdoptionInfoHandler = dogAdoptionInfoHandler;
+        this.userMessageRepository = userMessageRepository;
     }
 
     public void processCallbackQuery(CallbackQuery callbackQuery) {
@@ -57,40 +62,16 @@ public class DogShelterHandler {
             case "dog_adoption_info":
                 dogAdoptionInfoHandler.sendAdoptionInfo(chatId);
                 break;
-            case "dog_adoption_steps":
-                dogAdoptionInfoHandler.sendAdoptionSteps(chatId);
-                break;
-            case "dog_requirements_info":
-                dogAdoptionInfoHandler.sendRequirements(chatId);
-                break;
-            case "dog_documents_info":
-                dogAdoptionInfoHandler.sendDocuments(chatId);
-                break;
-            case "dog_transfer_info":
-                dogAdoptionInfoHandler.sendTransfer(chatId);
-                break;
-            case "dog_house_info":
-                dogAdoptionInfoHandler.sendHouseInfo(chatId);
-                break;
-            case "dog_house_adult_info":
-                dogAdoptionInfoHandler.sendHouseInfoAdult(chatId);
-                break;
-            case "dog_kinolog_advice_info":
-                dogAdoptionInfoHandler.sendKinologAdvice(chatId);
-                break;
-            case "dog_best_kinolog_info":
-                dogAdoptionInfoHandler.SendBestKinolog(chatId);
-                break;
-            case "dog_house_disabled_info":
-                dogAdoptionInfoHandler.sendHouseInfoDisabled(chatId);
-                break;
-            case "dog_refusal_info":
-                dogAdoptionInfoHandler.SendReasonWhyRefusal(chatId);
-                break;
             default:
                 // Handle unknown data
                 break;
         }
+
+        String userMessage = userMessageRepository.getMessageByKey(data);
+        if (userMessage != null) {
+            telegramBot.execute(new SendMessage(chatId, userMessage));
+        }
+
     }
 
     public void handleShelterCommand(Long chatId) {
