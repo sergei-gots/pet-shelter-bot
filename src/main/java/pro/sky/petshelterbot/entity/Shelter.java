@@ -16,6 +16,8 @@ public class Shelter {
 
     private String name;
 
+    //test
+
     public Shelter() {
     }
 
