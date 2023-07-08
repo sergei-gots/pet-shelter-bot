@@ -1,5 +1,7 @@
 package pro.sky.petshelterbot.entity;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 
 @Entity
@@ -14,7 +16,12 @@ public class UserMessage {
     }
 
     private String key;
+
+    @Lob
+    @Type(type = "org.hibernate.type.TextType")
     private String message;
+
+    private String shelterKey;
 
     public String getKey() {
         return key;
@@ -22,6 +29,10 @@ public class UserMessage {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String getShelterKey() {
+        return shelterKey;
     }
 
     public String getMessage() {
