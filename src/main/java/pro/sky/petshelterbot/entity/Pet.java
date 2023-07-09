@@ -9,16 +9,12 @@ public class Pet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    public enum Species {
-        CAT, DOG
-    }
-
-    private Species species;
-
-
+    private String species;
     private String name;
 
+    @JoinColumn(name="shelter_id")
+    @ManyToOne
+    private Shelter shelter;
     /**
      * true if the pet is a pet with disabilities.
      * Default value is true
@@ -38,14 +34,15 @@ public class Pet {
     public Pet() {
     }
 
-    public Pet(Species species, String name) {
-        this(-1, species, name, false);
+    public Pet(String species, String name, Shelter shelter) {
+        this(-1, species, name, shelter, false);
     }
 
-    public Pet(long id, Species species, String name, boolean disabled) {
+    public Pet(long id, String species, String name, Shelter shelter, boolean disabled) {
         this.id = id;
         this.species = species;
         this.name = name;
+        this.shelter = shelter;
         this.disabled = disabled;
     }
 
@@ -57,11 +54,11 @@ public class Pet {
         this.id = id;
     }
 
-    public Species getSpecies() {
+    public String getSpecies() {
         return species;
     }
 
-    public void setSpecies(Species species) {
+    public void setSpecies(String species) {
         this.species = species;
     }
 
@@ -100,10 +97,7 @@ public class Pet {
     public String toString() {
         return "Pet{" +
                 "id=" + id +
-                ", the " +
-                ((species == Species.CAT) ?
-                        "cat" : "dog" + species
-                ) +
+                ", the " +  species +
                 ", name='" + name + '\'' +
                 ", disabled=" + disabled +
                 ((disabled) ?
