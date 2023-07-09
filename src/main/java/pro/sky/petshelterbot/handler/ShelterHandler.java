@@ -13,7 +13,6 @@ import pro.sky.petshelterbot.entity.Button;
 import pro.sky.petshelterbot.repository.ButtonsRepository;
 import pro.sky.petshelterbot.repository.UserMessageRepository;
 
-import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -45,40 +44,52 @@ public class ShelterHandler {
 
     public void processCallbackQuery(CallbackQuery callbackQuery) {
 
-        String data = callbackQuery.data();
+        logger.debug("processCallBackQuery-method");
+        String queryData = callbackQuery.data();
+        String key=queryData;
         Message message = callbackQuery.message();
         long chatId = message.chat().id();
 
-        String[] dataArray = null;
-        Long dataLong = null;
+        Long shelterId = null;
         try {
-            dataLong = Long.parseLong(data);
-            handleShelterCommand(chatId, dataLong);
-        } catch (Exception e) {
+            shelterId = Long.parseLong(queryData);
+            handleShelterCommand(chatId, shelterId);
+        } catch (NumberFormatException e) {
+            logger.debug("processCallBackQuery-method: callbackQuery.queryData()={} is not a Long", queryData);
         }
 
         try {
-            dataArray = data.split("-");
-            dataLong = Long.parseLong(dataArray[0]);
-            data = dataArray[1];
-            System.out.println(dataLong + " - " + data);
-            if (!buttonListMaker(chatId, dataLong, data, "Выберите, что вас интересует:")) {
-                String userMessage = userMessageRepository.findAllByShelterIdAndKey(dataLong, dataArray[1]);
-                telegramBot.execute(new SendMessage(chatId, userMessage));
+            String[]  dataArray = queryData.split("-");
+            shelterId = Long.parseLong(dataArray[0]);
+            key = dataArray[1];
+            logger.debug("processCallBackQuery-method: callbackQuery.queryData() contains Long shelter_id={} and String key={}",  shelterId, key);
+            if (!buttonListMaker(chatId, shelterId, queryData, "Выберите, что вас интересует:")) {
+                switch(key) {
+                    case "volunteer_call":
+                        logger.warn("processCallBackQuery-method: volunteer_call key received. Should be implemented. ");
+                        break;
+                    default:  {
+                        String userMessage = userMessageRepository.findAllByShelterIdAndKey(shelterId, key);
+                        telegramBot.execute(new SendMessage(chatId, userMessage));
+                    }
+                }
+
             }
 
         } catch (Exception e) {
+            logger.error("processCallBackQuery-method: exception  was thrown. ",  e);
         }
 
-        switch (data) {
+
+        switch (key) {
             case "schedule_info":
-                shelterInfoHandler.shelterWorkTime(chatId, dataLong);
+                shelterInfoHandler.shelterWorkTime(chatId, shelterId);
                 break;
             case "security_info":
-                shelterInfoHandler.sendSecurityInfo(chatId, dataLong);
+                shelterInfoHandler.sendSecurityInfo(chatId, shelterId);
                 break;
             default:
-                // Handle unknown data
+                logger.error("processCallBackQuery-method: handler for queryData ={} is not listed",  queryData);
                 break;
         }
     }

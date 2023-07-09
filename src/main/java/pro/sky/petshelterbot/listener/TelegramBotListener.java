@@ -49,7 +49,7 @@ public class TelegramBotListener implements UpdatesListener {
     public int process(List<Update> updates) {
         try {
             updates.forEach(update -> {
-                //logger.info("Processing update: {}", update);
+                logger.debug("Processing update: {}", update);
                 if (update.message() != null) {
                     processMessage(update.message());
                 } else if (update.callbackQuery().data() != null) {
@@ -64,7 +64,7 @@ public class TelegramBotListener implements UpdatesListener {
     }
 
     private void processMessage(Message message) {
-        //logger.info("Processing update message: {}", message);
+        logger.debug("Processing update message: {}", message);
         if (message.text() == null) {
             throw new IllegalArgumentException("Message.text() is null");
         }
