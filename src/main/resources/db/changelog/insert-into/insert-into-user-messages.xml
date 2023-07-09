@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd"
+>
+    <changeSet id="insert-into-user_messages" author="S">
+
+        <insert tableName="user_messages">
+            <column name="key"          value="choose_info"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="message"      value="Выберите интересующую вас информацию:"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="choose_info"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="message"      value="Выберите интересующую вас информацию:"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="documents_info"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="message"      valueClobFile="../../../initial-data/documents_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="documents_info"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="message"      valueClobFile="../../../initial-data/documents_info.txt"/>
+        </insert>
+
+
+        <insert tableName="user_messages">
+            <column name="key"          value="requirements_info"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="message"      valueClobFile="../../../initial-data/requirements_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="requirements_info"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="message"      valueClobFile="../../../initial-data/requirements_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="refusal_info"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="message"      value="Возможные причины отказа:
+        - Так себе человек."/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="refusal_info"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="message"      value="Возможные причины отказа:
+        - Так себе человек."/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="adoption_steps"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="message"      valueClobFile="../../../initial-data/adoption_steps.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="adoption_steps"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="message"      valueClobFile="../../../initial-data/adoption_steps.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="transfer_info"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="message"      valueClobFile="../../../initial-data/transfer_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="transfer_info"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="message"      valueClobFile="../../../initial-data/transfer_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="safety_info"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="message"      valueClobFile="../../../initial-data/safety_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="safety_info"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="message"      valueClobFile="../../../initial-data/safety_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="adult_at_home_info"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="message"      valueClobFile="../../../initial-data/adult_at_home_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="adult_at_home_info"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="message"      valueClobFile="../../../initial-data/adult_at_home_info.txt"/>
+        </insert>
+
+
+        <insert tableName="user_messages">
+            <column name="key"          value="disabled_at_home_info"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="message"      valueClobFile="../../../initial-data/disabled_at_home_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="disabled_at_home_info"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="message"      valueClobFile="../../../initial-data/disabled_at_home_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="kitty_at_home_info"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="message"      valueClobFile="../../../initial-data/cat/kitty_at_home_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="dog_at_home_info"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="message"      valueClobFile="../../../initial-data/dog/dog_at_home_info.txt"/>
+        </insert>
+
+
+        <insert tableName="user_messages">
+            <column name="key"          value="cynologist_advice_info"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="message"      valueClobFile="../../../initial-data/dog/cynologist_advice_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="best_cynologists_info"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="message"      valueClobFile="../../../initial-data/dog/best_cynologists_info.txt"/>
+        </insert>
+
+
+    </changeSet>
+</databaseChangeLog>

@@ -4,6 +4,8 @@ databaseChangeLog:
   - include:
       file: db/changelog/create-table/create-table-buttons.xml
   - include:
+      file: db/changelog/create-table/create-table-user-messages.xml
+  - include:
       file: db/changelog/create-table/create-table-pets.xml
   - include:
       file: db/changelog/create-table/create-table-adopters.xml
@@ -12,3 +14,5 @@ databaseChangeLog:
       file: db/changelog/insert-into/insert-into-shelters.xml
   - include:
       file: db/changelog/insert-into/insert-into-buttons.xml
+  - include:
+      file: db/changelog/insert-into/insert-into-user-messages.xml
