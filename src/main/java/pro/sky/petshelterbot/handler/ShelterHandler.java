@@ -63,7 +63,7 @@ public class ShelterHandler {
             data = dataArray[1];
             System.out.println(dataLong + " - " + data);
             if (!buttonListMaker(chatId, dataLong, data, "Выберите, что вас интересует:")) {
-                String userMessage = userMessageRepository.getMessageByKey(dataLong, dataArray[1]);
+                String userMessage = userMessageRepository.findAllByShelterIdAndKey(dataLong, dataArray[1]);
                 telegramBot.execute(new SendMessage(chatId, userMessage));
             }
 

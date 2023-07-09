@@ -36,7 +36,7 @@ public class AdoptionInfoHandler {
                 });
 
         // Send buttons to user
-        telegramBot.execute(new SendMessage(chatId, userMessageRepository.getMessageByKey(1L, "choose_info"))
+        telegramBot.execute(new SendMessage(chatId, userMessageRepository.findAllByShelterIdAndKey(1L, "choose_info"))
                 .replyMarkup(markup));
     }
 }
