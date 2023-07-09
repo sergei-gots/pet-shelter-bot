@@ -8,7 +8,7 @@ import java.util.Collection;
 
 public interface ButtonsRepository extends JpaRepository<Button, Long> {
 
-    @Query(value = "from Button b where b.shelter_id = :shelter_id and b.chapter = :chapter order by b.id")
-    Collection<Button> getButtonsByShelterId(String shelter_id, String chapter);
+    @Query(value = "from Button b where b.shelterId = :shelter_id and b.chapter = :chapter order by b.id")
+    Collection<Button> getButtonsByShelterId(Long shelter_id, String chapter);
 
 }

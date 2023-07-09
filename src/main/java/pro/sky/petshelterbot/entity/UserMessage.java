@@ -9,12 +9,21 @@ public class UserMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String key;
+    private String message;
+    private Long shelterId;
+
     public Long getId() {
         return id;
     }
 
-    private String key;
-    private String message;
+    public Long getShelterId() {
+        return shelterId;
+    }
+
+    public void setShelterId(Long shelterId) {
+        this.shelterId = shelterId;
+    }
 
     public String getKey() {
         return key;

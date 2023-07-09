@@ -7,29 +7,44 @@ import java.time.LocalDate;
 @Table(name = "shelters")
 public class Shelter {
 
-    public enum SHELTER_ID {
-        CAT_SHELTER, DOG_SHELTER
-    }
-
     @Id
-    private SHELTER_ID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String name;
+    private String workTime;
+    private String address;
+    private String tel;
+    private String email;
 
-    public Shelter() {
+    private String type;
+
+    public String getTel() {
+        return tel;
     }
 
-    public Shelter(SHELTER_ID shelterId, String name) {
-        this.id = shelterId;
-        this.name = name;
+    public void setTel(String tel) {
+        this.tel = tel;
     }
 
-    public SHELTER_ID getId() {
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Long getId() {
         return id;
-    }
-
-    public void setId(SHELTER_ID id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -40,12 +55,21 @@ public class Shelter {
         this.name = name;
     }
 
-
-    @Override
-    public String toString() {
-        return "Shelter{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+    public String getWorkTime() {
+        return workTime;
     }
+
+    public void setWorkTime(String workTime) {
+        this.workTime = workTime;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+
 }
