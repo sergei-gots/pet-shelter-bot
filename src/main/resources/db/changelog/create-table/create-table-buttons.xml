@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd"
+>
+    <changeSet id="create-table-buttons" author="S">
+        <preConditions>
+            <not>
+                <tableExists tableName="buttons"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="buttons">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="key" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="shelter_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="text" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="chapter" type="VARCHAR">
+                <constraints nullable="true"/>
+            </column>
+            <column name="position" type="INT">
+                <constraints nullable="true"/>
+            </column>
+
+
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
