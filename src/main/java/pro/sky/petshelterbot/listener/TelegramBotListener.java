@@ -8,8 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.petshelterbot.handler.*;
-import pro.sky.petshelterbot.handler.cat.CatShelterHandler;
-import pro.sky.petshelterbot.handler.dog.DogShelterHandler;
+import pro.sky.petshelterbot.handler.ShelterHandler;
 
 
 import javax.annotation.PostConstruct;
@@ -22,16 +21,14 @@ public class TelegramBotListener implements UpdatesListener {
     final private TelegramBot telegramBot;
 
     final private Handler[] handlers;
-    private final CatShelterHandler catShelterHandler;
-    private final DogShelterHandler dogShelterHandler;
+    private final ShelterHandler shelterHandler;
 
 
     public TelegramBotListener(TelegramBot telegramBot,
                                VolunteerHandler volunteerHandler,
                                DevStageDBHandler catsDevStageHandler,
                                StartHandler startHandler,
-                               CatShelterHandler catShelterHandler,
-                               DogShelterHandler dogShelterHandler) {
+                               ShelterHandler shelterHandler) {
         this.telegramBot = telegramBot;
 
         handlers = new Handler[]{
@@ -39,8 +36,7 @@ public class TelegramBotListener implements UpdatesListener {
                 volunteerHandler,
                 catsDevStageHandler
         };
-        this.catShelterHandler = catShelterHandler;
-        this.dogShelterHandler = dogShelterHandler;
+        this.shelterHandler = shelterHandler;
 
     }
 
@@ -51,27 +47,24 @@ public class TelegramBotListener implements UpdatesListener {
 
     @Override
     public int process(List<Update> updates) {
-        logger.info("process(updates)-Method invoked");
         try {
             updates.forEach(update -> {
-                logger.info("- Processing update: {}", update);
+                //logger.info("Processing update: {}", update);
                 if (update.message() != null) {
                     processMessage(update.message());
-                } else if (update.callbackQuery().data().contains("cat_")) {
-                    catShelterHandler.processCallbackQuery(update.callbackQuery());
-                } else if (update.callbackQuery().data().contains("dog_")){
-                    dogShelterHandler.processCallbackQuery(update.callbackQuery());
+                } else if (update.callbackQuery().data() != null) {
+                    shelterHandler.processCallbackQuery(update.callbackQuery());
                 }
             });
         } catch (Exception e) {
-            logger.error("process()-Method: Exception` e={} was caught", e, e);
+            logger.error("Exception` e={} was caught", e, e);
             e.printStackTrace();
         }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 
     private void processMessage(Message message) {
-        logger.info("processMessage({})-Method", message);
+        //logger.info("Processing update message: {}", message);
         if (message.text() == null) {
             throw new IllegalArgumentException("Message.text() is null");
         }

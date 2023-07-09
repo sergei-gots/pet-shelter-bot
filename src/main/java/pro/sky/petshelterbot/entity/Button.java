@@ -11,8 +11,17 @@ public class Button {
 
     private String key;
     private String text;
-    private String shelter_id;
+    private Long shelterId;
     private String chapter;
+    private Integer order;
+
+    public Integer getOrder() {
+        return order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
 
     public String getChapter() {
         return chapter;
@@ -22,12 +31,12 @@ public class Button {
         this.chapter = chapter;
     }
 
-    public String getShelter_id() {
-        return shelter_id;
+    public Long getShelterId() {
+        return shelterId;
     }
 
-    public void setShelter_id(String shelter_id) {
-        this.shelter_id = shelter_id;
+    public void setShelterId(Long shelter_id) {
+        this.shelterId = shelter_id;
     }
 
     public String getKey() {

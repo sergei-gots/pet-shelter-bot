@@ -68,16 +68,6 @@ public class DevStageDBHandler extends AbstractHandler{
             telegramBot.execute(sendMessage);
             return;
         }
-        String catShelterInfo = shelterRepository.save(new Shelter(
-                Shelter.SHELTER_ID.CAT_SHELTER,
-                "Cat-Shelter"
-        )).toString();
-        logger.info("- Shelter={} was created and added to db", catShelterInfo);
-        String dogShelterInfo = shelterRepository.save(new Shelter(
-                Shelter.SHELTER_ID.DOG_SHELTER,
-                "Dog-Shelter"
-        )).toString();
-        logger.info("- Shelter={} was created and added to db", dogShelterInfo);
         SendMessage sendMessage = new SendMessage(
                 chat.id(),
                 "Shelters successfully created in DB; see log-INFO for details");

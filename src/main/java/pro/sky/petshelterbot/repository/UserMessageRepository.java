@@ -6,7 +6,7 @@ import pro.sky.petshelterbot.entity.UserMessage;
 
 public interface UserMessageRepository extends JpaRepository<UserMessage, Long> {
 
-    @Query(value = "select um.message from UserMessage um where um.key = :key")
-    public String getMessageByKey(String key);
+    @Query(value = "select um.message from UserMessage um where um.key = :key and um.shelterId = :shelterId")
+    String getMessageByKey(Long shelterId, String key);
 
 }
