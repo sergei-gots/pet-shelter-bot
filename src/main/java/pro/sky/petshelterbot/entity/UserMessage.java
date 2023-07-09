@@ -1,5 +1,7 @@
 package pro.sky.petshelterbot.entity;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 
 @Entity
@@ -10,6 +12,8 @@ public class UserMessage {
     private Long id;
 
     private String key;
+    @Lob
+    @Type(type = "org.hibernate.type.TextType")
     private String message;
     private Long shelterId;
 
