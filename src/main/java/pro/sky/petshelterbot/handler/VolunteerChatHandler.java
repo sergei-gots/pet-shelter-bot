@@ -56,4 +56,18 @@ public class VolunteerChatHandler {
         // Возвращаем идентификатор созданного канала
         return 123456789L;
     }
+
+    public void handleVolunteerCall(long chatId, Long shelterId) {
+        if(isDialogOpen(chatId)) {
+            throw new IllegalStateException("Dialog for chatId=" + chatId + " is already open");
+        }
+        createDialogRequest(chatId, shelterId);
+    }
+
+    private void createDialogRequest(long chatId, Long shelterId) {
+    }
+
+    private boolean isDialogOpen(long chatId) {
+        return false;
+    }
 }

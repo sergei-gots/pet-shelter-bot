@@ -59,13 +59,14 @@ public class ShelterHandler {
         }
 
         try {
-            String[]  dataArray = queryData.split("-");
-            shelterId = Long.parseLong(dataArray[0]);
-            key = dataArray[1];
+            String[]  queryDataArray = queryData.split("-");
+            shelterId = Long.parseLong(queryDataArray[0]);
+            key = queryDataArray[1];
             logger.debug("processCallBackQuery-method: callbackQuery.queryData() contains Long shelter_id={} and String key={}",  shelterId, key);
             if (!buttonListMaker(chatId, shelterId, queryData, "Выберите, что вас интересует:")) {
                 switch(key) {
                     case "volunteer_call":
+                        volunteerChatHandler.handleVolunteerCall(chatId, shelterId);
                         logger.warn("processCallBackQuery-method: volunteer_call key received. Should be implemented. ");
                         break;
                     default:  {
