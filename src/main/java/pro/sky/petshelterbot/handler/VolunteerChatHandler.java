@@ -57,17 +57,40 @@ public class VolunteerChatHandler {
         return 123456789L;
     }
 
-    public void handleVolunteerCall(long chatId, Long shelterId) {
-        if(isDialogOpen(chatId)) {
+    public void handleVolunteerCall(Long chatId, Long shelterId) {
+        if(isDialogOpen(chatId) || isDialogRequested(chatId)) {
             throw new IllegalStateException("Dialog for chatId=" + chatId + " is already open");
         }
         createDialogRequest(chatId, shelterId);
     }
 
-    private void createDialogRequest(long chatId, Long shelterId) {
+    private void createDialogRequest(Long chatId, Long shelterId) {
+        Long volunteerChatId = createDialogEntry(chatId, shelterId);
+        if(volunteerChatId == null) {
+            telegramBot.execute(
+                    new SendMessage(chatId, "В настоящий момент все волонтёры заняты. "
+                            + "Как только один из волонтёров освободится, он свяжется с вами."));
+            return;
+        }
+        telegramBot.execute(
+                new SendMessage(chatId, "Волонтёру отослано уведомление. Волонтёр свяжется с вами " +
+                        "насколько это возможно скоро. "));
+
+    }
+
+    private Long createDialogEntry(Long chatId, Long shelterId) {
+        return null;
     }
 
     private boolean isDialogOpen(long chatId) {
         return false;
     }
+
+    private boolean isDialogRequested(long chatId) {
+        return false;
+    }
+
+    private void closeDialog(Long chatId) {
+    }
+
 }

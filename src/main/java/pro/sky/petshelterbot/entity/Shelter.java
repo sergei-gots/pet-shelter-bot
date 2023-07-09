@@ -71,5 +71,16 @@ public class Shelter {
         this.address = address;
     }
 
-
+    @Override
+    public String toString() {
+        return "Shelter{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", workTime='" + workTime + '\'' +
+                ", address='" + address + '\'' +
+                ", tel='" + tel + '\'' +
+                ", email='" + email + '\'' +
+                ", type='" + type + '\'' +
+                '}';
+    }
 }
