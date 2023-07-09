@@ -13,14 +13,14 @@ public class Button {
     private String text;
     private Long shelterId;
     private String chapter;
-    private Integer order;
+    private Integer position;
 
-    public Integer getOrder() {
-        return order;
+    public Integer getPosition() {
+        return position;
     }
 
-    public void setOrder(Integer order) {
-        this.order = order;
+    public void setPosition(Integer position) {
+        this.position = position;
     }
 
     public String getChapter() {
