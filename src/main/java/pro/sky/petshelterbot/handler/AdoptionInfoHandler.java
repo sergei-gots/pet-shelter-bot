@@ -27,7 +27,7 @@ public class AdoptionInfoHandler {
 
     public void sendAdoptionInfo(Long chatId) {
         // Create buttons
-        Collection<Button> buttons = buttonsRepository.getButtonsByShelterId(1L, "adoption_info");
+        Collection<Button> buttons = buttonsRepository.findByShelterIdAndChapterOrderById(1L, "adoption_info");
 
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         buttons.stream()

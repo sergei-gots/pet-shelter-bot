@@ -34,6 +34,12 @@
 
 
         </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="shelter_id"
+                                 baseTableName="buttons"
+                                 constraintName="fk_button_shelter_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="shelters"/>
     </changeSet>
 
 </databaseChangeLog>

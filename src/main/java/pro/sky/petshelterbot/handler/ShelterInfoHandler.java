@@ -17,24 +17,37 @@ import java.util.Collection;
  * Handles user's pressing a button and sends information about the shelter
  */
 @Component
-public class ShelterInfoHandler {
+public class ShelterInfoHandler extends AbstractHandler {
 
-    private final TelegramBot telegramBot;
     private final ButtonsRepository buttonsRepository;
     private final UserMessageRepository userMessageRepository;
     private final ShelterRepository shelterRepository;
 
     public ShelterInfoHandler(TelegramBot telegramBot, ButtonsRepository buttonsRepository, UserMessageRepository userMessageRepository, ShelterRepository shelterRepository) {
-        this.telegramBot = telegramBot;
+        super(telegramBot);
         this.buttonsRepository = buttonsRepository;
         this.userMessageRepository = userMessageRepository;
         this.shelterRepository = shelterRepository;
     }
 
+    @Override
+    public boolean handle(String key, Long chatId, Long shelterId) {
+        if("schedule_info".equals(key)) {
+            shelterWorkTime(chatId, shelterId);
+            return true;
+        }
+        if("security_info".equals(key)) {
+                shelterWorkTime(chatId, shelterId);
+                return true;
+        }
+
+        return false;
+    }
+
     public void sendShelterInfo(Long chatId, Long shelterId) {
         // Create buttons
 
-        Collection<Button> buttons = buttonsRepository.getButtonsByShelterId(shelterId, "shelter_info");
+        Collection<Button> buttons = buttonsRepository.findByShelterIdAndChapterOrderById(shelterId, "shelter_info");
 
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         buttons.stream()

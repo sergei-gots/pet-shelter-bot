@@ -46,54 +46,48 @@ public class ShelterHandler {
 
         logger.debug("processCallBackQuery-method");
         String queryData = callbackQuery.data();
-        String key=queryData;
         Message message = callbackQuery.message();
-        long chatId = message.chat().id();
-
-        Long shelterId = null;
-        try {
-            shelterId = Long.parseLong(queryData);
-            handleShelterCommand(chatId, shelterId);
-        } catch (NumberFormatException e) {
-            logger.debug("processCallBackQuery-method: callbackQuery.queryData()={} is not a Long", queryData);
-        }
+        Long chatId = message.chat().id();
 
         try {
-            String[]  queryDataArray = queryData.split("-");
-            shelterId = Long.parseLong(queryDataArray[0]);
-            key = queryDataArray[1];
-            logger.debug("processCallBackQuery-method: callbackQuery.queryData() contains Long shelter_id={} and String key={}",  shelterId, key);
+            String[] queryDataArray = queryData.split("-");
+            Long shelterId = Long.parseLong(queryDataArray[0]);
+            String key = queryDataArray[1];
+            logger.debug("processCallBackQuery-method: callbackQuery.queryData() contains Long shelter_id={} and String key={}", shelterId, key);
 
-            if (!makeButtonList(chatId, shelterId, queryData, "Выберите, что вас интересует:")) {
-                if(volunteerChatHandler.handle(key, chatId, shelterId)) {
-                    return;
-                }
-                String userMessage = userMessageRepository.findByShelterIdAndKey(shelterId, key);
-                telegramBot.execute(new SendMessage(chatId, userMessage));
-
+            if (makeButtonList(chatId, shelterId, key, "Выберите, что вас интересует:")) {
+                return;
             }
+            if (volunteerChatHandler.handle(key, chatId, shelterId)) {
+                return;
+            }
+            if(shelterInfoHandler.handle(key, chatId, shelterId)) {
+                return;
+            }
+            sendUserMessage(key, chatId, shelterId);
 
         } catch (Exception e) {
-            logger.error("processCallBackQuery-method: exception  was thrown. ",  e);
+            logger.error("processCallBackQuery-method: exception  was thrown. ", e);
         }
+    }
 
-
-        switch (key) {
-            case "schedule_info":
-                shelterInfoHandler.shelterWorkTime(chatId, shelterId);
-                break;
-            case "security_info":
-                shelterInfoHandler.sendSecurityInfo(chatId, shelterId);
-                break;
-            default:
-                logger.warn("processCallBackQuery-method: handler for queryData ={} is not listed",  queryData);
-                break;
+    private void sendUserMessage(String key, long chatId, Long shelterId) {
+        String userMessage = userMessageRepository.findByShelterIdAndKey(shelterId, key);
+        if (userMessage == null) {
+            userMessage = "Раздел не создан. Разработчики скоро сформируют этот раздел";
+            logger.error("processCallBackQuery-method: user_message with shelter_id={}, key={} is not listed.",
+                    shelterId, key);
         }
+        telegramBot.execute(new SendMessage(chatId, userMessage));
     }
 
     private boolean makeButtonList(Long chatId, Long shelterId, String chapter, String title) {
 
-        Collection<Button> buttons = buttonsRepository.getButtonsByShelterId(shelterId, chapter);
+        Collection<Button> buttons = buttonsRepository.findByShelterIdAndChapterOrderById(shelterId, chapter);
+        if(buttons.size() == 0) {
+            buttons = buttonsRepository.findByChapterOrderById(chapter);
+        }
+
 
         if (buttons.size() > 0) {
             InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
