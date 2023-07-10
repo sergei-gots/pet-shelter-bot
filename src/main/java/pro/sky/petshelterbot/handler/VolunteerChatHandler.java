@@ -48,12 +48,6 @@ public class VolunteerChatHandler extends AbstractHandler {
                 .replyMarkup(new InlineKeyboardMarkup(
                         new InlineKeyboardButton("Присоединиться к чату").callbackData("join_chat")
                 )));
-
-        // Создаем отдельный канал для общения волонтера и пользователя
-        Long userChatId = createChatChannel();
-
-        // Сохраняем связь между идентификаторами чатов волонтера и пользователя
-        //volunteerToUserChatIds.put(chatId, userChatId);
     }
 
     public void CallbackQuery(CallbackQuery callbackQuery) {
