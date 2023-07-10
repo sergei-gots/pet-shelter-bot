@@ -20,5 +20,11 @@
             <column name="first_name"   value="👨‍🦱 A"/>
             <column name="shelter_id"   valueNumeric="1"/>
         </insert>
+        <insert tableName="volunteers">
+            <column name="chat_id"      valueNumeric="414481129"/>
+            <column name="first_name"   value="👨‍🦱 S-1"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+        </insert>
+
     </changeSet>
 </databaseChangeLog>

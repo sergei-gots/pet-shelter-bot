@@ -1,11 +1,7 @@
 package pro.sky.petshelterbot.handler;
 
 import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
-import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Dialog;
@@ -40,24 +36,6 @@ public class VolunteerChatHandler extends AbstractHandler {
         this.shelterRepository = shelterRepository;
     }
 
-    public void handleVolunteerCommand(Long chatId) {
-        // Отправляем уведомление волонтеру с просьбой зайти в чат
-        telegramBot.execute(new SendMessage(
-                chatId,
-                "Вас позвали в чат. Нажмите кнопку 'Присоединиться к чату' для начала общения.")
-                .replyMarkup(new InlineKeyboardMarkup(
-                        new InlineKeyboardButton("Присоединиться к чату").callbackData("join_chat")
-                )));
-    }
-
-    public void CallbackQuery(CallbackQuery callbackQuery) {
-
-        String data = callbackQuery.data();
-        Long chatId = callbackQuery.message().chat().id();
-
-    }
-
-
     @Override
     public boolean handle(Message message, String key, Long chatId, Long shelterId) {
         if ("volunteer_call".equals(key)) {
@@ -85,10 +63,14 @@ public class VolunteerChatHandler extends AbstractHandler {
                             + "Как только один из волонтёров освободится, он свяжется с вами.");
             return;
         }
-        sendMessage(chatId, "Волонтёру отослано уведомление. Волонтёр свяжется с вами " +
-                        "насколько это возможно скоро. ");
         sendMessage(volunteer.getChatId(),
-                volunteer.getFirstName() + "! C вами хотел бы связаться " + message.chat().firstName());
+                volunteer.getFirstName() + "! C вами хотел бы связаться " + message.chat().firstName() +
+                        ". Нажмите кнопку 'Присоединиться к чату' для начала общения.",
+                        "Присоединиться к чату",
+                        Volunteer.JOIN_CHAT
+                );
+        sendMessage(chatId, "Волонтёру отослано уведомление. Волонтёр свяжется с вами " +
+                "насколько это возможно скоро. ");
 
     }
 

@@ -10,6 +10,7 @@ import javax.persistence.Table;
 @Table(name = "volunteers")
 public class Volunteer extends AbstractPerson {
 
+    public static final String JOIN_CHAT="/join";
     @JoinColumn(name="shelter_id")
     @ManyToOne
     private Shelter shelter;
