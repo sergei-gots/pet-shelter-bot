@@ -61,7 +61,7 @@ public class ShelterHandler {
             if (volunteerChatHandler.handle(key, chatId, shelterId)) {
                 return;
             }
-            if(shelterInfoHandler.handle(key, chatId, shelterId)) {
+            if (shelterInfoHandler.handle(key, chatId, shelterId)) {
                 return;
             }
             sendUserMessage(key, chatId, shelterId);
@@ -84,24 +84,22 @@ public class ShelterHandler {
     private boolean makeButtonList(Long chatId, Long shelterId, String chapter, String title) {
 
         Collection<Button> buttons = buttonsRepository.findByShelterIdAndChapterOrderById(shelterId, chapter);
-        if(buttons.size() == 0) {
+        if (buttons.size() == 0) {
             buttons = buttonsRepository.findByChapterOrderById(chapter);
         }
-
-
-        if (buttons.size() > 0) {
-            InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
-            buttons.stream()
-                    .forEach(button -> {
-                        markup.addRow(new InlineKeyboardButton(button.getText()).callbackData(shelterId + "-" + button.getKey()));
-                    });
-
-            // Send buttons to user
-            telegramBot.execute(new SendMessage(chatId, title)
-                    .replyMarkup(markup));
-            return true;
+        if (buttons.size() == 0) {
+            return false;
         }
-        return false;
+
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        for (Button button : buttons) {
+            markup.addRow(new InlineKeyboardButton(button.getText()).callbackData(shelterId + "-" + button.getKey()));
+        }
+
+        telegramBot.execute(new SendMessage(chatId, title)
+                .replyMarkup(markup));
+        return true;
+
     }
 
     public void handleShelterCommand(Long chatId, Long shelterId) {
