@@ -6,6 +6,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.entity.Button;
 import pro.sky.petshelterbot.repository.ButtonsRepository;
+import pro.sky.petshelterbot.repository.ShelterRepository;
 import pro.sky.petshelterbot.repository.UserMessageRepository;
 
 import java.util.Collection;
@@ -14,14 +15,15 @@ import java.util.Collection;
  * Handles user's pressing a button and sends information about how to adopt a pet
  */
 @Component
-public class AdoptionInfoHandler {
-    private final TelegramBot telegramBot;
-    private final UserMessageRepository userMessageRepository;
+public class AdoptionInfoHandler extends AbstractHandler {
+
     private final ButtonsRepository buttonsRepository;
 
-    public AdoptionInfoHandler(TelegramBot telegramBot, UserMessageRepository userMessageRepository, ButtonsRepository buttonsRepository) {
-        this.telegramBot = telegramBot;
-        this.userMessageRepository = userMessageRepository;
+    public AdoptionInfoHandler(
+            TelegramBot telegramBot,
+            ShelterRepository shelterRepository,
+            UserMessageRepository userMessageRepository, ButtonsRepository buttonsRepository) {
+        super(telegramBot, shelterRepository, userMessageRepository);
         this.buttonsRepository = buttonsRepository;
     }
 
@@ -36,7 +38,8 @@ public class AdoptionInfoHandler {
                 });
 
         // Send buttons to user
-        telegramBot.execute(new SendMessage(chatId, userMessageRepository.findByShelterIdAndKey(1L, "choose_info"))
+        telegramBot.execute(
+                new SendMessage(chatId, getUserMessage("choose_info", 1L))
                 .replyMarkup(markup));
     }
 }

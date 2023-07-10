@@ -7,6 +7,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.entity.Shelter;
 import pro.sky.petshelterbot.repository.ShelterRepository;
+import pro.sky.petshelterbot.repository.UserMessageRepository;
 
 import java.util.Collection;
 
@@ -16,13 +17,11 @@ import java.util.Collection;
 @Component
 public class StartHandler extends AbstractHandler {
 
-    private final TelegramBot telegramBot;
-    private final ShelterRepository shelterRepository;
 
-    public StartHandler(TelegramBot telegramBot, ShelterRepository shelterRepository) {
-        super(telegramBot);
-        this.telegramBot = telegramBot;
-        this.shelterRepository = shelterRepository;
+    public StartHandler(TelegramBot telegramBot,
+                        ShelterRepository shelterRepository,
+                        UserMessageRepository userMessageRepository) {
+        super(telegramBot, shelterRepository, userMessageRepository);
     }
 
     /** handles command '/start' */

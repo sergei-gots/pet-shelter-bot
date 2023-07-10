@@ -1,12 +1,14 @@
 package pro.sky.petshelterbot.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import pro.sky.petshelterbot.entity.Shelter;
 import pro.sky.petshelterbot.entity.UserMessage;
+
+import java.util.Optional;
 
 public interface UserMessageRepository extends JpaRepository<UserMessage, Long> {
 
-    @Query(value = "select um.message from UserMessage um where um.key = :key and um.shelterId = :shelterId")
-    String findByShelterIdAndKey(Long shelterId, String key);
+
+    Optional<UserMessage> findByShelterAndKey(Shelter shelter, String key);
 
 }

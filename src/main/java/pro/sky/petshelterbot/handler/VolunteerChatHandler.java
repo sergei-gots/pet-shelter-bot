@@ -6,10 +6,7 @@ import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Dialog;
 import pro.sky.petshelterbot.entity.Volunteer;
-import pro.sky.petshelterbot.repository.AdopterRepository;
-import pro.sky.petshelterbot.repository.DialogRepository;
-import pro.sky.petshelterbot.repository.ShelterRepository;
-import pro.sky.petshelterbot.repository.VolunteerRepository;
+import pro.sky.petshelterbot.repository.*;
 
 import java.util.List;
 import java.util.Random;
@@ -24,16 +21,20 @@ public class VolunteerChatHandler extends AbstractHandler {
     private final AdopterRepository adopterRepository;
     private final VolunteerRepository volunteerRepository;
 
-    private final ShelterRepository shelterRepository;
 
     private final Random random = new Random();
 
-    public VolunteerChatHandler(TelegramBot telegramBot, DialogRepository dialogRepository, AdopterRepository adopterRepository, VolunteerRepository volunteerRepository, ShelterRepository shelterRepository) {
-        super(telegramBot);
+    public VolunteerChatHandler(TelegramBot telegramBot,
+                                ShelterRepository shelterRepository,
+                                UserMessageRepository userMessageRepository,
+                                DialogRepository dialogRepository,
+                                AdopterRepository adopterRepository,
+                                VolunteerRepository volunteerRepository
+                                ) {
+        super(telegramBot, shelterRepository, userMessageRepository);
         this.dialogRepository = dialogRepository;
         this.adopterRepository = adopterRepository;
         this.volunteerRepository = volunteerRepository;
-        this.shelterRepository = shelterRepository;
     }
 
     @Override

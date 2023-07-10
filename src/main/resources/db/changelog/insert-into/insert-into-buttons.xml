@@ -31,24 +31,23 @@
             <column name="chapter"      value="start_info_menu"/>
         </insert>
 
+        <insert tableName="buttons">
+            <column name="key"          value="opening_hours_and_address_info"/>
+            <column name="text"         value="Расписание работы и адрес"/>
+            <column name="chapter"      value="start_info_menu"/>
+        </insert>
+
+        <insert tableName="buttons">
+            <column name="key"          value="security_info"/>
+            <column name="text"         value="Контактные данные охраны"/>
+            <column name="chapter"      value="start_info_menu"/>
+        </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="cynologist_advice_info"/>
             <column name="shelter_id"   valueNumeric="2"/>
             <column name="text"         value="Советы кинолога"/>
             <column name="chapter"      value="adoption_info"/>
-        </insert>
-
-        <insert tableName="buttons">
-            <column name="key"          value="hours_and_address_info"/>
-            <column name="shelter_id"   valueNumeric="1"/>
-            <column name="text"         value="Расписание работы и адрес"/>
-        </insert>
-
-        <insert tableName="buttons">
-            <column name="key"          value="hours_and_address_info"/>
-            <column name="shelter_id"   valueNumeric="2"/>
-            <column name="text"         value="Расписание работы и адрес"/>
         </insert>
 
         <insert tableName="buttons">
@@ -83,21 +82,6 @@
             <column name="key"          value="safety_info"/>
             <column name="shelter_id"   valueNumeric="2"/>
             <column name="text"         value="Рекомендации по безопасности"/>
-            <column name="chapter"      value="shelter_info"/>
-        </insert>
-
-
-        <insert tableName="buttons">
-            <column name="key"          value="security_info"/>
-            <column name="shelter_id"   valueNumeric="1"/>
-            <column name="text"         value="Контактные данные охраны"/>
-            <column name="chapter"      value="shelter_info"/>
-        </insert>
-
-        <insert tableName="buttons">
-            <column name="key"          value="security_info"/>
-            <column name="shelter_id"   valueNumeric="2"/>
-            <column name="text"         value="Контактные данные охраны"/>
             <column name="chapter"      value="shelter_info"/>
         </insert>
 

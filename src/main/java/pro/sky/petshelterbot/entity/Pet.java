@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public class Pet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column
     private String species;
 
@@ -37,10 +37,10 @@ public class Pet {
     }
 
     public Pet(String species, String name, Shelter shelter) {
-        this(-1, species, name, shelter, false);
+        this(null, species, name, shelter, false);
     }
 
-    public Pet(long id, String species, String name, Shelter shelter, boolean disabled) {
+    public Pet(Long id, String species, String name, Shelter shelter, boolean disabled) {
         this.id = id;
         this.species = species;
         this.name = name;
@@ -48,11 +48,11 @@ public class Pet {
         this.disabled = disabled;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
