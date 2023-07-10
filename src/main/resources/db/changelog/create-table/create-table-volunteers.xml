@@ -5,39 +5,34 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
             http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd"
 >
-    <changeSet id="create-table-buttons" author="S">
+    <changeSet id="create-table-volunteers" author="S">
         <preConditions>
             <not>
-                <tableExists tableName="buttons"/>
+                <tableExists tableName="volunteers"/>
             </not>
         </preConditions>
 
-        <createTable tableName="buttons">
-            <column name="id" type="BIGINT" autoIncrement="true">
+        <createTable tableName="volunteers">
+            <column name="chat_id" type="BIGINT">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="key" type="VARCHAR">
-                <constraints nullable="false"/>
+
+            <column name="first_name" type="VARCHAR">
+                <constraints nullable="true"/>
             </column>
+
             <column name="shelter_id" type="BIGINT">
-                <constraints nullable="true"/>
-            </column>
-            <column name="text" type="VARCHAR">
                 <constraints nullable="false"/>
             </column>
-            <column name="chapter" type="VARCHAR">
-                <constraints nullable="true"/>
-            </column>
-            <column name="position" type="INT">
-                <constraints nullable="true"/>
-            </column>
 
-
+            <column name="available" type="BOOLEAN" defaultValue="true">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
         <addForeignKeyConstraint baseColumnNames="shelter_id"
-                                 baseTableName="buttons"
-                                 constraintName="fk_button_shelter_id"
+                                 baseTableName="volunteers"
+                                 constraintName="fk_volunteer_shelter_id"
                                  referencedColumnNames="id"
                                  referencedTableName="shelters"/>
     </changeSet>

@@ -10,25 +10,25 @@
         <insert tableName="buttons">
             <column name="key"          value="shelter_info"/>
             <column name="text"         value="Узнать информацию о приюте"/>
-            <column name="chapter"      value="start"/>
+            <column name="chapter"      value="start_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="adoption_info"/>
             <column name="text"         value="Как взять животное из приюта"/>
-            <column name="chapter"      value="start"/>
+            <column name="chapter"      value="start_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="report_info"/>
             <column name="text"         value="Прислать отчет о питомце"/>
-            <column name="chapter"      value="start"/>
+            <column name="chapter"      value="start_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="volunteer_call"/>
             <column name="text"         value="Позвать волонтёра"/>
-            <column name="chapter"      value="start"/>
+            <column name="chapter"      value="start_info_menu"/>
         </insert>
 
 

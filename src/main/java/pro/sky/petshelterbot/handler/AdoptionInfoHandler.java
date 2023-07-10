@@ -27,7 +27,7 @@ public class AdoptionInfoHandler {
 
     public void sendAdoptionInfo(Long chatId) {
         // Create buttons
-        Collection<Button> buttons = buttonsRepository.getButtonsByShelterId(1L, "adoption_info");
+        Collection<Button> buttons = buttonsRepository.findByShelterIdAndChapterOrderById(1L, "adoption_info");
 
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         buttons.stream()
@@ -36,7 +36,7 @@ public class AdoptionInfoHandler {
                 });
 
         // Send buttons to user
-        telegramBot.execute(new SendMessage(chatId, userMessageRepository.findAllByShelterIdAndKey(1L, "choose_info"))
+        telegramBot.execute(new SendMessage(chatId, userMessageRepository.findByShelterIdAndKey(1L, "choose_info"))
                 .replyMarkup(markup));
     }
 }

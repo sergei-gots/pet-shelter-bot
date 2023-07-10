@@ -40,16 +40,11 @@ public class StartHandler extends AbstractHandler {
         shelters.stream()
                 .forEach(shelter -> {
                     markup.addRow(
-                            new InlineKeyboardButton(shelter.getName()).callbackData(shelter.getId() + "")
+                            new InlineKeyboardButton(shelter.getName()).callbackData(shelter.getId() + "-start_info_menu")
                     );
                 });
 
-        /*InlineKeyboardMarkup markup = new InlineKeyboardMarkup(
-                new InlineKeyboardButton("Приют для кошек").callbackData("cat_shelter"),
-                new InlineKeyboardButton("Приют для собак").callbackData("dog_shelter")
-        );*/
-
-        // Send buttons to user
+                // Send buttons to user
         telegramBot.execute(new SendMessage(message.chat().id(), "Выберите приют:")
                 .replyMarkup(markup));
 

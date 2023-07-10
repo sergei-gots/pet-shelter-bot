@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd"
+>
+    <changeSet id="create-table-adopter-volunteer-dialogs" author="S">
+        <preConditions>
+            <not>
+                <tableExists tableName="adopter_volunteer_dialogs"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="adopter_volunteer_dialogs">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+
+            <column name="adopter_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="volunteer_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="shelter_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="shelter_id"
+                                 baseTableName="adopter_volunteer_dialogs"
+                                 constraintName="fk_adopter_volunteer_dialog_shelter_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="shelters"/>
+
+        <addForeignKeyConstraint baseColumnNames="adopter_id"
+                                 baseTableName="adopter_volunteer_dialogs"
+                                 constraintName="fk_adopter_volunteer_dialog_adopter_id"
+                                 referencedColumnNames="chat_id"
+                                 referencedTableName="adopters"/>
+
+        <addForeignKeyConstraint baseColumnNames="volunteer_id"
+                                 baseTableName="adopter_volunteer_dialogs"
+                                 constraintName="fk_adopter_volunteer_dialog_volunteer_id"
+                                 referencedColumnNames="chat_id"
+                                 referencedTableName="volunteers"/>
+
+
+    </changeSet>
+
+</databaseChangeLog>

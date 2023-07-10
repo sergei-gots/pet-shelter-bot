@@ -13,10 +13,10 @@
         </preConditions>
 
         <createTable tableName="adopters">
-            <column name="chat_id" type="BIGINT">
+            <column name="chat_id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="name" type="VARCHAR">
+            <column name="first_name" type="VARCHAR">
                 <constraints nullable="false"/>
             </column>
         </createTable>
