@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd"
+>
+    <changeSet id="insert-into-volunteers-1" author="S">
+        <!--This is a test-volunteer-entry.
+        It works only within running telegram bot "https://t.me/to_do_task_reminder_bot"
+        A developer can add their own changeSet that assign test-volunteer-entry
+        -->
+        <insert tableName="volunteers">
+            <column name="chat_id"      valueNumeric="1352662527"/>
+            <column name="first_name"   value="N"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+        </insert>
+        <insert tableName="volunteers">
+            <column name="chat_id"      valueNumeric="89326133"/>
+            <column name="first_name"   value="A"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

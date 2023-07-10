@@ -15,7 +15,8 @@ import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Service
-public class TelegramBotListener implements UpdatesListener {
+public class TelegramBotListener
+        implements UpdatesListener, Handler {
 
     final private Logger logger = LoggerFactory.getLogger(TelegramBotListener.class);
     final private TelegramBot telegramBot;
@@ -32,8 +33,9 @@ public class TelegramBotListener implements UpdatesListener {
         this.telegramBot = telegramBot;
 
         handlers = new Handler[]{
-                startHandler,
+                //Important: volunteerHandler MUST BE at first place
                 volunteerHandler,
+                startHandler,
                 catsDevStageHandler
         };
         this.shelterHandler = shelterHandler;
@@ -48,32 +50,36 @@ public class TelegramBotListener implements UpdatesListener {
     @Override
     public int process(List<Update> updates) {
         try {
-            updates.forEach(update -> {
-                logger.debug("Processing update: {}", update);
-                if (update.message() != null) {
-                    processMessage(update.message());
-                } else if (update.callbackQuery().data() != null) {
-                    shelterHandler.processCallbackQuery(update.callbackQuery());
+            for (Update update : updates) {
+                logger.debug("process(updates)-method: processing update: {}", update);
+
+                if (!handle(update.message())) {
+                    shelterHandler.handle(update.callbackQuery());
                 }
-            });
+            }
         } catch (Exception e) {
-            logger.error("Exception` e={} was caught", e, e);
+            logger.error("process(updates)-method: exception` e={} was caught", e, e);
             e.printStackTrace();
         }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 
-    private void processMessage(Message message) {
-        logger.debug("Processing update message: {}", message);
+    @Override
+    public boolean handle(Message message) {
+        if(message == null) {
+            return false;
+        }
+        logger.debug("processMessage(Message message={})-method.", message);
         if (message.text() == null) {
             throw new IllegalArgumentException("Message.text() is null");
         }
         for (Handler handler : handlers) {
             if (handler.handle(message)) {
-                return;
+                return true;
             }
         }
-        logger.info("- There is no suitable handler for text=\"{}\" received from user={}",
-                message.text(), message.chat().firstName());
+        logger.trace("processMessage: there is no suitable handler for text=\"{}\" received from user={} with chat_id={}",
+                message.text(), message.chat().firstName(), message.chat().id());
+        return false;
     }
 }

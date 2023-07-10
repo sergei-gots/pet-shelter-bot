@@ -9,6 +9,11 @@ databaseChangeLog:
       file: db/changelog/create-table/create-table-pets.xml
   - include:
       file: db/changelog/create-table/create-table-adopters.xml
+  - include:
+      file: db/changelog/create-table/create-table-volunteers.xml
+  - include:
+      file: db/changelog/create-table/create-table-adopter-volunteer-dialogs.xml
+
 
   - include:
       file: db/changelog/insert-into/insert-into-shelters.xml
@@ -16,3 +21,5 @@ databaseChangeLog:
       file: db/changelog/insert-into/insert-into-buttons.xml
   - include:
       file: db/changelog/insert-into/insert-into-user-messages.xml
+  - include:
+      file: db/changelog/insert-into/insert-into-volunteers.xml

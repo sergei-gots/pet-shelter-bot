@@ -66,6 +66,7 @@ public class VolunteerChatHandler extends AbstractHandler {
     };
 
     public void handleVolunteerCall(Long chatId, Long shelterId) {
+        logger.debug("handleVolunteerCall(chatId={}, shelterId={})", chatId, shelterId);
         if(isDialogOpen(chatId) || isDialogRequested(chatId)) {
             throw new IllegalStateException("Dialog for chatId=" + chatId + " is already open");
         }

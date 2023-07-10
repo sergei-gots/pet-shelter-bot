@@ -54,25 +54,17 @@ public class DevStageDBHandler extends AbstractHandler{
         String catInfo = petService.createCat("Муська")
                 .toString();
         logger.info("- Test-cat={} was added to db", catInfo);
-        SendMessage testCatAddedMessage = new SendMessage(chat.id(), "Added " + catInfo);
-        telegramBot.execute(testCatAddedMessage);
+        sendMessage(chat.id(), "Added " + catInfo);
         return true;
     }
 
     private void createSheltersIfNotExist(Chat chat) {
         if(shelterRepository.findAll().size()>=2) {
             logger.info("- Shelters already exist in db");
-            SendMessage sendMessage =
-                    new SendMessage(chat.id(),
-                            "Shelters are already listed in DB");
-            telegramBot.execute(sendMessage);
+            sendMessage(chat.id(),  "Shelters are already listed in DB");
             return;
         }
-        SendMessage sendMessage = new SendMessage(
-                chat.id(),
-                "Shelters successfully created in DB; see log-INFO for details");
-        telegramBot.execute(sendMessage);
-
+        sendMessage(chat.id(),"Shelters successfully created in DB; see log-INFO for details");
     }
 
 
