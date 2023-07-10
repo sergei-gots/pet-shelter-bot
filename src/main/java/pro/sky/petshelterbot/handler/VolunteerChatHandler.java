@@ -1,28 +1,50 @@
 package pro.sky.petshelterbot.handler;
+
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.CallbackQuery;
+import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Component;
+import pro.sky.petshelterbot.entity.Adopter;
+import pro.sky.petshelterbot.entity.Dialog;
+import pro.sky.petshelterbot.entity.Volunteer;
+import pro.sky.petshelterbot.repository.AdopterRepository;
+import pro.sky.petshelterbot.repository.DialogRepository;
+import pro.sky.petshelterbot.repository.ShelterRepository;
+import pro.sky.petshelterbot.repository.VolunteerRepository;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.Random;
 
+/** Operates chat between Adopter and Volunteer on the Adopter's side
+ *
+ */
 @Component
 public class VolunteerChatHandler extends AbstractHandler {
 
-    final private Map<Long, Long> volunteerToUserChatIds;
+    private final DialogRepository dialogRepository;
+    private final AdopterRepository adopterRepository;
+    private final VolunteerRepository volunteerRepository;
 
+    private final ShelterRepository shelterRepository;
 
-    public VolunteerChatHandler(TelegramBot telegramBot) {
+    private final Random random = new Random();
+
+    public VolunteerChatHandler(TelegramBot telegramBot, DialogRepository dialogRepository, AdopterRepository adopterRepository, VolunteerRepository volunteerRepository, ShelterRepository shelterRepository) {
         super(telegramBot);
-        this.volunteerToUserChatIds = new HashMap<>();
+        this.dialogRepository = dialogRepository;
+        this.adopterRepository = adopterRepository;
+        this.volunteerRepository = volunteerRepository;
+        this.shelterRepository = shelterRepository;
     }
 
     public void handleVolunteerCommand(Long chatId) {
         // Отправляем уведомление волонтеру с просьбой зайти в чат
-        telegramBot.execute(new SendMessage(chatId, "Вас позвали в чат. Нажмите кнопку 'Присоединиться к чату' для начала общения.")
+        telegramBot.execute(new SendMessage(
+                chatId,
+                "Вас позвали в чат. Нажмите кнопку 'Присоединиться к чату' для начала общения.")
                 .replyMarkup(new InlineKeyboardMarkup(
                         new InlineKeyboardButton("Присоединиться к чату").callbackData("join_chat")
                 )));
@@ -31,7 +53,7 @@ public class VolunteerChatHandler extends AbstractHandler {
         Long userChatId = createChatChannel();
 
         // Сохраняем связь между идентификаторами чатов волонтера и пользователя
-        volunteerToUserChatIds.put(chatId, userChatId);
+        //volunteerToUserChatIds.put(chatId, userChatId);
     }
 
     public void CallbackQuery(CallbackQuery callbackQuery) {
@@ -39,59 +61,67 @@ public class VolunteerChatHandler extends AbstractHandler {
         String data = callbackQuery.data();
         Long chatId = callbackQuery.message().chat().id();
 
-        if (data.equals("join_chat")) {
-            // Получаем идентификатор чата пользователя
-            Long userChatId = volunteerToUserChatIds.get(chatId);
-
-            // Отправляем пользователю уведомление о присоединении волонтера к чату
-            telegramBot.execute(new SendMessage(userChatId, "Волонтер присоединился к чату. Теперь вы можете общаться прямо внутри бота."));
-        }
     }
 
-    private Long createChatChannel() {
-        // Создаем отдельный канал для общения волонтера и пользователя
-        // Можно использовать методы Telegram API для создания канала
-
-        // Возвращаем идентификатор созданного канала
-        return 123456789L;
-    }
 
     @Override
-    public boolean handle(String key, Long chatId, Long shelterId) {
+    public boolean handle(Message message, String key, Long chatId, Long shelterId) {
         if ("volunteer_call".equals(key)) {
-            handleVolunteerCall(chatId, shelterId);
+            handleVolunteerCall(message, chatId, shelterId);
             return true;
         }
         return false;
-    };
+    }
 
-    public void handleVolunteerCall(Long chatId, Long shelterId) {
+    public void handleVolunteerCall(Message message, Long chatId, Long shelterId) {
         logger.debug("handleVolunteerCall(chatId={}, shelterId={})", chatId, shelterId);
-        if(isDialogOpen(chatId) || isDialogRequested(chatId)) {
+        if (isDialogOpen(chatId) || isDialogRequested(chatId)) {
             throw new IllegalStateException("Dialog for chatId=" + chatId + " is already open");
         }
-        createDialogRequest(chatId, shelterId);
+        createDialogRequest(message, chatId, shelterId);
     }
 
-    private void createDialogRequest(Long chatId, Long shelterId) {
-        Long volunteerChatId = createDialogEntry(chatId, shelterId);
-        if(volunteerChatId == null) {
-            telegramBot.execute(
-                    new SendMessage(chatId, "В настоящий момент все волонтёры заняты. "
-                            + "Как только один из волонтёров освободится, он свяжется с вами."));
+    private void createDialogRequest(Message message, Long chatId, Long shelterId) {
+
+        logger.trace("createDialogRequest(message={}, ...", message);
+
+        Volunteer volunteer = createDialogEntry(message, chatId, shelterId);
+        if (volunteer == null) {
+            sendMessage(chatId, "В настоящий момент все волонтёры заняты. "
+                            + "Как только один из волонтёров освободится, он свяжется с вами.");
             return;
         }
-        telegramBot.execute(
-                new SendMessage(chatId, "Волонтёру отослано уведомление. Волонтёр свяжется с вами " +
-                        "насколько это возможно скоро. "));
+        sendMessage(chatId, "Волонтёру отослано уведомление. Волонтёр свяжется с вами " +
+                        "насколько это возможно скоро. ");
+        sendMessage(volunteer.getChatId(),
+                volunteer.getFirstName() + "! C вами хотел бы связаться " + message.chat().firstName());
 
     }
 
-    private Long createDialogEntry(Long chatId, Long shelterId) {
-        return null;
+    private Volunteer createDialogEntry(Message message, Long chatId, Long shelterId) {
+
+        logger.trace("createDialogEntry(message={}, ...", message);
+
+        Adopter adopter = adopterRepository.findByChatId(chatId)
+                .orElse(adopterRepository.save(new Adopter(chatId, message.chat().firstName()))
+                );
+        List<Volunteer> availableVolunteers = volunteerRepository.findByShelterIdAndAvailable(shelterId, true);
+        if (availableVolunteers.size() == 0) {
+            Dialog dialog = new Dialog(adopter, shelterRepository.findById(shelterId)
+                    .orElseThrow(()->new IllegalArgumentException("shelter_id=" + shelterId  + "is not listed.")));
+            return null;
+        }
+
+        Volunteer volunteer = availableVolunteers.get(random.nextInt(availableVolunteers.size()));
+        Dialog dialog = new Dialog(adopter, volunteer);
+        volunteer.setAvailable(false);
+        dialogRepository.save(dialog);
+        volunteerRepository.save(volunteer);
+        return volunteer;
     }
 
     private boolean isDialogOpen(long chatId) {
+
         return false;
     }
 

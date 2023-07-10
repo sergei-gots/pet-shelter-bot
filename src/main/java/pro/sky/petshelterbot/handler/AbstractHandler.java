@@ -14,8 +14,9 @@ public abstract class AbstractHandler implements Handler{
         this.telegramBot = telegramBot;
     }
 
-    protected void sendMessage(Long chatId, String message) {
-        SendMessage sendMessage = new SendMessage(chatId, message);
+    protected void sendMessage(Long chatId, String text) {
+        logger.trace("sendMessage(chatId={}, text={})", chatId, text);
+        SendMessage sendMessage = new SendMessage(chatId, text);
         telegramBot.execute(sendMessage);
     }
 

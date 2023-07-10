@@ -1,6 +1,7 @@
 package pro.sky.petshelterbot.handler;
 
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
@@ -31,7 +32,7 @@ public class ShelterInfoHandler extends AbstractHandler {
     }
 
     @Override
-    public boolean handle(String key, Long chatId, Long shelterId) {
+    public boolean handle(Message message, String key, Long chatId, Long shelterId) {
         if("schedule_info".equals(key)) {
             shelterWorkTime(chatId, shelterId);
             return true;

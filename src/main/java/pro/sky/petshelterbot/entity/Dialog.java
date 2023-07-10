@@ -16,14 +16,29 @@ public class Dialog {
     @OneToOne
     private Volunteer volunteer;
 
+    @JoinColumn(name = "shelter_id")
+    @ManyToOne
+    private Shelter shelter;
+
 
     public Dialog() {
+    }
+
+    public Dialog(Adopter adopter, Shelter shelter) {
+        this.adopter = adopter;
+    }
+
+    public Dialog(Adopter adopter, Volunteer volunteer) {
+        this.adopter = adopter;
+        this.volunteer = volunteer;
+        this.shelter = volunteer.getShelter();
     }
 
     public Dialog(Long id, Adopter adopter, Volunteer volunteer) {
         this.id = id;
         this.adopter = adopter;
         this.volunteer = volunteer;
+        this.shelter = volunteer.getShelter();
     }
 
     public Volunteer getVolunteer() {

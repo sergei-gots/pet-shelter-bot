@@ -12,12 +12,12 @@
         -->
         <insert tableName="volunteers">
             <column name="chat_id"      valueNumeric="1352662527"/>
-            <column name="first_name"   value="N"/>
+            <column name="first_name"   value="👩 N"/>
             <column name="shelter_id"   valueNumeric="1"/>
         </insert>
         <insert tableName="volunteers">
             <column name="chat_id"      valueNumeric="89326133"/>
-            <column name="first_name"   value="A"/>
+            <column name="first_name"   value="👨‍🦱 A"/>
             <column name="shelter_id"   valueNumeric="1"/>
         </insert>
     </changeSet>

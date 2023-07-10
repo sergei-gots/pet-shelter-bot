@@ -6,8 +6,6 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.entity.Button;
 import pro.sky.petshelterbot.repository.ButtonsRepository;
@@ -50,7 +48,8 @@ public class ShelterHandler extends AbstractHandler {
         }
         logger.debug("handle(CallbackQuery)-method");
         String queryData = callbackQuery.data();
-        Long chatId = callbackQuery.message().chat().id();
+        Message message = callbackQuery.message();
+        Long chatId = message.chat().id();
 
         try {
             String[] queryDataArray = queryData.split("-");
@@ -61,10 +60,10 @@ public class ShelterHandler extends AbstractHandler {
             if (makeButtonList(chatId, shelterId, key, "Выберите, что вас интересует:")) {
                 return true;
             }
-            if (volunteerChatHandler.handle(key, chatId, shelterId)) {
+            if (volunteerChatHandler.handle(message, key, chatId, shelterId)) {
                 return true;
             }
-            if (shelterInfoHandler.handle(key, chatId, shelterId)) {
+            if (shelterInfoHandler.handle(message, key, chatId, shelterId)) {
                 return true;
             }
             sendUserMessage(key, chatId, shelterId);

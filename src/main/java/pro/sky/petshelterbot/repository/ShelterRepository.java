@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface ShelterRepository extends JpaRepository<Shelter,Long> {
     Optional<Shelter> findByType(String type);
+
     default Shelter getCatShelter() { return findByType("cat")
             .orElseThrow(() -> new NoSuchElementException("No shelter with type = \"cat\"")); }
     default Shelter getDogShelter() { return findByType("dog")

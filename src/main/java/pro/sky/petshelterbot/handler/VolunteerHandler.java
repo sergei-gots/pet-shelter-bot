@@ -58,7 +58,7 @@ public class VolunteerHandler extends AbstractHandler {
     private void forwardMessageToUser(Dialog dialog, String text) {
         Adopter adopter = dialog.getAdopter();
         logger.info("forwardMessageToUser()-method.  adopter.first_name={}", adopter.getFirstName());
-        sendMessage(adopter.getChatId(), text);
+        sendMessage(adopter.getChatId(), dialog.getVolunteer().getFirstName() + "> " + text);
     }
 
     private void closeDialog(Dialog dialog) {

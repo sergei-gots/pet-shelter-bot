@@ -14,6 +14,8 @@ public class Volunteer extends AbstractPerson {
     @ManyToOne
     private Shelter shelter;
 
+    private boolean available = true;
+
     public Volunteer() {
     }
 
@@ -36,6 +38,14 @@ public class Volunteer extends AbstractPerson {
                 super.toString() +
                 shelter +
                 "}";
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 }
 

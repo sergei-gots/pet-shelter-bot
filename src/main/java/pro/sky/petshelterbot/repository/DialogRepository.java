@@ -12,4 +12,6 @@ public interface DialogRepository extends JpaRepository<Dialog, Long> {
     Optional<Dialog> findByVolunteer(Volunteer volunteer);
     Optional<Dialog> findByAdopter(Adopter adopter);
 
+    Optional<Dialog> findByVolunteerChatId(Long volunteerChatId);
+
 }
