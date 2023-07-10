@@ -63,17 +63,13 @@ public class ShelterHandler {
             shelterId = Long.parseLong(queryDataArray[0]);
             key = queryDataArray[1];
             logger.debug("processCallBackQuery-method: callbackQuery.queryData() contains Long shelter_id={} and String key={}",  shelterId, key);
-            if (!buttonListMaker(chatId, shelterId, queryData, "Выберите, что вас интересует:")) {
-                switch(key) {
-                    case "volunteer_call":
-                        volunteerChatHandler.handleVolunteerCall(chatId, shelterId);
-                        logger.warn("processCallBackQuery-method: volunteer_call key received. Should be implemented. ");
-                        break;
-                    default:  {
-                        String userMessage = userMessageRepository.findAllByShelterIdAndKey(shelterId, key);
-                        telegramBot.execute(new SendMessage(chatId, userMessage));
-                    }
+
+            if (!makeButtonList(chatId, shelterId, queryData, "Выберите, что вас интересует:")) {
+                if(volunteerChatHandler.handle(key, chatId, shelterId)) {
+                    return;
                 }
+                String userMessage = userMessageRepository.findByShelterIdAndKey(shelterId, key);
+                telegramBot.execute(new SendMessage(chatId, userMessage));
 
             }
 
@@ -90,12 +86,12 @@ public class ShelterHandler {
                 shelterInfoHandler.sendSecurityInfo(chatId, shelterId);
                 break;
             default:
-                logger.error("processCallBackQuery-method: handler for queryData ={} is not listed",  queryData);
+                logger.warn("processCallBackQuery-method: handler for queryData ={} is not listed",  queryData);
                 break;
         }
     }
 
-    private boolean buttonListMaker(Long chatId, Long shelterId, String chapter, String title) {
+    private boolean makeButtonList(Long chatId, Long shelterId, String chapter, String title) {
 
         Collection<Button> buttons = buttonsRepository.getButtonsByShelterId(shelterId, chapter);
 

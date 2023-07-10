@@ -9,7 +9,9 @@ public class Pet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column
     private String species;
+
     private String name;
 
     @JoinColumn(name="shelter_id")

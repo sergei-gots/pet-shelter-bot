@@ -10,14 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class VolunteerChatHandler {
+public class VolunteerChatHandler extends AbstractHandler {
 
-    final private TelegramBot telegramBot;
     final private Map<Long, Long> volunteerToUserChatIds;
 
 
     public VolunteerChatHandler(TelegramBot telegramBot) {
-        this.telegramBot = telegramBot;
+        super(telegramBot);
         this.volunteerToUserChatIds = new HashMap<>();
     }
 
@@ -56,6 +55,15 @@ public class VolunteerChatHandler {
         // Возвращаем идентификатор созданного канала
         return 123456789L;
     }
+
+    @Override
+    public boolean handle(String key, Long chatId, Long shelterId) {
+        if ("volunteer_call".equals(key)) {
+            handleVolunteerCall(chatId, shelterId);
+            return true;
+        }
+        return false;
+    };
 
     public void handleVolunteerCall(Long chatId, Long shelterId) {
         if(isDialogOpen(chatId) || isDialogRequested(chatId)) {

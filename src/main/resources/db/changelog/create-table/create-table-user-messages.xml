@@ -19,11 +19,19 @@
             <column name="key" type="VARCHAR">
                 <constraints nullable="false"/>
             </column>
-            <column name="shelter_id" type="BIGINT"/>
+            <column name="shelter_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
             <column name="message" type="CLOB">
                 <constraints nullable="false"/>
             </column>
         </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="shelter_id"
+                                 baseTableName="user_messages"
+                                 constraintName="fk_message_shelter_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="shelters"/>
     </changeSet>
 
 </databaseChangeLog>
