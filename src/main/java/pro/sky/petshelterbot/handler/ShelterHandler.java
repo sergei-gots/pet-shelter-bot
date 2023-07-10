@@ -46,7 +46,10 @@ public class ShelterHandler extends AbstractHandler {
             logger.debug("handle(CallbackQuery=null)");
             return false;
         }
-        volunteerHandler.handle(callbackQuery);
+
+        if(volunteerHandler.handle(callbackQuery)) {
+            return true;
+        }
 
         logger.debug("handle(CallbackQuery)-method");
         String queryData = callbackQuery.data();
