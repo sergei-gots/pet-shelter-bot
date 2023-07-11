@@ -22,7 +22,7 @@ public class ShelterHandler extends AbstractHandler {
 
     private final ShelterInfoHandler shelterInfoHandler;
     private final VolunteerHandler volunteerHandler;
-    private final VolunteerChatHandler volunteerChatHandler;
+    private final DialogHandler dialogHandler;
 
     private final UserMessageRepository userMessageRepository;
     private final ButtonsRepository buttonsRepository;
@@ -31,13 +31,13 @@ public class ShelterHandler extends AbstractHandler {
                           ShelterRepository shelterRepository,
                           ShelterInfoHandler shelterInfoHandler,
                           VolunteerHandler volunteerHandler,
-                          VolunteerChatHandler volunteerChatHandler,
+                          DialogHandler volunteerChatHandler,
                           UserMessageRepository userMessageRepository,
                           ButtonsRepository buttonsRepository) {
         super(telegramBot, shelterRepository, userMessageRepository);
         this.shelterInfoHandler = shelterInfoHandler;
         this.volunteerHandler = volunteerHandler;
-        this.volunteerChatHandler = volunteerChatHandler;
+        this.dialogHandler = volunteerChatHandler;
         this.userMessageRepository = userMessageRepository;
         this.buttonsRepository = buttonsRepository;
     }
@@ -67,7 +67,7 @@ public class ShelterHandler extends AbstractHandler {
             if (makeButtonList(chatId, shelterId, key, "Выберите, что вас интересует:")) {
                 return true;
             }
-            if (volunteerChatHandler.handle(message, key, chatId, shelterId)) {
+            if (dialogHandler.handle(message, key, chatId, shelterId)) {
                 return true;
             }
             if (shelterInfoHandler.handle(message, key, chatId, shelterId)) {

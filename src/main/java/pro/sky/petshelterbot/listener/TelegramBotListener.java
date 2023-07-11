@@ -29,12 +29,14 @@ public class TelegramBotListener
                                VolunteerHandler volunteerHandler,
                                DevStageDBHandler catsDevStageHandler,
                                StartHandler startHandler,
+                               DialogHandler dialogHandler,
                                ShelterHandler shelterHandler) {
         this.telegramBot = telegramBot;
 
         handlers = new Handler[]{
                 //Important: volunteerHandler MUST BE at first place
                 volunteerHandler,
+                dialogHandler,
                 startHandler,
                 catsDevStageHandler
         };

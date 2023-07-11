@@ -40,7 +40,7 @@ public abstract class AbstractHandler implements Handler{
         return  (userMessageRepository.findByShelterAndKey(
                     getShelter(shelterId), key)
                     .orElseThrow(
-                            ()->new NoSuchElementException("The user_message with key=" + key + "is not listed in the db."))
+                            ()->new NoSuchElementException("The user_message with key=\"" + key + "\"is not listed in the db."))
         ).getMessage();
     }
 
