@@ -6,6 +6,11 @@ import javax.persistence.*;
 @Table(name = "shelters")
 public class Shelter {
 
+    public enum SHELTER_TYPE {
+        CAT,
+        DOG
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
