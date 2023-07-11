@@ -39,24 +39,7 @@ public class ShelterInfoHandler extends AbstractHandler {
                 sendSecurityInfo(chatId, shelterId);
                 return true;
         }
-
         return false;
-    }
-
-    public void sendShelterInfo(Long chatId, Long shelterId) {
-        // Creates buttons
-
-        Collection<Button> buttons = buttonsRepository.findByShelterIdAndChapterOrderById(shelterId, "shelter_info");
-
-        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
-        buttons.stream()
-                .forEach(button -> {
-                    markup.addRow(new InlineKeyboardButton(button.getText()).callbackData(button.getKey()));
-                });
-
-        // Sends buttons to user
-        telegramBot.execute(new SendMessage(chatId, "Выберите, что вас интересует:")
-                .replyMarkup(markup));
     }
 
     /** Sends information about shelter's opening hours
@@ -77,13 +60,6 @@ public class ShelterInfoHandler extends AbstractHandler {
         telegramBot.execute(new SendMessage(chatId, "Контактные данные охраны приюта:\n" +
                 "Телефон: " + shelter.getTel() + "\n" +
                 "Email: " + shelter.getEmail()));
-    }
-
-
-
-    public void sendContactInfo(Long chatId) {
-        // Send contact information request to user
-        telegramBot.execute(new SendMessage(chatId, "Оставьте свои контактные данные и наш сотрудник свяжется с вами"));
     }
 }
 
