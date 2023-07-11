@@ -9,8 +9,22 @@ import java.util.Optional;
 public interface ShelterRepository extends JpaRepository<Shelter,Long> {
     Optional<Shelter> findByType(String type);
 
-    default Shelter getCatShelter() { return findByType("cat")
-            .orElseThrow(() -> new NoSuchElementException("No shelter with type = \"cat\"")); }
-    default Shelter getDogShelter() { return findByType("dog")
-            .orElseThrow(() -> new NoSuchElementException("No shelter with type = \"dog\"")); }
+    /**
+     *
+     *
+     * @throws NoSuchElementException if there isn't shelter corresponding to the passed value of Shelter.SHELTER_TYPE
+     */
+    default Shelter getByType(Shelter.SHELTER_TYPE shelterType) {
+        String type = shelterType.name().toLowerCase();
+        return findByType(type)
+                .orElseThrow(() ->
+                        new NoSuchElementException("No shelter with type = \"" + type + "\""));
+    }
+    default Shelter getCatShelter() {
+        return getByType(Shelter.SHELTER_TYPE.CAT);
+    }
+
+    default Shelter getDogShelter() {
+        return getByType(Shelter.SHELTER_TYPE.DOG);
+    }
 }
