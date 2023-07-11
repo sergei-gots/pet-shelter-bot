@@ -8,6 +8,8 @@ import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Dialog;
 import pro.sky.petshelterbot.entity.Volunteer;
 import pro.sky.petshelterbot.repository.DialogRepository;
+import pro.sky.petshelterbot.repository.ShelterRepository;
+import pro.sky.petshelterbot.repository.UserMessageRepository;
 import pro.sky.petshelterbot.repository.VolunteerRepository;
 import pro.sky.petshelterbot.service.PetService;
 
@@ -24,8 +26,11 @@ public class VolunteerHandler extends AbstractHandler {
     final private VolunteerRepository volunteerRepository;
     final private DialogRepository dialogRepository;
 
-    public VolunteerHandler(TelegramBot telegramBot, PetService catService, VolunteerRepository volunteerRepository, DialogRepository dialogRepository) {
-        super(telegramBot);
+    public VolunteerHandler(TelegramBot telegramBot,
+                            ShelterRepository shelterRepository,
+                            UserMessageRepository userMessageRepository,
+                            PetService catService, VolunteerRepository volunteerRepository, DialogRepository dialogRepository) {
+        super(telegramBot, shelterRepository, userMessageRepository);
         this.petService = catService;
         this.volunteerRepository = volunteerRepository;
         this.dialogRepository = dialogRepository;

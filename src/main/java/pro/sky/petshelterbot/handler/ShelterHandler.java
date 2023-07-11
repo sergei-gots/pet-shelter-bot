@@ -9,6 +9,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.entity.Button;
 import pro.sky.petshelterbot.repository.ButtonsRepository;
+import pro.sky.petshelterbot.repository.ShelterRepository;
 import pro.sky.petshelterbot.repository.UserMessageRepository;
 
 import java.util.Collection;
@@ -27,11 +28,13 @@ public class ShelterHandler extends AbstractHandler {
     private final ButtonsRepository buttonsRepository;
 
     public ShelterHandler(TelegramBot telegramBot,
+                          ShelterRepository shelterRepository,
                           ShelterInfoHandler shelterInfoHandler,
                           VolunteerHandler volunteerHandler,
                           VolunteerChatHandler volunteerChatHandler,
-                          UserMessageRepository userMessageRepository, ButtonsRepository buttonsRepository) {
-        super(telegramBot);
+                          UserMessageRepository userMessageRepository,
+                          ButtonsRepository buttonsRepository) {
+        super(telegramBot, shelterRepository, userMessageRepository);
         this.shelterInfoHandler = shelterInfoHandler;
         this.volunteerHandler = volunteerHandler;
         this.volunteerChatHandler = volunteerChatHandler;
@@ -46,7 +49,6 @@ public class ShelterHandler extends AbstractHandler {
             logger.debug("handle(CallbackQuery=null)");
             return false;
         }
-
         if(volunteerHandler.handle(callbackQuery)) {
             return true;
         }
@@ -80,7 +82,9 @@ public class ShelterHandler extends AbstractHandler {
     }
 
     private void sendUserMessage(String key, long chatId, Long shelterId) {
-        String userMessage = userMessageRepository.findByShelterIdAndKey(shelterId, key);
+        logger.trace("sendUserMessage(key=\"{}\", chatId={}, shelterId={}",
+                key, chatId, shelterId);
+        String userMessage = getUserMessage(key, shelterId);
         if (userMessage == null) {
             userMessage = "Раздел не создан. Разработчики скоро сформируют этот раздел";
             logger.error("processCallBackQuery-method: user_message with shelter_id={}, key={} is not listed.",

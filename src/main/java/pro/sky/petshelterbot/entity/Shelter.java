@@ -1,7 +1,6 @@
 package pro.sky.petshelterbot.entity;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "shelters")
@@ -55,7 +54,7 @@ public class Shelter {
         this.name = name;
     }
 
-    public String getWorkTime() {
+    public String getOpeningHours() {
         return workTime;
     }
 

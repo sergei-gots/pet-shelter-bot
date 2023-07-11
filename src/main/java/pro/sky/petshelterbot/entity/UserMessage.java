@@ -15,18 +15,20 @@ public class UserMessage {
     @Lob
     @Type(type = "org.hibernate.type.TextType")
     private String message;
-    private Long shelterId;
+    @JoinColumn(name="shelter_id")
+    @ManyToOne
+    private Shelter shelter;
 
     public Long getId() {
         return id;
     }
 
-    public Long getShelterId() {
-        return shelterId;
+    public Shelter getShelter() {
+        return shelter;
     }
 
-    public void setShelterId(Long shelterId) {
-        this.shelterId = shelterId;
+    public void setShelter(Shelter shelter) {
+        this.shelter = shelter;
     }
 
     public String getKey() {

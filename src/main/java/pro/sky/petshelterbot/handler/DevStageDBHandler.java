@@ -3,9 +3,8 @@ package pro.sky.petshelterbot.handler;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Component;
-import pro.sky.petshelterbot.entity.Shelter;
+import pro.sky.petshelterbot.repository.UserMessageRepository;
 import pro.sky.petshelterbot.service.PetService;
 import pro.sky.petshelterbot.repository.ShelterRepository;
 
@@ -19,13 +18,15 @@ import pro.sky.petshelterbot.repository.ShelterRepository;
 @Component
 public class DevStageDBHandler extends AbstractHandler{
     private final PetService petService;
-    private final ShelterRepository shelterRepository;
 
+    public DevStageDBHandler (
+                        TelegramBot telegramBot,
+                        ShelterRepository shelterRepository,
+                        UserMessageRepository userMessageRepository,
+                        PetService petService) {
+        super(telegramBot, shelterRepository, userMessageRepository);
+        this.petService = petService;
 
-    public DevStageDBHandler(TelegramBot telegramBot, PetService petRepository, ShelterRepository shelterRepository) {
-        super(telegramBot);
-        this.petService = petRepository;
-        this.shelterRepository = shelterRepository;
     }
 
     @Override
