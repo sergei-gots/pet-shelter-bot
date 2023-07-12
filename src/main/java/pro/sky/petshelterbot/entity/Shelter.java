@@ -59,7 +59,7 @@ public class Shelter {
         this.name = name;
     }
 
-    public String workTime() {
+    public String getWorkTime() {
         return workTime;
     }
 
