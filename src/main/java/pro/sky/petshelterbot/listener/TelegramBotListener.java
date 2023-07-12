@@ -2,6 +2,7 @@ package pro.sky.petshelterbot.listener;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
+import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import org.slf4j.Logger;
@@ -22,26 +23,29 @@ public class TelegramBotListener
     final private TelegramBot telegramBot;
 
     final private Handler[] handlers;
-    private final ShelterHandler shelterHandler;
 
-
+    /**
+     * @param volunteerHandler to developer inside the constructor:
+     *                         volunteerHandler must be placed at first place within
+     *                         list of handlers: first of all we check
+     *                         if the update we have to handle is sent by volunteer.
+     */
     public TelegramBotListener(TelegramBot telegramBot,
-                               VolunteerHandler volunteerHandler,
+                               VolunteerDialogHandler volunteerHandler,
                                DevStageDBHandler catsDevStageHandler,
                                StartHandler startHandler,
-                               DialogHandler dialogHandler,
+                               AdopterDialogHandler adopterDialogHandler,
                                ShelterHandler shelterHandler) {
         this.telegramBot = telegramBot;
 
         handlers = new Handler[]{
                 //Important: volunteerHandler MUST BE at first place
                 volunteerHandler,
-                dialogHandler,
+                adopterDialogHandler,
                 startHandler,
+                shelterHandler,
                 catsDevStageHandler
         };
-        this.shelterHandler = shelterHandler;
-
     }
 
     @PostConstruct
@@ -56,7 +60,7 @@ public class TelegramBotListener
                 logger.debug("process(updates)-method: processing update: {}", update);
 
                 if (!handle(update.message())) {
-                    shelterHandler.handle(update.callbackQuery());
+                    handle(update.callbackQuery());
                 }
             }
         } catch (Exception e) {
@@ -66,6 +70,27 @@ public class TelegramBotListener
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 
+    @Override
+    public boolean handle(CallbackQuery callbackQuery) {
+        if (callbackQuery.data() == null) {
+            logger.debug("handle(CallbackQuery=null)");
+            return false;
+        }
+
+        for (Handler handler : handlers) {
+            if (handler.handle(callbackQuery)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** @return false if and only if the message is null
+     * otherwise it will be assumed that the message is handled
+     * and further handling is not necessary
+     *
+     * @throws IllegalArgumentException if message.text() is null
+     */
     @Override
     public boolean handle(Message message) {
         if(message == null) {
@@ -82,6 +107,6 @@ public class TelegramBotListener
         }
         logger.trace("processMessage: there is no suitable handler for text=\"{}\" received from user={} with chat_id={}",
                 message.text(), message.chat().firstName(), message.chat().id());
-        return false;
+        return true;
     }
 }

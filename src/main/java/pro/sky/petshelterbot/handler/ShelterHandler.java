@@ -21,8 +21,8 @@ import java.util.Collection;
 public class ShelterHandler extends AbstractHandler {
 
     private final ShelterInfoHandler shelterInfoHandler;
-    private final VolunteerHandler volunteerHandler;
-    private final DialogHandler dialogHandler;
+    private final VolunteerDialogHandler volunteerHandler;
+    private final AdopterDialogHandler dialogHandler;
 
     private final UserMessageRepository userMessageRepository;
     private final ButtonsRepository buttonsRepository;
@@ -30,8 +30,8 @@ public class ShelterHandler extends AbstractHandler {
     public ShelterHandler(TelegramBot telegramBot,
                           ShelterRepository shelterRepository,
                           ShelterInfoHandler shelterInfoHandler,
-                          VolunteerHandler volunteerHandler,
-                          DialogHandler volunteerChatHandler,
+                          VolunteerDialogHandler volunteerHandler,
+                          AdopterDialogHandler volunteerChatHandler,
                           UserMessageRepository userMessageRepository,
                           ButtonsRepository buttonsRepository) {
         super(telegramBot, shelterRepository, userMessageRepository);
@@ -45,13 +45,6 @@ public class ShelterHandler extends AbstractHandler {
     @Override
     public boolean handle(CallbackQuery callbackQuery) {
 
-        if (callbackQuery.data() == null) {
-            logger.debug("handle(CallbackQuery=null)");
-            return false;
-        }
-        if(volunteerHandler.handle(callbackQuery)) {
-            return true;
-        }
 
         logger.debug("handle(CallbackQuery)-method");
         String queryData = callbackQuery.data();

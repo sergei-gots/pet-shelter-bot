@@ -4,14 +4,12 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import org.springframework.stereotype.Component;
-import pro.sky.petshelterbot.constants.DialogCommands;
-import pro.sky.petshelterbot.entity.Adopter;
+import pro.sky.petshelterbot.entity.Dialog;
 import pro.sky.petshelterbot.entity.Volunteer;
 import pro.sky.petshelterbot.repository.DialogRepository;
 import pro.sky.petshelterbot.repository.ShelterRepository;
 import pro.sky.petshelterbot.repository.UserMessageRepository;
 import pro.sky.petshelterbot.repository.VolunteerRepository;
-import pro.sky.petshelterbot.service.PetService;
 
 /**
  * Handles commands receiving from user supposed
@@ -20,20 +18,13 @@ import pro.sky.petshelterbot.service.PetService;
  **/
 
 @Component
-public class VolunteerHandler extends AbstractHandler
-        implements DialogCommands {
-    final private PetService petService;
-    final private VolunteerRepository volunteerRepository;
-    final private DialogRepository dialogRepository;
+public class VolunteerDialogHandler extends AbstractDialogHandler {
 
-    public VolunteerHandler(TelegramBot telegramBot,
-                            ShelterRepository shelterRepository,
-                            UserMessageRepository userMessageRepository,
-                            PetService catService, VolunteerRepository volunteerRepository, DialogRepository dialogRepository) {
-        super(telegramBot, shelterRepository, userMessageRepository);
-        this.petService = catService;
-        this.volunteerRepository = volunteerRepository;
-        this.dialogRepository = dialogRepository;
+    public VolunteerDialogHandler(TelegramBot telegramBot,
+                                  ShelterRepository shelterRepository,
+                                  UserMessageRepository userMessageRepository,
+                                  VolunteerRepository volunteerRepository, DialogRepository dialogRepository) {
+        super(telegramBot, shelterRepository, userMessageRepository, volunteerRepository, dialogRepository);
     }
 
     @Override
@@ -51,13 +42,13 @@ public class VolunteerHandler extends AbstractHandler
 
         String text = message.text();
 
-        pro.sky.petshelterbot.entity.Dialog dialog = dialogRepository.findByVolunteer(volunteer)
+        Dialog dialog = dialogRepository.findByVolunteer(volunteer)
                 .orElseThrow(() -> new IllegalStateException("No dialog found for a " + volunteer));
 
         if (CLOSE_DIALOG.equals(text)) {
             processCloseDialog(dialog);
         } else {
-            forwardMessageToUser(dialog, text);
+            sendDialogMessageToAdopter(dialog, text);
         }
         return true;
     }
@@ -85,16 +76,24 @@ public class VolunteerHandler extends AbstractHandler
         return false;
     }
 
-    private void processCloseDialog(pro.sky.petshelterbot.entity.Dialog dialog) {
+    private void processCloseDialog(Dialog dialog) {
         Volunteer volunteer = dialog.getVolunteer();
 
         logger.debug("processCloseDialog()-method between " +
                 "Adopter.first_name=\"{}\" and  Volunter.first_name=\"{}\"",
                 dialog.getAdopter().getFirstName(), volunteer.getFirstName());
 
-
-
         dialogRepository.delete(dialog);
+
+        Dialog dialogInWaiting =   dialogRepository.findFirstByVolunteerIsNullAndShelterOrderByIdAsc(volunteer.getShelter()).orElse(null);
+        if(dialogInWaiting == null) {
+            volunteer.setAvailable(true);
+            volunteerRepository.save(volunteer);
+        } else {
+            dialogInWaiting.setVolunteer(volunteer);
+            dialogRepository.save(dialogInWaiting);
+            sendJoinInvitationToVolunteerAndNotifyAdopter(dialog);
+        }
     }
 
     private void processHaveABreak(Volunteer volunteer) {
@@ -105,18 +104,13 @@ public class VolunteerHandler extends AbstractHandler
 
     }
 
-    private void processJoinDialog(pro.sky.petshelterbot.entity.Dialog dialog) {
-        Adopter adopter = dialog.getAdopter();
-        Volunteer volunteer = dialog.getVolunteer();
+    private void processJoinDialog(Dialog dialog) {
 
-        sendMessage(adopter.getChatId(),
-                volunteer.getFirstName() + "> " + adopter.getFirstName() + ", здравствуйте! Расскажите, какой у вас вопрос?");
-        sendMessage(volunteer.getChatId(), "Отлично, вы в чате. Пользователю направлено приветствие и предложение сформировать интересующий вопрос.");
+        sendDialogMessageToAdopter(dialog,
+                dialog.getAdopter().getFirstName() + ", здравствуйте! Расскажите, какой у вас вопрос?");
+        sendMessage(dialog.getVolunteer().getChatId(),
+                "Отлично, вы в чате. Пользователю направлено приветствие и предложение сформировать интересующий вопрос.");
     }
-    private void forwardMessageToUser(pro.sky.petshelterbot.entity.Dialog dialog, String text) {
-        Adopter adopter = dialog.getAdopter();
-        logger.debug("forwardMessageToUser()-method.  adopter.first_name={}", adopter.getFirstName());
-        sendMessage(adopter.getChatId(), dialog.getVolunteer().getFirstName() + "> " + text);
-    }
+
 
 }

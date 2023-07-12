@@ -3,8 +3,8 @@ package pro.sky.petshelterbot.handler;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Message;
 import org.springframework.stereotype.Component;
-import pro.sky.petshelterbot.constants.DialogCommands;
 import pro.sky.petshelterbot.entity.Adopter;
+import pro.sky.petshelterbot.entity.Dialog;
 import pro.sky.petshelterbot.entity.Volunteer;
 import pro.sky.petshelterbot.repository.*;
 
@@ -15,34 +15,28 @@ import java.util.Random;
  * Operates chat between Adopter and Volunteer on the Adopter's side
  */
 @Component
-public class DialogHandler extends AbstractHandler
-        implements DialogCommands {
+public class AdopterDialogHandler extends AbstractDialogHandler  {
 
-    private final DialogRepository dialogRepository;
     private final AdopterRepository adopterRepository;
-    private final VolunteerRepository volunteerRepository;
-
 
     private final Random random = new Random();
 
-    public DialogHandler(TelegramBot telegramBot,
-                         ShelterRepository shelterRepository,
-                         UserMessageRepository userMessageRepository,
-                         DialogRepository dialogRepository,
-                         AdopterRepository adopterRepository,
-                         VolunteerRepository volunteerRepository
+    public AdopterDialogHandler(TelegramBot telegramBot,
+                                ShelterRepository shelterRepository,
+                                UserMessageRepository userMessageRepository,
+                                DialogRepository dialogRepository,
+                                AdopterRepository adopterRepository,
+                                VolunteerRepository volunteerRepository
     ) {
-        super(telegramBot, shelterRepository, userMessageRepository);
-        this.dialogRepository = dialogRepository;
+        super(telegramBot, shelterRepository, userMessageRepository, volunteerRepository, dialogRepository);
         this.adopterRepository = adopterRepository;
-        this.volunteerRepository = volunteerRepository;
     }
 
 
     @Override
     public boolean handle(Message message) {
         Long chatId = message.chat().id();
-        pro.sky.petshelterbot.entity.Dialog dialog = getDialogIfRequested(message.chat().id());
+        Dialog dialog = getDialogIfRequested(message.chat().id());
         if(dialog == null) {
             return false;
         }
@@ -72,7 +66,7 @@ public class DialogHandler extends AbstractHandler
     public void handleVolunteerCall(Message message, Long chatId, Long shelterId) {
         logger.debug("handleVolunteerCall(chatId={}, shelterId={})", chatId, shelterId);
         if (getDialogIfRequested(chatId) != null) {
-            throw new IllegalStateException("Dialog for chatId=" + chatId + " is already open");
+         //   throw new IllegalStateException("Dialog for chatId=" + chatId + " is already open");
         }
         createDialogRequest(message, chatId, shelterId);
     }
@@ -81,24 +75,16 @@ public class DialogHandler extends AbstractHandler
 
         logger.trace("createDialogRequest(message={}, ...", message);
 
-        Volunteer volunteer = createDialogEntry(message, chatId, shelterId);
-        if (volunteer == null) {
+        Dialog dialog = createDialogEntry(message, chatId, shelterId);
+        if (dialog.getVolunteer() == null) {
             sendMessage(chatId, "В настоящий момент все волонтёры заняты. "
                     + "Как только один из волонтёров освободится, он свяжется с вами.");
             return;
         }
-        sendMessage(volunteer.getChatId(),
-                volunteer.getFirstName() + "! C вами хотел бы связаться " + message.chat().firstName() +
-                        ". Нажмите кнопку 'Присоединиться к чату' для начала общения.",
-                "Присоединиться к чату",
-                JOIN_DIALOG
-        );
-        sendMessage(chatId, "Волонтёру отослано уведомление. Волонтёр свяжется с вами " +
-                "насколько это возможно скоро. ");
-
+        sendJoinInvitationToVolunteerAndNotifyAdopter(dialog);
     }
 
-    private Volunteer createDialogEntry(Message message, Long chatId, Long shelterId) {
+    private Dialog createDialogEntry(Message message, Long chatId, Long shelterId) {
 
         logger.trace("createDialogEntry(message={}, ...", message);
 
@@ -107,21 +93,22 @@ public class DialogHandler extends AbstractHandler
                 );
         List<Volunteer> availableVolunteers = volunteerRepository.findByShelterIdAndAvailable(shelterId, true);
         if (availableVolunteers.size() == 0) {
-            pro.sky.petshelterbot.entity.Dialog dialog = new pro.sky.petshelterbot.entity.Dialog(adopter, shelterRepository.findById(shelterId)
+           Dialog dialog = new Dialog(adopter, shelterRepository.findById(shelterId)
                     .orElseThrow(() -> new IllegalArgumentException("shelter_id=" + shelterId + "is not listed.")));
-            return null;
+           dialogRepository.save(dialog);
+           return dialog;
         }
 
         Volunteer volunteer = availableVolunteers.get(random.nextInt(availableVolunteers.size()));
-        pro.sky.petshelterbot.entity.Dialog dialog = new pro.sky.petshelterbot.entity.Dialog(adopter, volunteer);
+        Dialog dialog = new Dialog(adopter, volunteer);
         volunteer.setAvailable(false);
         dialogRepository.save(dialog);
         volunteerRepository.save(volunteer);
-        return volunteer;
+        return dialog;
     }
 
-    private pro.sky.petshelterbot.entity.Dialog getDialogIfOpen(long chatId) {
-        pro.sky.petshelterbot.entity.Dialog dialog = dialogRepository.findByAdopterChatId(chatId).orElse(null);
+    private Dialog getDialogIfOpen(long chatId) {
+       Dialog dialog = dialogRepository.findByAdopterChatId(chatId).orElse(null);
 
         if(dialog == null || dialog.getVolunteer() == null) {
             return null;
@@ -129,9 +116,9 @@ public class DialogHandler extends AbstractHandler
         return dialog;
     }
 
-    private pro.sky.petshelterbot.entity.Dialog getDialogIfRequested(long chatId)
+    private Dialog getDialogIfRequested(long chatId)
     {
-        return dialogRepository.findByAdopterChatId(chatId).orElse(null);
+        return dialogRepository.findFirstByAdopterChatId(chatId).orElse(null);
     }
 
 }

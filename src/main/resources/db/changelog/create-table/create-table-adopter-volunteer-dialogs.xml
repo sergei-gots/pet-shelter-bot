@@ -17,11 +17,11 @@
                 <constraints primaryKey="true"/>
             </column>
 
-            <column name="adopter_id" type="BIGINT">
+            <column name="adopter_chat_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="volunteer_id" type="BIGINT">
+            <column name="volunteer_chat_id" type="BIGINT">
                 <constraints nullable="true"/>
             </column>
 
@@ -36,15 +36,15 @@
                                  referencedColumnNames="id"
                                  referencedTableName="shelters"/>
 
-        <addForeignKeyConstraint baseColumnNames="adopter_id"
+        <addForeignKeyConstraint baseColumnNames="adopter_chat_id"
                                  baseTableName="adopter_volunteer_dialogs"
-                                 constraintName="fk_adopter_volunteer_dialog_adopter_id"
+                                 constraintName="fk_adopter_volunteer_dialog_adopter_chat_id"
                                  referencedColumnNames="chat_id"
                                  referencedTableName="adopters"/>
 
-        <addForeignKeyConstraint baseColumnNames="volunteer_id"
+        <addForeignKeyConstraint baseColumnNames="volunteer_chat_id"
                                  baseTableName="adopter_volunteer_dialogs"
-                                 constraintName="fk_adopter_volunteer_dialog_volunteer_id"
+                                 constraintName="fk_adopter_volunteer_dialog_volunteer_chat_id"
                                  referencedColumnNames="chat_id"
                                  referencedTableName="volunteers"/>
 
