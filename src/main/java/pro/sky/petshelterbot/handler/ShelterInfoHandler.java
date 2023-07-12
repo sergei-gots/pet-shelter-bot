@@ -48,7 +48,7 @@ public class ShelterInfoHandler extends AbstractHandler {
 
         Shelter shelter = getShelter(shelterId);
         telegramBot.execute(new SendMessage(chatId, "Расписание работы и адрес приюта:\n" +
-                shelter.getOpeningHours() + "\n" +
+                shelter.getWorkTime() + "\n" +
                 "Адрес: " + shelter.getAddress()));
     }
 

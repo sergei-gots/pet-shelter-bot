@@ -59,7 +59,7 @@ public class Shelter {
         this.name = name;
     }
 
-    public String getOpeningHours() {
+    public String getWorkTime() {
         return workTime;
     }
 
