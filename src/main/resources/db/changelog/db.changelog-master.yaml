@@ -13,6 +13,8 @@ databaseChangeLog:
       file: db/changelog/create-table/create-table-volunteers.xml
   - include:
       file: db/changelog/create-table/create-table-adopter-volunteer-dialogs.xml
+  - include:
+      file: db/changelog/create-table/create-table-reports.xml
 
 
   - include:
