@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd"
+>
+    <changeSet id="create-table-reports" author="Sergei Gots">
+        <preConditions>
+            <not>
+                <tableExists tableName="reports"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="reports">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="pet_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sent_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="diet" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="well_being" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="behaviour" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="photo_filename" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="thumbnail_photo_filename" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="checked" type="BOOLEAN" defaultValue="false"/>
+            <column name="approved" type="BOOLEAN" defaultValue="true"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="reports"
+                                 baseColumnNames="pet_id"
+                                 constraintName="pet_id_fk"
+                                 referencedTableName="id"
+                                 referencedColumnNames="pets"/>
+    </changeSet> 
+</databaseChangeLog>
+
