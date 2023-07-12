@@ -31,4 +31,28 @@ public class ShelterService {
     public Shelter get(Long id) {
         return shelterRepository.getSheltersById(id);
     }
+
+    public Shelter update(Long id, String name, String workTime, String address, String tel, String email, String type) {
+        Shelter shelter = get(id);
+        if (name != null) {
+            shelter.setName(name);
+        }
+        if (workTime != null) {
+            shelter.setWorkTime(workTime);
+        }
+        if (address != null) {
+            shelter.setAddress(address);
+        }
+        if (tel != null) {
+            shelter.setTel(tel);
+        }
+        if (email != null) {
+            shelter.setEmail(email);
+        }
+        if (type != null) {
+            shelter.setType(type);
+        }
+        return shelterRepository.save(shelter);
+    }
+
 }

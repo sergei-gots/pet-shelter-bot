@@ -32,6 +32,8 @@ public class Shelter {
         this.type = type;
     }
 
+    public Shelter() {}
+
     public String getTel() {
         return tel;
     }

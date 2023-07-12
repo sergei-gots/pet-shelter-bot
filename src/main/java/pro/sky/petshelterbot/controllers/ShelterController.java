@@ -1,13 +1,17 @@
 package pro.sky.petshelterbot.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.petshelterbot.entity.Shelter;
 import pro.sky.petshelterbot.service.ShelterService;
 
+import javax.persistence.Table;
 import java.util.Collection;
 
-@RestController("/shelters")
+@RestController
+@RequestMapping(path = "/shelters")
+@Tag(name = "Shelter API", description = "Shelter info.")
 public class ShelterController {
 
     private final ShelterService shelterService;
@@ -39,7 +43,7 @@ public class ShelterController {
         return ResponseEntity.ok(shelterService.findAll());
     }
 
-    @GetMapping(path = "/delete/{$id}")
+    @DeleteMapping(path = "/{$id}")
     public ResponseEntity<Shelter> delete(@PathVariable Long id) {
         return ResponseEntity.ok(shelterService.delete(id));
     }
@@ -49,4 +53,16 @@ public class ShelterController {
         return ResponseEntity.ok(shelterService.get(id));
     }
 
+    @GetMapping(path = "/update/{id}")
+    public ResponseEntity<Shelter> update(
+            @RequestParam Long id,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String workTime,
+            @RequestParam(required = false) String address,
+            @RequestParam(required = false) String tel,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String type
+    ) {
+        return ResponseEntity.ok(shelterService.update(id, name, workTime, address, tel, email, type));
+    }
 }

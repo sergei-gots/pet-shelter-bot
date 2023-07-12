@@ -1,5 +1,6 @@
 package pro.sky.petshelterbot.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.petshelterbot.entity.Pet;
@@ -8,31 +9,28 @@ import pro.sky.petshelterbot.service.PetService;
 
 import java.util.Collection;
 
-@RestController("/pets")
-public class PetController {
+@RestController
+@RequestMapping(path = "/dogs")
+@Tag(name = "Dog pet API", description = "Dog's info")
+public class DogController {
 
     private final PetService petService;
 
-    public PetController(PetService petService) {
+    public DogController(PetService petService) {
         this.petService = petService;
     }
 
     @PostMapping
-    public ResponseEntity<Pet> add(@RequestBody Pet pet) {
-        return ResponseEntity.ok(petService.add(pet));
+    public ResponseEntity<Pet> add(@RequestParam String name) {
+        return ResponseEntity.ok(petService.createDog(name));
     }
 
-    @PostMapping(path = "/add")
-    public ResponseEntity<Pet> add(@RequestParam String species, @RequestParam String name, @RequestParam Shelter shelter) {
-        return ResponseEntity.ok(petService.add(species, name, shelter));
-    }
-
-    @GetMapping(path = "/delete/{$id}")
+    @DeleteMapping(path = "/{id}")
     public ResponseEntity<Pet> delete(@PathVariable Long id) {
         return ResponseEntity.ok(petService.delete(id));
     }
 
-    @GetMapping(path = "/get/{$id}")
+    @GetMapping(path = "/{id}")
     public ResponseEntity<Pet> get(@PathVariable Long id) {
         return ResponseEntity.ok(petService.get(id));
     }
