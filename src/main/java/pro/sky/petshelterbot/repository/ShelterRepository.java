@@ -27,4 +27,6 @@ public interface ShelterRepository extends JpaRepository<Shelter,Long> {
     default Shelter getDogShelter() {
         return getByType(Shelter.SHELTER_TYPE.DOG);
     }
+
+    Shelter getSheltersById(Long id);
 }

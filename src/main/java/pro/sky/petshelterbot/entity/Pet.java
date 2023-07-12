@@ -94,6 +94,13 @@ public class Pet {
         this.adoptionDate = adoptionDate;
     }
 
+    public Shelter getShelter() {
+        return shelter;
+    }
+
+    public void setShelter(Shelter shelter) {
+        this.shelter = shelter;
+    }
 
     @Override
     public String toString() {

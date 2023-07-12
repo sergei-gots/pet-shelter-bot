@@ -23,6 +23,17 @@ public class Shelter {
 
     private String type;
 
+    public Shelter(String name, String workTime, String address, String tel, String email, String type) {
+        this.name = name;
+        this.workTime = workTime;
+        this.address = address;
+        this.tel = tel;
+        this.email = email;
+        this.type = type;
+    }
+
+    public Shelter() {}
+
     public String getTel() {
         return tel;
     }
