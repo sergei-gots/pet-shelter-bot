@@ -26,7 +26,7 @@
         </insert>
 
         <insert tableName="buttons">
-            <column name="key"          value="volunteer_call"/>
+            <column name="key"          value="/call_volunteer"/>
             <column name="text"         value="Позвать волонтёра"/>
             <column name="chapter"      value="start_info_menu"/>
         </insert>
@@ -172,28 +172,28 @@
         </insert>
 
         <insert tableName="buttons">
-            <column name="key"          value="volunteer_call"/>
+            <column name="key"          value="/call_volunteer"/>
             <column name="shelter_id"   valueNumeric="1"/>
             <column name="text"         value="Позвать волонтёра"/>
             <column name="chapter"      value="shelter_info"/>
         </insert>
 
         <insert tableName="buttons">
-            <column name="key"          value="volunteer_call"/>
+            <column name="key"          value="/call_volunteer"/>
             <column name="shelter_id"   valueNumeric="2"/>
             <column name="text"         value="Позвать волонтёра"/>
             <column name="chapter"      value="shelter_info"/>
         </insert>
 
         <insert tableName="buttons">
-            <column name="key"          value="volunteer_call"/>
+            <column name="key"          value="/call_volunteer"/>
             <column name="shelter_id"   valueNumeric="1"/>
             <column name="text"         value="Позвать волонтёра"/>
             <column name="chapter"      value="adoption_info"/>
         </insert>
 
         <insert tableName="buttons">
-            <column name="key"          value="volunteer_call"/>
+            <column name="key"          value="/call_volunteer"/>
             <column name="shelter_id"   valueNumeric="2"/>
             <column name="text"         value="Позвать волонтёра"/>
             <column name="chapter"      value="adoption_info"/>

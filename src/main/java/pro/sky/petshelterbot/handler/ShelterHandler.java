@@ -21,8 +21,8 @@ import java.util.Collection;
 public class ShelterHandler extends AbstractHandler {
 
     private final ShelterInfoHandler shelterInfoHandler;
-    private final VolunteerHandler volunteerHandler;
-    private final VolunteerChatHandler volunteerChatHandler;
+    private final VolunteerDialogHandler volunteerHandler;
+    private final AdopterDialogHandler dialogHandler;
 
     private final UserMessageRepository userMessageRepository;
     private final ButtonsRepository buttonsRepository;
@@ -30,14 +30,14 @@ public class ShelterHandler extends AbstractHandler {
     public ShelterHandler(TelegramBot telegramBot,
                           ShelterRepository shelterRepository,
                           ShelterInfoHandler shelterInfoHandler,
-                          VolunteerHandler volunteerHandler,
-                          VolunteerChatHandler volunteerChatHandler,
+                          VolunteerDialogHandler volunteerHandler,
+                          AdopterDialogHandler volunteerChatHandler,
                           UserMessageRepository userMessageRepository,
                           ButtonsRepository buttonsRepository) {
         super(telegramBot, shelterRepository, userMessageRepository);
         this.shelterInfoHandler = shelterInfoHandler;
         this.volunteerHandler = volunteerHandler;
-        this.volunteerChatHandler = volunteerChatHandler;
+        this.dialogHandler = volunteerChatHandler;
         this.userMessageRepository = userMessageRepository;
         this.buttonsRepository = buttonsRepository;
     }
@@ -45,13 +45,6 @@ public class ShelterHandler extends AbstractHandler {
     @Override
     public boolean handle(CallbackQuery callbackQuery) {
 
-        if (callbackQuery.data() == null) {
-            logger.debug("handle(CallbackQuery=null)");
-            return false;
-        }
-        if(volunteerHandler.handle(callbackQuery)) {
-            return true;
-        }
 
         logger.debug("handle(CallbackQuery)-method");
         String queryData = callbackQuery.data();
@@ -67,7 +60,7 @@ public class ShelterHandler extends AbstractHandler {
             if (makeButtonList(chatId, shelterId, key, "Выберите, что вас интересует:")) {
                 return true;
             }
-            if (volunteerChatHandler.handle(message, key, chatId, shelterId)) {
+            if (dialogHandler.handle(message, key, chatId, shelterId)) {
                 return true;
             }
             if (shelterInfoHandler.handle(message, key, chatId, shelterId)) {

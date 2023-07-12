@@ -9,10 +9,21 @@ public class Dialog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name = "adopter_id", nullable = false)
-    @OneToOne
+    /**
+     *  for developing purpose: we can have many waiting
+     *  dialogs (i.e. adopters) for the same adopter.
+     *  and we should have @ManyToOne - annotation.
+     *
+     *  for production purpose only @OneToOne - relation
+     *  is allowed.
+     *
+     */
+
+    @JoinColumn(name = "adopter_chat_id", nullable = false)
+    //@OneToOne //prod/dev purpose
+    @ManyToOne  //for test purpose
     private Adopter adopter;
-    @JoinColumn(name = "volunteer_id")
+    @JoinColumn(name = "volunteer_chat_id")
     @OneToOne
     private Volunteer volunteer;
 
@@ -26,6 +37,7 @@ public class Dialog {
 
     public Dialog(Adopter adopter, Shelter shelter) {
         this.adopter = adopter;
+        this.shelter = shelter;
     }
 
     public Dialog(Adopter adopter, Volunteer volunteer) {
@@ -43,6 +55,10 @@ public class Dialog {
 
     public Volunteer getVolunteer() {
         return volunteer;
+    }
+
+    public void setVolunteer(Volunteer volunteer) {
+        this.volunteer = volunteer;
     }
 
     public Adopter getAdopter() {

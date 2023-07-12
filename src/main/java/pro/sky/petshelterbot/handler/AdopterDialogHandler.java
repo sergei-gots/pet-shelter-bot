@@ -11,35 +11,52 @@ import pro.sky.petshelterbot.repository.*;
 import java.util.List;
 import java.util.Random;
 
-/** Operates chat between Adopter and Volunteer on the Adopter's side
- *
+/**
+ * Operates chat between Adopter and Volunteer on the Adopter's side
  */
 @Component
-public class VolunteerChatHandler extends AbstractHandler {
+public class AdopterDialogHandler extends AbstractDialogHandler  {
 
-    private final DialogRepository dialogRepository;
     private final AdopterRepository adopterRepository;
-    private final VolunteerRepository volunteerRepository;
-
 
     private final Random random = new Random();
 
-    public VolunteerChatHandler(TelegramBot telegramBot,
+    public AdopterDialogHandler(TelegramBot telegramBot,
                                 ShelterRepository shelterRepository,
                                 UserMessageRepository userMessageRepository,
                                 DialogRepository dialogRepository,
                                 AdopterRepository adopterRepository,
                                 VolunteerRepository volunteerRepository
-                                ) {
-        super(telegramBot, shelterRepository, userMessageRepository);
-        this.dialogRepository = dialogRepository;
+    ) {
+        super(telegramBot, shelterRepository, userMessageRepository, volunteerRepository, dialogRepository);
         this.adopterRepository = adopterRepository;
-        this.volunteerRepository = volunteerRepository;
+    }
+
+
+    @Override
+    public boolean handle(Message message) {
+        Long chatId = message.chat().id();
+        Dialog dialog = getDialogIfRequested(message.chat().id());
+        if(dialog == null) {
+            return false;
+        }
+
+        if(dialog.getVolunteer() == null) {
+            sendMessage(chatId, "Подождите, волонтёр скоро свяжется с вами. Приношу извинения за ваше ожидание! Спасибо)");
+            return true;
+        }
+
+        sendMessage(dialog.getVolunteer().getChatId(),
+                dialog.getAdopter().getFirstName().toUpperCase() +
+                        "> " + message.text());
+        return true;
+
+
     }
 
     @Override
     public boolean handle(Message message, String key, Long chatId, Long shelterId) {
-        if ("volunteer_call".equals(key)) {
+        if (CALL_VOLUNTEER.equals(key)) {
             handleVolunteerCall(message, chatId, shelterId);
             return true;
         }
@@ -48,8 +65,8 @@ public class VolunteerChatHandler extends AbstractHandler {
 
     public void handleVolunteerCall(Message message, Long chatId, Long shelterId) {
         logger.debug("handleVolunteerCall(chatId={}, shelterId={})", chatId, shelterId);
-        if (isDialogOpen(chatId) || isDialogRequested(chatId)) {
-            throw new IllegalStateException("Dialog for chatId=" + chatId + " is already open");
+        if (getDialogIfRequested(chatId) != null) {
+         //   throw new IllegalStateException("Dialog for chatId=" + chatId + " is already open");
         }
         createDialogRequest(message, chatId, shelterId);
     }
@@ -58,24 +75,16 @@ public class VolunteerChatHandler extends AbstractHandler {
 
         logger.trace("createDialogRequest(message={}, ...", message);
 
-        Volunteer volunteer = createDialogEntry(message, chatId, shelterId);
-        if (volunteer == null) {
+        Dialog dialog = createDialogEntry(message, chatId, shelterId);
+        if (dialog.getVolunteer() == null) {
             sendMessage(chatId, "В настоящий момент все волонтёры заняты. "
-                            + "Как только один из волонтёров освободится, он свяжется с вами.");
+                    + "Как только один из волонтёров освободится, он свяжется с вами.");
             return;
         }
-        sendMessage(volunteer.getChatId(),
-                volunteer.getFirstName() + "! C вами хотел бы связаться " + message.chat().firstName() +
-                        ". Нажмите кнопку 'Присоединиться к чату' для начала общения.",
-                        "Присоединиться к чату",
-                        Volunteer.JOIN_CHAT
-                );
-        sendMessage(chatId, "Волонтёру отослано уведомление. Волонтёр свяжется с вами " +
-                "насколько это возможно скоро. ");
-
+        sendJoinInvitationToVolunteerAndNotifyAdopter(dialog);
     }
 
-    private Volunteer createDialogEntry(Message message, Long chatId, Long shelterId) {
+    private Dialog createDialogEntry(Message message, Long chatId, Long shelterId) {
 
         logger.trace("createDialogEntry(message={}, ...", message);
 
@@ -84,9 +93,10 @@ public class VolunteerChatHandler extends AbstractHandler {
                 );
         List<Volunteer> availableVolunteers = volunteerRepository.findByShelterIdAndAvailable(shelterId, true);
         if (availableVolunteers.size() == 0) {
-            Dialog dialog = new Dialog(adopter, shelterRepository.findById(shelterId)
-                    .orElseThrow(()->new IllegalArgumentException("shelter_id=" + shelterId  + "is not listed.")));
-            return null;
+           Dialog dialog = new Dialog(adopter, shelterRepository.findById(shelterId)
+                    .orElseThrow(() -> new IllegalArgumentException("shelter_id=" + shelterId + "is not listed.")));
+           dialogRepository.save(dialog);
+           return dialog;
         }
 
         Volunteer volunteer = availableVolunteers.get(random.nextInt(availableVolunteers.size()));
@@ -94,19 +104,21 @@ public class VolunteerChatHandler extends AbstractHandler {
         volunteer.setAvailable(false);
         dialogRepository.save(dialog);
         volunteerRepository.save(volunteer);
-        return volunteer;
+        return dialog;
     }
 
-    private boolean isDialogOpen(long chatId) {
+    private Dialog getDialogIfOpen(long chatId) {
+       Dialog dialog = dialogRepository.findByAdopterChatId(chatId).orElse(null);
 
-        return false;
+        if(dialog == null || dialog.getVolunteer() == null) {
+            return null;
+        }
+        return dialog;
     }
 
-    private boolean isDialogRequested(long chatId) {
-        return false;
-    }
-
-    private void closeDialog(Long chatId) {
+    private Dialog getDialogIfRequested(long chatId)
+    {
+        return dialogRepository.findFirstByAdopterChatId(chatId).orElse(null);
     }
 
 }
