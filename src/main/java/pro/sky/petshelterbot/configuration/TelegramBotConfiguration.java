@@ -8,8 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-//ToDo : remove the next row    
-//@PropertySource("classpath:/application-dev.properties") //мы задаём кофигурацию либо через Running Configuration -> Edit, либо через параметр командной строки java
+@PropertySource("classpath:/application-dev.properties")
 public class TelegramBotConfiguration {
 
     @Value("${telegram.bot.token}")
