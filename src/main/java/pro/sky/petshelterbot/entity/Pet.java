@@ -117,6 +117,14 @@ public class Pet {
         this.adopter = adopter;
     }
 
+    public Shelter getShelter() {
+        return shelter;
+    }
+
+    public void setShelter(Shelter shelter) {
+        this.shelter = shelter;
+    }
+
     @Override
     public String toString() {
         return "Pet{" +
