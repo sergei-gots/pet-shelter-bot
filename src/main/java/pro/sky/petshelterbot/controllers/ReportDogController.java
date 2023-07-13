@@ -9,13 +9,13 @@ import pro.sky.petshelterbot.service.ReportService;
 import java.util.List;
 
 @RestController
-@RequestMapping( "/reports-cat")
+@RequestMapping( "/dogs-cat")
 @Tag(name = "Cat Reports API", description = "Cat report info.")
-public class ReportCatController {
+public class ReportDogController {
 
     private final ReportService reportService;
 
-    public ReportCatController(ReportService reportService) {
+    public ReportDogController(ReportService reportService) {
         this.reportService = reportService;
     }
 
@@ -24,7 +24,7 @@ public class ReportCatController {
             @PathVariable Long id,
             @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize) {
-        return ResponseEntity.ok(reportService.findAllByCatId(id, pageNo, pageSize));
+        return ResponseEntity.ok(reportService.findAllByDogId(id, pageNo, pageSize));
     }
 
     @PostMapping(path = "/{id}")
@@ -32,7 +32,7 @@ public class ReportCatController {
             @PathVariable Long id,
             @RequestParam(required = false) Boolean checked,
             @RequestParam(required = false) Boolean approved) {
-        return ResponseEntity.ok(reportService.updateReportCat(id, checked, approved));
+        return ResponseEntity.ok(reportService.updateReportDog(id, checked, approved));
     }
 
 }
