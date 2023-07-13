@@ -9,7 +9,7 @@ import pro.sky.petshelterbot.service.ReportService;
 import java.util.List;
 
 @RestController
-@RequestMapping( "/dogs-cat")
+@RequestMapping( "/reports-dog")
 @Tag(name = "Cat Reports API", description = "Cat report info.")
 public class ReportDogController {
 
