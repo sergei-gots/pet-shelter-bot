@@ -4,19 +4,18 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.petshelterbot.entity.Pet;
-import pro.sky.petshelterbot.entity.Shelter;
 import pro.sky.petshelterbot.service.PetService;
 
 import java.util.Collection;
 
 @RestController
 @RequestMapping(path = "/dogs")
-@Tag(name = "Dog pet API", description = "Dog's info")
-public class DogController {
+@Tag(name = "Dog pet API", description = "Dogs info")
+public class PetDogController {
 
     private final PetService petService;
 
-    public DogController(PetService petService) {
+    public PetDogController(PetService petService) {
         this.petService = petService;
     }
 
