@@ -38,4 +38,18 @@
                                  referencedTableName="shelters"/>
     </changeSet>
 
+    <changeSet id="alter-table-pets-add-column-adopter-id" author="S">
+
+        <addColumn tableName="pets">
+            <column name="adopter_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <addForeignKeyConstraint baseColumnNames="adopter_id"
+                                 baseTableName="pets"
+                                 constraintName="fk_pet_adopter_id"
+                                 referencedColumnNames="chat_id"
+                                 referencedTableName="adopters"/>
+    </changeSet>
 </databaseChangeLog>
