@@ -146,4 +146,28 @@
 
 
     </changeSet>
+
+    <changeSet id="update-user_messages-where-key-refusal-info" author="S">
+        <update tableName="user_messages">
+            <column name="message" valueClobFile="../../../initial-data/refusal_info.txt"/> />
+            <where>key = 'refusal_info'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="insert-into-user-messages-improve-report-advice" author="S">
+        <insert tableName="user_messages">
+            <column name="key"          value="improve_report_advice"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="message"      valueClobFile="../../../initial-data/improve_report_advice.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="improve_report_advice"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="message"      valueClobFile="../../../initial-data/improve_report_advice.txt"/>
+        </insert>
+
+    </changeSet>
+
+
 </databaseChangeLog>

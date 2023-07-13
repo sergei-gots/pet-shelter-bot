@@ -27,4 +27,11 @@
         </insert>
 
     </changeSet>
+
+    <changeSet id="remove-Anton_from-volunteers" author="S">
+        <delete tableName="volunteers">
+            <where>first_name = '👨‍🦱 A'</where>
+        </delete>
+    </changeSet>
+
 </databaseChangeLog>

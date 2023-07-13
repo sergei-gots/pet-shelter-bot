@@ -17,6 +17,11 @@ public class Pet {
     @JoinColumn(name="shelter_id")
     @ManyToOne
     private Shelter shelter;
+
+    @JoinColumn(name="adopter_id")
+    @ManyToOne
+    private Adopter adopter;
+
     /**
      * true if the pet is a pet with disabilities.
      * Default value is true
@@ -46,6 +51,16 @@ public class Pet {
         this.name = name;
         this.shelter = shelter;
         this.disabled = disabled;
+    }
+
+    public Pet(Long id, String species, String name, Shelter shelter, boolean disabled,
+               Adopter adopter) {
+        this.id = id;
+        this.species = species;
+        this.name = name;
+        this.shelter = shelter;
+        this.disabled = disabled;
+        this.adopter = adopter;
     }
 
     public Long getId() {
@@ -94,6 +109,14 @@ public class Pet {
         this.adoptionDate = adoptionDate;
     }
 
+    public Adopter getAdopter() {
+        return adopter;
+    }
+
+    public void setAdopter(Adopter adopter) {
+        this.adopter = adopter;
+    }
+
     public Shelter getShelter() {
         return shelter;
     }
@@ -108,11 +131,10 @@ public class Pet {
                 "id=" + id +
                 ", the " +  species +
                 ", name='" + name + '\'' +
-                ", disabled=" + disabled +
                 ((disabled) ?
                         ", with some disabilities" :
                         ", without any disabilities"
-                ) +
+                ) + ", adopter=" + adopter +
                 '}';
     }
 }
