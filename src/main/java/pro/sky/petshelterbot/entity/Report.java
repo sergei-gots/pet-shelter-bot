@@ -24,7 +24,9 @@ public class Report {
 
     /** indicates whether the report has been reviewed or not **/
     boolean checked;
-    /** indicates if the report is ok or should be improved next time **/
+    /** indicates if the report is ok or should be improved next time
+     * TODO think about how to manage or change this note
+     **/
     boolean approved;
 
     public Report() {}
