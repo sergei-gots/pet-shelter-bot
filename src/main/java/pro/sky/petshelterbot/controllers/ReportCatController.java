@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import pro.sky.petshelterbot.entity.Report;
 import pro.sky.petshelterbot.service.ReportService;
 
-import java.util.Collection;
 import java.util.List;
 
 @RestController

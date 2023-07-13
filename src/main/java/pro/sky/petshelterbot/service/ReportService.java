@@ -6,7 +6,6 @@ import pro.sky.petshelterbot.entity.Report;
 import pro.sky.petshelterbot.repository.PetRepository;
 import pro.sky.petshelterbot.repository.ReportRepository;
 
-import java.util.Collection;
 import java.util.List;
 
 @Service
