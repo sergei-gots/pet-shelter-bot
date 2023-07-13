@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import pro.sky.petshelterbot.entity.Shelter;
 import pro.sky.petshelterbot.service.ShelterService;
 
-import javax.persistence.Table;
 import java.util.Collection;
 
 @RestController
