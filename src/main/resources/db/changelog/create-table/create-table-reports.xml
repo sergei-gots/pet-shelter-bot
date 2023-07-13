@@ -22,6 +22,8 @@
             <column name="sent_time" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
+            <column name="checked" type="BOOLEAN" defaultValue="false"/>
+            <column name="approved" type="BOOLEAN" defaultValue="true"/>
             <column name="diet" type="VARCHAR">
                 <constraints nullable="false"/>
             </column>
@@ -37,15 +39,13 @@
             <column name="thumbnail_photo_filename" type="VARCHAR">
                 <constraints nullable="false"/>
             </column>
-            <column name="checked" type="BOOLEAN" defaultValue="false"/>
-            <column name="approved" type="BOOLEAN" defaultValue="true"/>
         </createTable>
 
         <addForeignKeyConstraint baseTableName="reports"
                                  baseColumnNames="pet_id"
                                  constraintName="pet_id_fk"
-                                 referencedTableName="id"
-                                 referencedColumnNames="pets"/>
+                                 referencedTableName="pets"
+                                 referencedColumnNames="id"/>
     </changeSet> 
 </databaseChangeLog>
 
