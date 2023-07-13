@@ -26,4 +26,12 @@ public class ReportService {
         }
         return null;
     }
+
+    public List<Report> findAllByDogId(Long petId) {
+        Pet pet = petRepository.getPetById(petId);
+        if (pet.getSpecies().equals("dog")) {
+            return reportRepository.findAllByPet(pet);
+        }
+        return null;
+    }
 }
