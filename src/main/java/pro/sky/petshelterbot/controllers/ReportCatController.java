@@ -10,6 +10,7 @@ import pro.sky.petshelterbot.entity.Report;
 import pro.sky.petshelterbot.service.ReportService;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping( "/reports-cat")
@@ -23,7 +24,7 @@ public class ReportCatController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<Collection<Report>> findAllByCatId(@PathVariable Long id) {
+    public ResponseEntity<List<Report>> findAllByCatId(@PathVariable Long id) {
         return ResponseEntity.ok(reportService.findAllByCatId(id));
     }
 

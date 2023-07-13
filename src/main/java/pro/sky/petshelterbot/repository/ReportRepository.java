@@ -17,5 +17,5 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
      * TODO think about how to manage or change this note**/
     List<Report> findByCheckedIsTrueAndApprovedIsFalse();
 
-    Collection<Report> findAllByPet(Pet pet);
+    List<Report> findAllByPet(Pet pet);
 }

@@ -7,6 +7,7 @@ import pro.sky.petshelterbot.repository.PetRepository;
 import pro.sky.petshelterbot.repository.ReportRepository;
 
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public class ReportService {
@@ -19,7 +20,7 @@ public class ReportService {
         this.petRepository = petRepository;
     }
 
-    public Collection<Report> findAllByCatId(Long petId) {
+    public List<Report> findAllByCatId(Long petId) {
         Pet pet = petRepository.getPetById(petId);
         if (pet.getSpecies().equals("cat")) {
             return reportRepository.findAllByPet(pet);
