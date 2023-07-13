@@ -10,13 +10,12 @@ public class Dialog {
     private Long id;
 
     /**
-     *  for developing purpose: we can have many waiting
-     *  dialogs (i.e. adopters) for the same adopter.
-     *  and we should have @ManyToOne - annotation.
-     *
-     *  for production purpose only @OneToOne - relation
-     *  is allowed.
-     *
+     * for developing purpose: we can have many waiting
+     * dialogs (i.e. adopters) for the same adopter.
+     * and we should have @ManyToOne - annotation.
+     * <p>
+     * for production purpose only @OneToOne - relation
+     * is allowed.
      */
 
     @JoinColumn(name = "adopter_chat_id", nullable = false)
@@ -41,13 +40,6 @@ public class Dialog {
     }
 
     public Dialog(Adopter adopter, Volunteer volunteer) {
-        this.adopter = adopter;
-        this.volunteer = volunteer;
-        this.shelter = volunteer.getShelter();
-    }
-
-    public Dialog(Long id, Adopter adopter, Volunteer volunteer) {
-        this.id = id;
         this.adopter = adopter;
         this.volunteer = volunteer;
         this.shelter = volunteer.getShelter();

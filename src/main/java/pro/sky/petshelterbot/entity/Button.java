@@ -8,7 +8,6 @@ public class Button {
     public static final String OPENING_HOURS_AND_ADDRESS_INFO = "opening_hours_and_address_info";
     public static final String SECURITY_INFO = "security_info";
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

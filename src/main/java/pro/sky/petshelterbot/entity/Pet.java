@@ -14,11 +14,11 @@ public class Pet {
 
     private String name;
 
-    @JoinColumn(name="shelter_id")
+    @JoinColumn(name = "shelter_id")
     @ManyToOne
     private Shelter shelter;
 
-    @JoinColumn(name="adopter_id")
+    @JoinColumn(name = "adopter_id")
     @ManyToOne
     private Adopter adopter;
 
@@ -42,20 +42,21 @@ public class Pet {
     }
 
     public Pet(String species, String name, Shelter shelter) {
-        this(null, species, name, shelter, false);
+        this(species, name, shelter, false);
     }
 
-    public Pet(Long id, String species, String name, Shelter shelter, boolean disabled) {
-        this.id = id;
+    public Pet(String species, String name, Shelter shelter, boolean disabled) {
         this.species = species;
         this.name = name;
         this.shelter = shelter;
         this.disabled = disabled;
     }
 
-    public Pet(Long id, String species, String name, Shelter shelter, boolean disabled,
+    public Pet(String species,
+               String name,
+               Shelter shelter,
+               boolean disabled,
                Adopter adopter) {
-        this.id = id;
         this.species = species;
         this.name = name;
         this.shelter = shelter;
@@ -65,10 +66,6 @@ public class Pet {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getSpecies() {
@@ -129,7 +126,7 @@ public class Pet {
     public String toString() {
         return "Pet{" +
                 "id=" + id +
-                ", the " +  species +
+                ", the " + species +
                 ", name='" + name + '\'' +
                 ((disabled) ?
                         ", with some disabilities" :

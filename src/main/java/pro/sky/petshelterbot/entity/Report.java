@@ -4,13 +4,13 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="reports")
+@Table(name = "reports")
 public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @JoinColumn(name="pet_id")
+    @JoinColumn(name = "pet_id")
     @ManyToOne
     private Pet pet;
 
@@ -22,17 +22,27 @@ public class Report {
     String photoFilename;
     String thumbnailPhotoFilename;
 
-    /** indicates whether the report has been reviewed or not **/
+    /**
+     * indicates whether the report has been reviewed or not
+     **/
     boolean checked;
-    /** indicates if the report is ok or should be improved next time
+    /**
+     * indicates if the report is ok or should be improved next time
      * TODO think about how to manage or change this note
      **/
     boolean approved;
 
-    public Report() {}
+    public Report() {
+    }
 
-    public Report(long id, Pet pet, LocalDateTime sentTime, String diet, String wellBeing, String behaviour, String photoFilename, String thumbnailPhotoFilename, boolean checked, boolean approved) {
-        this.id = id;
+    public Report(Pet pet,
+                  LocalDateTime sentTime,
+                  String diet, String wellBeing,
+                  String behaviour,
+                  String photoFilename,
+                  String thumbnailPhotoFilename,
+                  boolean checked,
+                  boolean approved) {
         this.pet = pet;
         this.sentTime = sentTime;
         this.diet = diet;
@@ -44,6 +54,9 @@ public class Report {
         this.approved = approved;
     }
 
+    public long getId() {
+        return id;
+    }
 
     public Pet getPet() {
         return pet;
