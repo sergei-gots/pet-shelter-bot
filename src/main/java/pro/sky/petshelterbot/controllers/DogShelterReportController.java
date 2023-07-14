@@ -11,7 +11,7 @@ import pro.sky.petshelterbot.service.DogShelterReportService;
 import java.util.List;
 
 @RestController
-@RequestMapping( "/dog-shelter/reports")
+@RequestMapping("/dog-shelter/reports")
 @Tag(name = "DogShelterReportController")
 public class DogShelterReportController {
 
@@ -22,7 +22,7 @@ public class DogShelterReportController {
     }
 
     @GetMapping(path = "/{id}")
-    @ApiResponse(description="Распечатывает в хронологическом порядке все отчёты по конкретному животному.")
+    @ApiResponse(description = "Распечатывает в хронологическом порядке все отчёты по конкретному животному.")
     public ResponseEntity<List<Report>> findAllReportsByPetId(
             @PathVariable Long id,
             @RequestParam(defaultValue = "0") Integer pageNo,
@@ -31,17 +31,39 @@ public class DogShelterReportController {
     }
 
     @GetMapping("/overdue")
-    @ApiResponse(description="Возвращает животных на пробном периоде адоптации, для которых адоптеры не прислали текущие отчёты своевременно.")
+    @ApiResponse(description = "Возвращает животных на пробном периоде адоптации, для которых адоптеры не прислали текущие отчёты своевременно.")
     public ResponseEntity<List<Pet>> findOverdueReports() {
         return ResponseEntity.ok(dogShelterReportService.findOverdueReports());
     }
 
-    /*@PostMapping(path = "/{id}")
-    public ResponseEntity<Report> update(
-            @PathVariable Long id,
-            @RequestParam(required = false) Boolean checked,
-            @RequestParam(required = false) Boolean approved) {
-        return ResponseEntity.ok(dogShelterReportService.updateReportDog(id, checked, approved));
-    }*/
+    @GetMapping("/all/{shelterId}")
+    @ApiResponse(description = "" +
+            "Распечатывает все имеющиеся в базе данных отчёты пользователей, сортированные по дате. " +
+            "В рамках конкретного приюта.")
+    public ResponseEntity<List<Report>> findAllReports(
+            @PathVariable Long shelterId,
+            @RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "10") Integer pageSize
+    ) {
+        return ResponseEntity.ok(dogShelterReportService.findAllReportsByShelterId(shelterId, pageNo, pageSize));
+    }
 
+    @PutMapping()
+    @ApiResponse(description = "Обновляет страницу отчётов в базе данных. " +
+            "Предполагается, что посылаемые отчёты могут иметь обновление в полях Report.checked и Report.approved. " +
+            "При этом если approved == false, " +
+            "то пользователю отсылается сообщение с рекомендацией" +
+            "заполнять отчёты более полно.")
+    public ResponseEntity<Report> updateReport(@RequestBody Report report) {
+        return ResponseEntity.ok(dogShelterReportService.updateReport(report));
+    }
+
+    @GetMapping("/to-review")
+    @ApiResponse(description = "Распечатывает все отчёты пользователей, требующие проверки.")
+    public ResponseEntity<List<Report>> findAllReportsToReview(
+            @RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "10") Integer pageSize
+    ) {
+        return ResponseEntity.ok(dogShelterReportService.findAllReportsToReview(pageNo, pageSize));
+    }
 }

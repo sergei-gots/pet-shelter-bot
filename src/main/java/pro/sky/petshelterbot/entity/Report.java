@@ -15,23 +15,23 @@ public class Report {
     @ManyToOne
     private Pet pet;
 
-    LocalDate sentTime;
+    private LocalDate sentTime;
 
-    String diet;
-    String wellBeing;
-    String behaviour;
-    String photoFilename;
-    String thumbnailPhotoFilename;
+    private String diet;
+    private String wellBeing;
+    private String behaviour;
+    private String photoFilename;
+    private String thumbnailPhotoFilename;
 
     /**
      * indicates whether the report has been reviewed or not
      **/
-    boolean checked;
+    private boolean checked;
     /**
      * indicates if the report is ok or should be improved next time
      * TODO think about how to manage or change this note
      **/
-    boolean approved;
+    private boolean approved;
 
     public Report() {
     }
