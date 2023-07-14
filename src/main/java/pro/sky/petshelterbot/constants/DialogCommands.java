@@ -1,6 +1,6 @@
 package pro.sky.petshelterbot.constants;
 
-public interface DialogCommands {
+public interface DialogCommands extends Commands {
     String CALL_VOLUNTEER="/call_volunteer";
     String JOIN_DIALOG="/join_dialog";
     String CLOSE_DIALOG="/close_dialog";

@@ -29,6 +29,9 @@ public interface DialogRepository extends JpaRepository<Dialog, Long> {
      */
     Optional<Dialog> findFirstByAdopterChatId(Long adopterChatId);
 
+    /**
+     * @return Dialog entry with the least ID  where Volunteer==null within specified Shelter
+     */
     Optional<Dialog> findFirstByVolunteerIsNullAndShelterOrderByIdAsc(Shelter shelter);
 
 }
