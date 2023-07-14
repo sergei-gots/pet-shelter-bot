@@ -3,6 +3,7 @@ package pro.sky.petshelterbot.handler;
 import com.pengrad.telegrambot.TelegramBot;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.constants.DialogCommands;
+import pro.sky.petshelterbot.entity.AbstractPerson;
 import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Dialog;
 import pro.sky.petshelterbot.entity.Volunteer;
@@ -33,17 +34,23 @@ public abstract class AbstractDialogHandler extends AbstractHandler
     }
 
     protected void sendDialogMessageToAdopter(Dialog dialog, String text) {
-        logger.trace("sendDialogMessageToAdopter()-method.  adopter.first_name={}", dialog.getAdopter().getFirstName());
+        logger.trace("sendDialogMessageToAdopter()-method.  adopter.getFirstName()=\"{}\"", dialog.getAdopter().getFirstName());
         sendMessage(dialog.getAdopter().getChatId(),
                 dialog.getVolunteer().getFirstName() + "> " + text);
     }
 
     protected void sendDialogMessageToVolunteer(Dialog dialog, String text) {
-        sendMessage(dialog.getAdopter().getChatId(),
-                dialog.getVolunteer().getFirstName() + "> " + text);
+        logger.trace("sendDialogMessageToVolunteer()-method.  volutnteer.getFirstName()=\"{}\"", dialog.getVolunteer().getFirstName());
+        sendMessage(dialog.getVolunteer().getChatId(),
+                dialog.getAdopter().getFirstName() + "> " + text);
     }
 
-    public void sendJoinInvitationToVolunteerAndNotifyAdopter(Dialog dialog){
+    public void sendPersonalizedMessage(AbstractPerson person, String text) {
+        sendMessage(person.getChatId(), person.getFirstName() + ", " + text);
+    }
+
+
+    public void sendJoinInvitationsToVolunteersAndNotifyAdopter(Dialog dialog){
         Volunteer volunteer = dialog.getVolunteer();
         Adopter adopter = dialog.getAdopter();
         sendMessage(volunteer.getChatId(),
