@@ -1,6 +1,7 @@
 package pro.sky.petshelterbot.entity;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,7 +15,7 @@ public class Report {
     @ManyToOne
     private Pet pet;
 
-    LocalDateTime sentTime;
+    LocalDate sentTime;
 
     String diet;
     String wellBeing;
@@ -36,7 +37,7 @@ public class Report {
     }
 
     public Report(Pet pet,
-                  LocalDateTime sentTime,
+                  LocalDate sentTime,
                   String diet, String wellBeing,
                   String behaviour,
                   String photoFilename,
@@ -66,11 +67,11 @@ public class Report {
         this.pet = pet;
     }
 
-    public LocalDateTime getSentTime() {
+    public LocalDate getSentTime() {
         return sentTime;
     }
 
-    public void setSentTime(LocalDateTime sentTime) {
+    public void setSentTime(LocalDate sentTime) {
         this.sentTime = sentTime;
     }
 

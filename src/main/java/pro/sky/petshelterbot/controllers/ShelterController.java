@@ -10,7 +10,7 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping(path = "/shelters")
-@Tag(name = "Shelter API", description = "Shelter info.")
+@Tag(name = "ShelterController")
 public class ShelterController {
 
     private final ShelterService shelterService;
