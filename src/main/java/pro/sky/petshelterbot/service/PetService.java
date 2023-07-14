@@ -50,7 +50,7 @@ public class PetService {
 
     public Pet cancelTrial(Long petId) {
         Pet pet = petRepository.getPetById(petId);
-        pet.setAdoptionDate(null);
+        pet.setAdopter(null);
         petRepository.save(pet);
         return pet;
     }
