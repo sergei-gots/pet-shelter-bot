@@ -5,27 +5,27 @@ import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.repository.UserMessageRepository;
-import pro.sky.petshelterbot.service.PetService;
+import pro.sky.petshelterbot.service.DogShelterService;
 import pro.sky.petshelterbot.repository.ShelterRepository;
 
 /**
  * Development stage class for debugging/testing
  * functionality being implementing within Cats/CatAdopters workflow
  * handles commands starting with '/dev-:
- *     - '/dev-dev-create-cat' adds to the DB a new Cat;
- *     - '/dev-create-shelters' creates shelters in the DB if they have not been created before.
+ * - '/dev-dev-create-cat' adds to the DB a new Cat;
+ * - '/dev-create-shelters' creates shelters in the DB if they have not been created before.
  */
 @Component
-public class DevStageDBHandler extends AbstractHandler{
-    private final PetService petService;
+public class DevStageDBHandler extends AbstractHandler {
+    private final DogShelterService dogShelterService;
 
-    public DevStageDBHandler (
-                        TelegramBot telegramBot,
-                        ShelterRepository shelterRepository,
-                        UserMessageRepository userMessageRepository,
-                        PetService petService) {
+    public DevStageDBHandler(
+            TelegramBot telegramBot,
+            ShelterRepository shelterRepository,
+            UserMessageRepository userMessageRepository,
+            DogShelterService dogShelterService) {
         super(telegramBot, shelterRepository, userMessageRepository);
-        this.petService = petService;
+        this.dogShelterService = dogShelterService;
 
     }
 
@@ -33,17 +33,17 @@ public class DevStageDBHandler extends AbstractHandler{
     public boolean handle(Message message) {
 
         String text = message.text();
-        if(!text.startsWith("/dev-")) {
+        if (!text.startsWith("/dev-")) {
             return false;
         }
 
         Chat chat = message.chat();
         logger.info("- Received {} command from user {}", text, chat.firstName());
 
-        if(text.equals("/dev-create-cat")) {
+        if (text.equals("/dev-create-cat")) {
             return createCat(chat);
         }
-        if(text.equals("/dev-create-shelters")) {
+        if (text.equals("/dev-create-shelters")) {
             createSheltersIfNotExist(chat);
             return true;
         }
@@ -52,20 +52,20 @@ public class DevStageDBHandler extends AbstractHandler{
     }
 
     private boolean createCat(Chat chat) {
-        String catInfo = petService.createCat("Муська")
+        /*String catInfo = dogService.createCat("Муська")
                 .toString();
         logger.info("- Test-cat={} was added to db", catInfo);
-        sendMessage(chat.id(), "Added " + catInfo);
+        sendMessage(chat.id(), "Added " + catInfo);*/
         return true;
     }
 
     private void createSheltersIfNotExist(Chat chat) {
-        if(shelterRepository.findAll().size()>=2) {
+        if (shelterRepository.findAll().size() >= 2) {
             logger.info("- Shelters already exist in db");
-            sendMessage(chat.id(),  "Shelters are already listed in DB");
+            sendMessage(chat.id(), "Shelters are already listed in DB");
             return;
         }
-        sendMessage(chat.id(),"Shelters successfully created in DB; see log-INFO for details");
+        sendMessage(chat.id(), "Shelters successfully created in DB; see log-INFO for details");
     }
 
 

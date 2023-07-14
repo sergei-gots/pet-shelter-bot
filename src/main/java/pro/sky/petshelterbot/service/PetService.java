@@ -1,57 +1,57 @@
 package pro.sky.petshelterbot.service;
 
 import org.springframework.stereotype.Service;
+import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Pet;
-import pro.sky.petshelterbot.entity.Shelter;
 import pro.sky.petshelterbot.repository.PetRepository;
-import pro.sky.petshelterbot.repository.ShelterRepository;
 
-import java.util.Collection;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Service
 public class PetService {
-    final private PetRepository petRepository;
-    final private ShelterRepository shelterRepository;
 
-    final private Shelter catShelter, dogShelter;
+    private final PetRepository petRepository;
 
-    public PetService(PetRepository catRepository, ShelterRepository shelterRepository) {
-
-        this.petRepository = catRepository;
-        this.shelterRepository = shelterRepository;
-        catShelter = shelterRepository.getCatShelter();
-        dogShelter = shelterRepository.getDogShelter();
+    public PetService(PetRepository petRepository) {
+        this.petRepository = petRepository;
     }
 
-    public Pet createCat(String name) {
-        return petRepository.save(new Pet ("cat", name, catShelter));
-    }
-
-    public Pet createDog(String name) {
-        return petRepository.save(new Pet ("dog", name, dogShelter));
-    }
-
-    public Collection<Pet> findAll() {
-        return petRepository.findAll();
-    }
-
-    public Pet add(Pet pet) {
-        return petRepository.save(pet);
-    }
-
-    public Pet add(String species, String name, Shelter shelter) {
-        Pet pet = new Pet(species, name, shelter);
-        return petRepository.save(pet);
-    }
-
-    public Pet get(Long id) {
-        return  petRepository.getPetById(id);
-    }
-
-    public Pet delete(Long id) {
-        Pet pet = get(id);
-        petRepository.delete(pet);
+    public Pet setAdopter(Pet pet, Adopter adopter) {
+        pet.setAdopter(adopter);
+        pet.setAdoptionDate(LocalDate.now());
+        petRepository.save(pet);
         return pet;
     }
 
+    public Pet prolongTrial14(Long petId) {
+        Pet pet = petRepository.getPetById(petId);
+        LocalDate adoptionDate = pet.getAdoptionDate();
+        if (adoptionDate == null) {
+            pet.setAdoptionDate(LocalDate.now());
+        } else {
+            pet.setAdoptionDate(adoptionDate.plus(14, ChronoUnit.DAYS));
+        }
+        petRepository.save(pet);
+        return pet;
+    }
+
+    public Pet prolongTrial30(Long petId) {
+        Pet pet = petRepository.getPetById(petId);
+        LocalDate adoptionDate = pet.getAdoptionDate();
+        if (adoptionDate == null) {
+            pet.setAdoptionDate(LocalDate.now());
+        } else {
+            pet.setAdoptionDate(adoptionDate.plus(30, ChronoUnit.DAYS));
+        }
+        petRepository.save(pet);
+        return pet;
+    }
+
+    public Pet cancelTrial(Long petId) {
+        Pet pet = petRepository.getPetById(petId);
+        pet.setAdoptionDate(null);
+        petRepository.save(pet);
+        return pet;
+    }
 }

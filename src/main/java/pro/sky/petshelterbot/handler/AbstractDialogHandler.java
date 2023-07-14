@@ -10,7 +10,6 @@ import pro.sky.petshelterbot.repository.DialogRepository;
 import pro.sky.petshelterbot.repository.ShelterRepository;
 import pro.sky.petshelterbot.repository.UserMessageRepository;
 import pro.sky.petshelterbot.repository.VolunteerRepository;
-import pro.sky.petshelterbot.service.PetService;
 
 /**
  * Handles commands receiving from user supposed
