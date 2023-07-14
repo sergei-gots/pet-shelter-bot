@@ -64,7 +64,9 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
         switch(text) {
             case START:         processStart(volunteer);            return true;
             case JOIN_DIALOG:   processJoinDialog(volunteer);       return true;
-            case CLOSE_DIALOG:  processCloseDialog(volunteer);      return true;
+            case CLOSE_DIALOG:
+            case CLOSE_DIALOG_RU:
+                                processCloseDialog(volunteer);      return true;
             case HAVE_A_BREAK:  processHaveABreak(volunteer);       return true;
             case RESUME_SERVICE:processResumeService(volunteer);    return true;
         }
@@ -98,9 +100,19 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
     private void processCloseDialog(Volunteer volunteer) {
 
         Dialog dialog = getDialog(volunteer);
+        if(dialog == null) {
+            logger.warn("processCloseDialog() - Dialog for " +
+                    "volunteer.getFirstName()=\"{}\" does not exist.", volunteer.getFirstName());
+            logger.warn("processCloseDialog() - volunteer.isAvaliable()=\"{}\"", volunteer.isAvailable());
+            return;
+        }
         logger.debug("processCloseDialog() - Dialog between " +
-                        "Adopter.first_name=\"{}\" and  Volunteer.first_name=\"{}\" will be closed.",
+                        "adopter.getFirstName()=\"{}\" and  volunteer.getFirstName()=\"{}\" will be closed.",
                 dialog.getAdopter().getFirstName(), volunteer.getFirstName());
+        sendPersonalizedMessage(volunteer,"консультация закрыта. ваш чат переведён в режим ожидания новых запросов от пользователей.");
+        sendPersonalizedMessage(dialog.getAdopter(),"диалог с волонтёром шелтера завершён. Если у вас возникнут новые вопросы, " +
+                "обращайтесь к нам ещё. Всего вам доброго-)");
+
 
         dialogRepository.delete(dialog);
 
@@ -108,6 +120,7 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
         if(dialogInWaiting == null) {
             volunteer.setAvailable(true);
             volunteerRepository.save(volunteer);
+
         } else {
             dialogInWaiting.setVolunteer(volunteer);
             dialogRepository.save(dialogInWaiting);
@@ -153,8 +166,8 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
         sendDialogMessageToAdopter(dialogToJoin,
                 dialogToJoin.getAdopter().getFirstName() + ", здравствуйте! Расскажите, какой у вас вопрос?");
         sendMessage(volunteer.getChatId(),
-                "Отлично, вы в чате. Пользователю направлено приветствие и предложение сформировать интересующий вопрос.");
-
+                "Отлично, вы в чате. Пользователю направлено приветствие и предложение сформировать интересующий вопрос.\n" +
+                "Для завершения диалога используйте команды: \n\t" + CLOSE_DIALOG_RU + " или " + CLOSE_DIALOG);
 
         Dialog nextDialog = getFirstWaitingDialog(volunteer.getShelter());
 
