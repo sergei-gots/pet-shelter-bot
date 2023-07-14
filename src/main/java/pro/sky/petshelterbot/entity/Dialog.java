@@ -19,8 +19,8 @@ public class Dialog {
      */
 
     @JoinColumn(name = "adopter_chat_id", nullable = false)
-    //@OneToOne //prod/dev purpose
-    @ManyToOne  //for test purpose
+    @OneToOne //prod/dev purpose
+    //@ManyToOne  //for test purpose
     private Adopter adopter;
     @JoinColumn(name = "volunteer_chat_id")
     @OneToOne
@@ -39,11 +39,6 @@ public class Dialog {
         this.shelter = shelter;
     }
 
-    public Dialog(Adopter adopter, Volunteer volunteer) {
-        this.adopter = adopter;
-        this.volunteer = volunteer;
-        this.shelter = volunteer.getShelter();
-    }
 
     public Volunteer getVolunteer() {
         return volunteer;

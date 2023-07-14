@@ -51,4 +51,11 @@
 
     </changeSet>
 
+    <changeSet id="table-adopter-volunteer-dialogs-adopter-chat-id-is-unique-constraint" author="S">
+        <addUniqueConstraint  tableName="adopter_volunteer_dialogs"
+                              columnNames="adopter_chat_id"
+                              constraintName="adopter_chat_id_is_unique"
+        />
+    </changeSet>
+
 </databaseChangeLog>
