@@ -40,7 +40,7 @@ public class PetService {
         Pet pet = petRepository.getPetById(petId);
         LocalDate adoptionDate = pet.getAdoptionDate();
         if (adoptionDate == null) {
-            pet.setAdoptionDate(LocalDate.now());
+            pet.setAdoptionDate(LocalDate.now().plus(30, ChronoUnit.DAYS));
         } else {
             pet.setAdoptionDate(adoptionDate.plus(30, ChronoUnit.DAYS));
         }
@@ -50,7 +50,7 @@ public class PetService {
 
     public Pet cancelTrial(Long petId) {
         Pet pet = petRepository.getPetById(petId);
-        pet.setAdoptionDate(null);
+        pet.setAdopter(null);
         petRepository.save(pet);
         return pet;
     }

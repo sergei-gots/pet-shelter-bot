@@ -1,5 +1,7 @@
 package pro.sky.petshelterbot.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import pro.sky.petshelterbot.entity.Pet;
@@ -15,4 +17,5 @@ public interface PetRepository extends JpaRepository<Pet,Long> {
     @Query("from Pet p where p.adoptionDate != null and (select count(r.pet) from Report r) != (extract(day from current_timestamp - p.adoptionDate))")
     List<Pet> getPetByAdoptionDateIsNotNull();
 
+    Page<Pet> findAllByShelterId(Long shelterId, Pageable pageable);
 }

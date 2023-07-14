@@ -2,6 +2,7 @@ package pro.sky.petshelterbot.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import pro.sky.petshelterbot.entity.Report;
 
 import org.springframework.data.domain.Pageable;
@@ -17,4 +18,10 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     List<Report> findByCheckedIsTrueAndApprovedIsFalse();
 
     Page<Report> findAllByPetId(Long petId, Pageable pageable);
+
+    @Query("from Report r where r.pet.shelter.id = :shelterId")
+    Page<Report> findAllByShelterId(Long shelterId, Pageable pageable);
+
+    @Query("from Report r where r.checked = null or r.checked = false")
+    Page<Report> findAllUncheckedReports(Pageable pageable);
 }

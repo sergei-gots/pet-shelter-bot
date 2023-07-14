@@ -55,4 +55,46 @@ public class DogShelterReportService {
         }
         throw new ShelterException("Нарушителей не выявлено.");
     }
+
+    /**
+     * GET /dog-shelter/reports/all
+     * @param shelterId
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    public List<Report> findAllReportsByShelterId(Long shelterId, Integer pageNo, Integer pageSize) {
+            Pageable pageable = PageRequest.of(pageNo, pageSize);
+            Page<Report> reportPage = reportRepository.findAllByShelterId(shelterId, pageable);
+            if (reportPage.hasContent()) {
+                return reportPage.getContent();
+            } else {
+                return new ArrayList<Report>();
+            }
+    }
+
+    /**
+     * PUT /dog-shelter/reports/
+     * @param report
+     * @return
+     */
+    public Report updateReport(Report report) {
+        if (!report.isApproved()) {
+            Long adopterId = report.getPet().getAdopter().getChatId();
+            /* Код отправки сообщения пользователю о ненадлежащем заполнении отчета. */
+        }
+        reportRepository.save(report);
+        return report;
+    }
+
+    /* GET /dog-shelter/reports/to-review */
+    public List<Report> findAllReportsToReview(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Report> reportPage = reportRepository.findAllUncheckedReports(pageable);
+        if (reportPage.hasContent()) {
+            return reportPage.getContent();
+        } else {
+            return new ArrayList<Report>();
+        }
+    }
 }
