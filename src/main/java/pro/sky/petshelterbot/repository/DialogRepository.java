@@ -15,23 +15,17 @@ public interface DialogRepository extends JpaRepository<Dialog, Long> {
 
     Optional<Dialog> findByVolunteerChatId(Long volunteerChatId);
 
-    /**
-     *  for production purpose: when we can have only one waiting
-     *  dialog (i.e. adopter) for any adopter.
-     */
 
     Optional<Dialog> findByAdopterChatId(Long adopterChatId);
 
-    /**
-     *  for developing purpose: when we can have many waiting
-     *  dialogs (i.e. adopters) for the same adopter.
-     *
-     */
-    Optional<Dialog> findFirstByAdopterChatId(Long adopterChatId);
+    Optional<Dialog> findByAdopterChatIdAndVolunteerIsNotNull(Long adopterChatId);
+
 
     /**
      * @return Dialog entry with the least ID  where Volunteer==null within specified Shelter
      */
     Optional<Dialog> findFirstByVolunteerIsNullAndShelterOrderByIdAsc(Shelter shelter);
+
+
 
 }

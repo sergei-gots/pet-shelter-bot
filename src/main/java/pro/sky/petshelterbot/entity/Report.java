@@ -2,7 +2,6 @@ package pro.sky.petshelterbot.entity;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "reports")
@@ -15,7 +14,7 @@ public class Report {
     @ManyToOne
     private Pet pet;
 
-    private LocalDate sentTime;
+    private LocalDate sent;
 
     private String diet;
     private String wellBeing;
@@ -37,7 +36,7 @@ public class Report {
     }
 
     public Report(Pet pet,
-                  LocalDate sentTime,
+                  LocalDate sent,
                   String diet, String wellBeing,
                   String behaviour,
                   String photoFilename,
@@ -45,7 +44,7 @@ public class Report {
                   boolean checked,
                   boolean approved) {
         this.pet = pet;
-        this.sentTime = sentTime;
+        this.sent = sent;
         this.diet = diet;
         this.wellBeing = wellBeing;
         this.behaviour = behaviour;
@@ -67,12 +66,12 @@ public class Report {
         this.pet = pet;
     }
 
-    public LocalDate getSentTime() {
-        return sentTime;
+    public LocalDate getSent() {
+        return sent;
     }
 
-    public void setSentTime(LocalDate sentTime) {
-        this.sentTime = sentTime;
+    public void setSent(LocalDate sent) {
+        this.sent = sent;
     }
 
     public String getDiet() {
@@ -136,7 +135,7 @@ public class Report {
         return "Report{" +
                 "id=" + id +
                 ", pet=" + pet +
-                ", sentTime=" + sentTime +
+                ", sent=" + sent +
                 ", diet='" + diet + '\'' +
                 ", wellBeing='" + wellBeing + '\'' +
                 ", behaviour='" + behaviour + '\'' +

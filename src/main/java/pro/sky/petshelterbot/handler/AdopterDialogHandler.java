@@ -106,7 +106,7 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
     }
 
     private Dialog getDialogIfRequested(long chatId) {
-        return dialogRepository.findFirstByAdopterChatId(chatId).orElse(null);
+        return dialogRepository.findByAdopterChatId(chatId).orElse(null);
     }
 
 }
