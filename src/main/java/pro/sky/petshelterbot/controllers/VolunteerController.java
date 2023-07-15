@@ -1,6 +1,7 @@
 package pro.sky.petshelterbot.controllers;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.petshelterbot.entity.Volunteer;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/volunteers")
+@Tag(name = "VolunteerController")
 public class VolunteerController {
 
     private final VolunteerService volunteerService;

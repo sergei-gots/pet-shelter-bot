@@ -11,8 +11,8 @@ import pro.sky.petshelterbot.service.ReportService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/dog-shelter/reports")
-@Tag(name = "ShelterReportController")
+@RequestMapping("/reports")
+@Tag(name = "ReportController")
 public class ReportController {
 
     private final ReportService reportService;
