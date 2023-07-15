@@ -34,7 +34,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="img_path" type="VARCHAR">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
         </createTable>
 
