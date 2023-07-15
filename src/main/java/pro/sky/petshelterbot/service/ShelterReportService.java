@@ -14,12 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class DogShelterReportService {
+public class ShelterReportService {
 
     private final ReportRepository reportRepository;
     private final PetRepository petRepository;
 
-    public DogShelterReportService(ReportRepository reportRepository, PetRepository petRepository) {
+    public ShelterReportService(ReportRepository reportRepository, PetRepository petRepository) {
         this.reportRepository = reportRepository;
         this.petRepository = petRepository;
     }
@@ -30,51 +30,43 @@ public class DogShelterReportService {
     }
 
     public List<Report> findAllByPetId(Long petId, Integer pageNo, Integer pageSize) {
-        if (getPetSpecies(petId).equals("dog")) {
-            Pageable pageable = PageRequest.of(pageNo, pageSize);
-            Page<Report> reportPage = reportRepository.findAllByPetId(petId, pageable);
-            if (reportPage.hasContent()) {
-                return reportPage.getContent();
-            } else {
-                return new ArrayList<Report>();
-            }
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Report> reportPage = reportRepository.findAllByPetId(petId, pageable);
+        if (reportPage.hasContent()) {
+            return reportPage.getContent();
+        } else {
+            return new ArrayList<Report>();
         }
-        throw new ShelterException("Ошибка получения отчёта.");
     }
 
+    /* Нужно добавить shelter_id для выборки - в процессе */
     public List<Pet> findOverdueReports() {
         List<Pet> pets = new ArrayList<>();
-        petRepository.getPetByAdoptionDateIsNotNull()
-                .forEach(pet -> {
-                    if (pet.getShelter().getType().equals("dog")) {
-                        pets.add(pet);
-                    }
-                });
-        if (pets.size() > 0) {
-            return pets;
-        }
-        throw new ShelterException("Нарушителей не выявлено.");
+        pets = petRepository.getPetByAdoptionDateIsNotNull();
+        return pets;
     }
 
     /**
      * GET /dog-shelter/reports/all
+     *
      * @param shelterId
      * @param pageNo
      * @param pageSize
      * @return
      */
     public List<Report> findAllReportsByShelterId(Long shelterId, Integer pageNo, Integer pageSize) {
-            Pageable pageable = PageRequest.of(pageNo, pageSize);
-            Page<Report> reportPage = reportRepository.findAllByShelterId(shelterId, pageable);
-            if (reportPage.hasContent()) {
-                return reportPage.getContent();
-            } else {
-                return new ArrayList<Report>();
-            }
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Report> reportPage = reportRepository.findAllByShelterId(shelterId, pageable);
+        if (reportPage.hasContent()) {
+            return reportPage.getContent();
+        } else {
+            return new ArrayList<Report>();
+        }
     }
 
     /**
      * PUT /dog-shelter/reports/
+     *
      * @param report
      * @return
      */

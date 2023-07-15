@@ -2,34 +2,52 @@ package pro.sky.petshelterbot.controllers;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pro.sky.petshelterbot.entity.Pet;
 import pro.sky.petshelterbot.entity.Volunteer;
-import pro.sky.petshelterbot.service.DogShelterService;
+import pro.sky.petshelterbot.service.PetShelterService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/dog-shelter")
-@Tag(name = "DogShelterController")
-public class DogShelterController {
+@RequestMapping(path = "/shelter")
+@Tag(name = "PetShelterController")
+public class PetShelterController {
 
-    private final DogShelterService dogShelterService;
+    private final PetShelterService petShelterService;
 
-    public DogShelterController(DogShelterService dogShelterService) {
-        this.dogShelterService = dogShelterService;
+    public PetShelterController(PetShelterService petShelterService) {
+        this.petShelterService = petShelterService;
     }
 
     /* POST /cat-shelter/add
     POST /dog-shelter/add */
-    @PostMapping("/add")
+    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiResponse(description = "" +
             "Добавляет кота в кошачий шелтер/собаку в собачий шелтер. " +
             "Показывает сохраненные значения из БД и сообщает, " +
             "что данные о животном сохранены или не сохранены.")
-    public ResponseEntity<Pet> add(@RequestBody Pet pet) {
-        return ResponseEntity.ok(dogShelterService.createDog(pet));
+    public ResponseEntity<Pet> add(
+            @RequestBody Pet pet,
+            @RequestParam(required = false) MultipartFile img) {
+        return ResponseEntity.ok(petShelterService.add(pet, img));
+    }
+
+    @PostMapping(value = "/add/img", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ApiResponse(description = "Добавление изображения для животного.")
+    public ResponseEntity<Pet> addImg(
+            @RequestParam Long petId,
+            @RequestParam MultipartFile img) {
+        return ResponseEntity.ok(petShelterService.addImg(petId, img));
+    }
+
+    @DeleteMapping()
+    @ApiResponse(description = "Удаляет животного.")
+    public ResponseEntity<Pet> delete(@RequestBody Pet pet) {
+        return ResponseEntity.ok(petShelterService.delete(pet));
     }
 
     /* GET /cat-shelter/pets
@@ -43,7 +61,7 @@ public class DogShelterController {
             @PathVariable Long shelterId,
             @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize) {
-        return ResponseEntity.ok(dogShelterService.findAllPets(shelterId, pageNo, pageSize));
+        return ResponseEntity.ok(petShelterService.findAllPets(shelterId, pageNo, pageSize));
     }
 
     /* POST /cat-shelter/volunteers/
@@ -51,21 +69,21 @@ public class DogShelterController {
     @PostMapping("/volunteers")
     @ApiResponse(description = "Добавляет волонтёра в список волонтёров шелтера")
     public ResponseEntity<Volunteer> AddVolunteerToShelter(@RequestBody Volunteer volunteer) {
-        return ResponseEntity.ok(dogShelterService.AddVolunteerToShelter(volunteer));
+        return ResponseEntity.ok(petShelterService.AddVolunteerToShelter(volunteer));
     }
 
     /* GET /dog-shelter/volunteers/ */
     @GetMapping("/volunteers/{shelterId}")
     @ApiResponse(description = "Возвращает список всех волонтёров шелтера")
     public ResponseEntity<List<Volunteer>> findAllVolunteersByShelterId(@PathVariable Long shelterId) {
-        return ResponseEntity.ok(dogShelterService.findAllVolunteersByShelterId(shelterId));
+        return ResponseEntity.ok(petShelterService.findAllVolunteersByShelterId(shelterId));
     }
 
     /* DELETE /dog-shelter/volunteers/ */
     @DeleteMapping("/volunteers")
-    @ApiResponse(description="Удаляет волонтёра из списка волонтёров шелтера.")
+    @ApiResponse(description = "Удаляет волонтёра из списка волонтёров шелтера.")
     public ResponseEntity<Volunteer> deleteVolunteer(@RequestBody Volunteer volunteer) {
-        return ResponseEntity.ok(dogShelterService.deleteVolunteer(volunteer));
+        return ResponseEntity.ok(petShelterService.deleteVolunteer(volunteer));
     }
 
 }

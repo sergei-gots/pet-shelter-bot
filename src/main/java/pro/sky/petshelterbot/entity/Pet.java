@@ -37,6 +37,8 @@ public class Pet {
     @Column(name = "adoption_date")
     private LocalDate adoptionDate;
 
+    private String imgPath;
+
 
     public Pet() {
     }
@@ -62,6 +64,14 @@ public class Pet {
         this.shelter = shelter;
         this.disabled = disabled;
         this.adopter = adopter;
+    }
+
+    public String getImgPath() {
+        return imgPath;
+    }
+
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
     }
 
     public Long getId() {

@@ -1,6 +1,7 @@
 package pro.sky.petshelterbot.controllers;
 
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -11,6 +12,7 @@ import pro.sky.petshelterbot.entity.Pet;
 import pro.sky.petshelterbot.service.PetService;
 
 @RestController("/pet")
+@Tag(name = "PetController")
 public class PetController {
 
     private final PetService petService;
