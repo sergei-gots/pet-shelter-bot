@@ -77,9 +77,9 @@ public class ReportService {
     }
 
     /* GET /dog-shelter/reports/to-review */
-    public List<Report> findAllReportsToReview(Integer pageNo, Integer pageSize) {
+    public List<Report> findAllReportsToReview(Long shelterId, Integer pageNo, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<Report> reportPage = reportRepository.findAllUncheckedReports(pageable);
+        Page<Report> reportPage = reportRepository.findAllUncheckedReports(shelterId, pageable);
         if (reportPage.hasContent()) {
             return reportPage.getContent();
         } else {
