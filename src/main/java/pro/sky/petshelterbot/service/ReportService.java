@@ -40,9 +40,7 @@ public class ReportService {
 
     /* Нужно добавить shelter_id для выборки - в процессе */
     public List<Pet> findOverdueReports() {
-        List<Pet> pets = new ArrayList<>();
-        pets = petRepository.findOverdueReports();
-        return pets;
+        return reportRepository.findOverdueReports();
     }
 
     /**

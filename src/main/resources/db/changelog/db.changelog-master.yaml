@@ -27,3 +27,5 @@ databaseChangeLog:
       file: db/changelog/insert-into/insert-into-volunteers.xml
   - include:
       file: db/changelog/insert-into/insert-info-pets.xml
+  - include:
+      file: db/changelog/insert-into/insert-into-reports.xml

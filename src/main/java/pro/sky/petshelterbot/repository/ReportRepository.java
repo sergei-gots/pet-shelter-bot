@@ -3,6 +3,7 @@ package pro.sky.petshelterbot.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import pro.sky.petshelterbot.entity.Pet;
 import pro.sky.petshelterbot.entity.Report;
 
 import org.springframework.data.domain.Pageable;
@@ -24,4 +25,7 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
 
     @Query("from Report r where r.checked = null or r.checked = false")
     Page<Report> findAllUncheckedReports(Pageable pageable);
+
+    @Query("select p from Pet p, Report r where p.adoptionDate is not null and p.adoptionDate >= current_timestamp and p = r.pet and not exists (select r from Report r where r.sent >= current_date - 1) group by p")
+    List<Pet> findOverdueReports();
 }
