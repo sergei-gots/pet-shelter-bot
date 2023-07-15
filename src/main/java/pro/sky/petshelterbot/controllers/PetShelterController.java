@@ -2,8 +2,10 @@ package pro.sky.petshelterbot.controllers;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pro.sky.petshelterbot.entity.Pet;
 import pro.sky.petshelterbot.entity.Volunteer;
 import pro.sky.petshelterbot.service.PetShelterService;
@@ -23,13 +25,23 @@ public class PetShelterController {
 
     /* POST /cat-shelter/add
     POST /dog-shelter/add */
-    @PostMapping("/add")
+    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiResponse(description = "" +
             "Добавляет кота в кошачий шелтер/собаку в собачий шелтер. " +
             "Показывает сохраненные значения из БД и сообщает, " +
             "что данные о животном сохранены или не сохранены.")
-    public ResponseEntity<Pet> add(@RequestBody Pet pet) {
-        return ResponseEntity.ok(petShelterService.add(pet));
+    public ResponseEntity<Pet> add(
+            @RequestBody Pet pet,
+            @RequestParam(required = false) MultipartFile img) {
+        return ResponseEntity.ok(petShelterService.add(pet, img));
+    }
+
+    @PostMapping(value = "/add/img", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ApiResponse(description = "Добавление изображения для животного.")
+    public ResponseEntity<Pet> addImg(
+            @RequestParam Long petId,
+            @RequestParam MultipartFile img) {
+        return ResponseEntity.ok(petShelterService.addImg(petId, img));
     }
 
     @DeleteMapping()
@@ -69,7 +81,7 @@ public class PetShelterController {
 
     /* DELETE /dog-shelter/volunteers/ */
     @DeleteMapping("/volunteers")
-    @ApiResponse(description="Удаляет волонтёра из списка волонтёров шелтера.")
+    @ApiResponse(description = "Удаляет волонтёра из списка волонтёров шелтера.")
     public ResponseEntity<Volunteer> deleteVolunteer(@RequestBody Volunteer volunteer) {
         return ResponseEntity.ok(petShelterService.deleteVolunteer(volunteer));
     }

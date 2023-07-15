@@ -66,6 +66,14 @@ public class Pet {
         this.adopter = adopter;
     }
 
+    public String getImgPath() {
+        return imgPath;
+    }
+
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
+    }
+
     public Long getId() {
         return id;
     }

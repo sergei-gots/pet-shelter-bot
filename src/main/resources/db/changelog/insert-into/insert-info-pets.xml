@@ -13,7 +13,7 @@
             <column name="species"          value="Мурзик"/>
             <column name="shelter_id"       valueNumeric="1"/>
             <column name="img_path"         value=""/>
-            <column name="disabled"         value="null"/>
+            <column name="disabled"         value="false"/>
             <column name="adoption_date"    type="DATE" value="null"/>
         </insert>
 
@@ -23,7 +23,7 @@
             <column name="species"          value="Маша"/>
             <column name="shelter_id"       valueNumeric="1"/>
             <column name="img_path"         value=""/>
-            <column name="disabled"         value="null"/>
+            <column name="disabled"         value="false"/>
             <column name="adoption_date"    type="DATE" value="null"/>
         </insert>
 
@@ -33,7 +33,7 @@
             <column name="species"          value="Барсик"/>
             <column name="shelter_id"       valueNumeric="1"/>
             <column name="img_path"         value=""/>
-            <column name="disabled"         value="null"/>
+            <column name="disabled"         value="false"/>
             <column name="adoption_date"    type="DATE" value="null"/>
         </insert>
 
@@ -43,7 +43,7 @@
             <column name="species"          value="Шарик"/>
             <column name="shelter_id"       valueNumeric="2"/>
             <column name="img_path"         value=""/>
-            <column name="disabled"         value="null"/>
+            <column name="disabled"         value="false"/>
             <column name="adoption_date"    type="DATE" value="null"/>
         </insert>
 
@@ -53,7 +53,7 @@
             <column name="species"          value="Фунтик"/>
             <column name="shelter_id"       valueNumeric="2"/>
             <column name="img_path"         value=""/>
-            <column name="disabled"         value="null"/>
+            <column name="disabled"         value="false"/>
             <column name="adoption_date"    type="DATE" value="null"/>
         </insert>
 
@@ -63,7 +63,7 @@
             <column name="species"          value="Голиаф"/>
             <column name="shelter_id"       valueNumeric="2"/>
             <column name="img_path"         value=""/>
-            <column name="disabled"         value="null"/>
+            <column name="disabled"         value="false"/>
             <column name="adoption_date"    type="DATE" value="null"/>
         </insert>
 
