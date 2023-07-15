@@ -37,6 +37,8 @@ public class Pet {
     @Column(name = "adoption_date")
     private LocalDate adoptionDate;
 
+    private String imgPath;
+
 
     public Pet() {
     }

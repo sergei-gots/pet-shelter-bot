@@ -16,14 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class DogShelterService {
+public class PetShelterService {
     final private PetRepository petRepository;
     final private ShelterRepository shelterRepository;
     final private VolunteerRepository volunteerRepository;
 
     final private Shelter catShelter, dogShelter;
 
-    public DogShelterService(
+    public PetShelterService(
             PetRepository catRepository,
             ShelterRepository shelterRepository,
             VolunteerRepository volunteerRepository) {
@@ -35,7 +35,7 @@ public class DogShelterService {
         this.volunteerRepository = volunteerRepository;
     }
 
-    public Pet createDog(Pet pet) {
+    /*public Pet createDog(Pet pet) {
         if (!pet.getSpecies().equals("dog")) {
             throw new ShelterException("Проверьте тип животного.");
         }
@@ -43,10 +43,13 @@ public class DogShelterService {
             throw new ShelterException("Проверьте тип приюта.");
         }
         return petRepository.save(pet);
-    }
+    }*/
 
     public Pet add(Pet pet) {
-        return petRepository.save(pet);
+        if (pet.getShelter().getType().equals(pet.getSpecies())) {
+            return petRepository.save(pet);
+        }
+        throw new ShelterException("Тип животного не соответствует типу размещаемых животных в приюте.");
     }
 
     public Pet add(String species, String name, Shelter shelter) {
@@ -64,8 +67,10 @@ public class DogShelterService {
         return pet;
     }
 
-    public Pet delete(Long id) {
-        Pet pet = get(id);
+    public Pet delete(Pet pet) {
+        if (petRepository.findById(pet.getId()).isEmpty()) {
+            throw new ShelterException("Животное не найдено.");
+        }
         petRepository.delete(pet);
         return pet;
     }

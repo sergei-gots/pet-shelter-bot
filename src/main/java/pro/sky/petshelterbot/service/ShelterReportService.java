@@ -14,12 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class DogShelterReportService {
+public class ShelterReportService {
 
     private final ReportRepository reportRepository;
     private final PetRepository petRepository;
 
-    public DogShelterReportService(ReportRepository reportRepository, PetRepository petRepository) {
+    public ShelterReportService(ReportRepository reportRepository, PetRepository petRepository) {
         this.reportRepository = reportRepository;
         this.petRepository = petRepository;
     }

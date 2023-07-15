@@ -6,19 +6,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.petshelterbot.entity.Pet;
 import pro.sky.petshelterbot.entity.Report;
-import pro.sky.petshelterbot.service.DogShelterReportService;
+import pro.sky.petshelterbot.service.ShelterReportService;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/dog-shelter/reports")
-@Tag(name = "DogShelterReportController")
-public class DogShelterReportController {
+@Tag(name = "ShelterReportController")
+public class ShelterReportController {
 
-    private final DogShelterReportService dogShelterReportService;
+    private final ShelterReportService shelterReportService;
 
-    public DogShelterReportController(DogShelterReportService dogShelterReportService) {
-        this.dogShelterReportService = dogShelterReportService;
+    public ShelterReportController(ShelterReportService shelterReportService) {
+        this.shelterReportService = shelterReportService;
     }
 
     @GetMapping(path = "/{id}")
@@ -27,13 +27,13 @@ public class DogShelterReportController {
             @PathVariable Long id,
             @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize) {
-        return ResponseEntity.ok(dogShelterReportService.findAllByPetId(id, pageNo, pageSize));
+        return ResponseEntity.ok(shelterReportService.findAllByPetId(id, pageNo, pageSize));
     }
 
     @GetMapping("/overdue")
     @ApiResponse(description = "Возвращает животных на пробном периоде адоптации, для которых адоптеры не прислали текущие отчёты своевременно.")
     public ResponseEntity<List<Pet>> findOverdueReports() {
-        return ResponseEntity.ok(dogShelterReportService.findOverdueReports());
+        return ResponseEntity.ok(shelterReportService.findOverdueReports());
     }
 
     @GetMapping("/all/{shelterId}")
@@ -45,7 +45,7 @@ public class DogShelterReportController {
             @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize
     ) {
-        return ResponseEntity.ok(dogShelterReportService.findAllReportsByShelterId(shelterId, pageNo, pageSize));
+        return ResponseEntity.ok(shelterReportService.findAllReportsByShelterId(shelterId, pageNo, pageSize));
     }
 
     @PutMapping()
@@ -55,7 +55,7 @@ public class DogShelterReportController {
             "то пользователю отсылается сообщение с рекомендацией" +
             "заполнять отчёты более полно.")
     public ResponseEntity<Report> updateReport(@RequestBody Report report) {
-        return ResponseEntity.ok(dogShelterReportService.updateReport(report));
+        return ResponseEntity.ok(shelterReportService.updateReport(report));
     }
 
     @GetMapping("/to-review")
@@ -64,6 +64,6 @@ public class DogShelterReportController {
             @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize
     ) {
-        return ResponseEntity.ok(dogShelterReportService.findAllReportsToReview(pageNo, pageSize));
+        return ResponseEntity.ok(shelterReportService.findAllReportsToReview(pageNo, pageSize));
     }
 }
