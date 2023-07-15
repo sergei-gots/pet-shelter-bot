@@ -30,10 +30,10 @@ public class ReportController {
         return ResponseEntity.ok(reportService.findAllByPetId(id, pageNo, pageSize));
     }
 
-    @GetMapping("/overdue")
+    @GetMapping("/overdue/{shelterId}")
     @ApiResponse(description = "Возвращает животных на пробном периоде адоптации, для которых адоптеры не прислали текущие отчёты своевременно.")
-    public ResponseEntity<List<Pet>> findOverdueReports() {
-        return ResponseEntity.ok(reportService.findOverdueReports());
+    public ResponseEntity<List<Pet>> findOverdueReports(@PathVariable Long shelterId) {
+        return ResponseEntity.ok(reportService.findOverdueReports(shelterId));
     }
 
     @GetMapping("/all/{shelterId}")

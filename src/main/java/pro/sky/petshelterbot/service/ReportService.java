@@ -39,8 +39,8 @@ public class ReportService {
     }
 
     /* Нужно добавить shelter_id для выборки - в процессе */
-    public List<Pet> findOverdueReports() {
-        return reportRepository.findOverdueReports();
+    public List<Pet> findOverdueReports(Long shelterId) {
+        return reportRepository.findOverdueReports(shelterId);
     }
 
     /**
