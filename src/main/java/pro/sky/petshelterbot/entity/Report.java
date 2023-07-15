@@ -19,8 +19,7 @@ public class Report {
     private String diet;
     private String wellBeing;
     private String behaviour;
-    private String photoFilename;
-    private String thumbnailPhotoFilename;
+    private String imgPath;
 
     /**
      * indicates whether the report has been reviewed or not
@@ -39,8 +38,7 @@ public class Report {
                   LocalDate sent,
                   String diet, String wellBeing,
                   String behaviour,
-                  String photoFilename,
-                  String thumbnailPhotoFilename,
+                  String imgPath,
                   boolean checked,
                   boolean approved) {
         this.pet = pet;
@@ -48,8 +46,7 @@ public class Report {
         this.diet = diet;
         this.wellBeing = wellBeing;
         this.behaviour = behaviour;
-        this.photoFilename = photoFilename;
-        this.thumbnailPhotoFilename = thumbnailPhotoFilename;
+        this.imgPath = imgPath;
         this.checked = checked;
         this.approved = approved;
     }
@@ -98,20 +95,12 @@ public class Report {
         this.behaviour = behaviour;
     }
 
-    public String getPhotoFilename() {
-        return photoFilename;
+    public String getImgPath() {
+        return imgPath;
     }
 
-    public void setPhotoFilename(String photoFilename) {
-        this.photoFilename = photoFilename;
-    }
-
-    public String getThumbnailPhotoFilename() {
-        return thumbnailPhotoFilename;
-    }
-
-    public void setThumbnailPhotoFilename(String thumbnailPhotoFilename) {
-        this.thumbnailPhotoFilename = thumbnailPhotoFilename;
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
     }
 
     public boolean isChecked() {
@@ -139,8 +128,7 @@ public class Report {
                 ", diet='" + diet + '\'' +
                 ", wellBeing='" + wellBeing + '\'' +
                 ", behaviour='" + behaviour + '\'' +
-                ", photoFilename='" + photoFilename + '\'' +
-                ", thumbnailPhotoFilename='" + thumbnailPhotoFilename + '\'' +
+                ", imgPath='" + imgPath + '\'' +
                 ", checked=" + checked +
                 ", approved=" + approved +
                 '}';

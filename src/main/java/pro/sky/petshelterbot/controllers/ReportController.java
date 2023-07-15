@@ -13,11 +13,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/dog-shelter/reports")
 @Tag(name = "ShelterReportController")
-public class ShelterReportController {
+public class ReportController {
 
     private final ReportService reportService;
 
-    public ShelterReportController(ReportService reportService) {
+    public ReportController(ReportService reportService) {
         this.reportService = reportService;
     }
 
