@@ -52,7 +52,7 @@ public class ShelterController {
         return ResponseEntity.ok(shelterService.get(id));
     }
 
-    @GetMapping(path = "/update/{id}")
+    @PutMapping(path = "/{id}")
     public ResponseEntity<Shelter> update(
             @RequestParam Long id,
             @RequestParam(required = false) String name,
