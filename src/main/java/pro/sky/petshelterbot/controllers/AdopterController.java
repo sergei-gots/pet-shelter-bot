@@ -47,4 +47,11 @@ public class AdopterController {
         return ResponseEntity.ok(adopterService.cancelTrial(petId));
     }
 
+    @GetMapping(path = "/all-ready-to-adopt")
+    public ResponseEntity<List<Adopter>> getAllReadyToAdopt(
+            @RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "10") Integer pageSize) {
+        return ResponseEntity.ok(adopterService.getAllReadyToAdopt(pageNo, pageSize));
+    }
+
 }

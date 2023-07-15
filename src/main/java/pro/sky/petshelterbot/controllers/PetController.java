@@ -6,9 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Pet;
-import pro.sky.petshelterbot.service.AdopterService;
 import pro.sky.petshelterbot.service.PetService;
 
 import java.util.List;
@@ -19,11 +17,9 @@ import java.util.List;
 public class PetController {
 
     private final PetService petService;
-    private final AdopterService adopterService;
 
-    public PetController(PetService petService, AdopterService adopterService) {
+    public PetController(PetService petService) {
         this.petService = petService;
-        this.adopterService = adopterService;
     }
 
     /* POST /cat-shelter/add
@@ -65,13 +61,6 @@ public class PetController {
             @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize) {
         return ResponseEntity.ok(petService.findAllPets(shelterId, pageNo, pageSize));
-    }
-
-    @GetMapping(path = "/all-ready-to-adopt")
-    public ResponseEntity<List<Adopter>> getAllReadyToAdopt(
-            @RequestParam(defaultValue = "0") Integer pageNo,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
-        return ResponseEntity.ok(adopterService.getAllReadyToAdopt(pageNo, pageSize));
     }
 
 }
