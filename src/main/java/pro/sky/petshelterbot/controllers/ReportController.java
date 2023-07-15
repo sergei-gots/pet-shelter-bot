@@ -58,12 +58,13 @@ public class ReportController {
         return ResponseEntity.ok(reportService.updateReport(report));
     }
 
-    @GetMapping("/to-review")
+    @GetMapping("/to-review/{shelterId}")
     @ApiResponse(description = "Распечатывает все отчёты пользователей, требующие проверки.")
     public ResponseEntity<List<Report>> findAllReportsToReview(
+            @PathVariable Long shelterId,
             @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize
     ) {
-        return ResponseEntity.ok(reportService.findAllReportsToReview(pageNo, pageSize));
+        return ResponseEntity.ok(reportService.findAllReportsToReview(shelterId, pageNo, pageSize));
     }
 }
