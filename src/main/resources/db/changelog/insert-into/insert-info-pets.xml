@@ -12,7 +12,7 @@
             <column name="name"             value="cat"/>
             <column name="species"          value="Мурзик"/>
             <column name="shelter_id"       valueNumeric="1"/>
-            <column name="img_path"         value=""/>
+            <column name="img_path"         value="src\main\resources\uploads\pet_images\1.jpg"/>
             <column name="disabled"         value="false"/>
             <column name="adoption_date"    type="DATE" value="null"/>
         </insert>
