@@ -33,11 +33,8 @@
             <column name="behaviour" type="VARCHAR">
                 <constraints nullable="false"/>
             </column>
-            <column name="photo_filename" type="VARCHAR">
-                <constraints nullable="false"/>
-            </column>
-            <column name="thumbnail_photo_filename" type="VARCHAR">
-                <constraints nullable="false"/>
+            <column name="img_path" type="VARCHAR">
+                <constraints nullable="true"/>
             </column>
         </createTable>
 

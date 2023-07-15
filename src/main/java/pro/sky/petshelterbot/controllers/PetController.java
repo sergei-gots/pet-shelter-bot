@@ -1,17 +1,18 @@
 package pro.sky.petshelterbot.controllers;
 
-
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import pro.sky.petshelterbot.entity.Adopter;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pro.sky.petshelterbot.entity.Pet;
 import pro.sky.petshelterbot.service.PetService;
 
-@RestController("/pet")
+import java.util.List;
+
+@RestController
+@RequestMapping(path = "/pets")
 @Tag(name = "PetController")
 public class PetController {
 
@@ -21,27 +22,45 @@ public class PetController {
         this.petService = petService;
     }
 
-    /* PUT /pet/setAdopter */
-    @PutMapping("/setAdopter")
-    public ResponseEntity<Pet> setAdopter(@RequestBody Pet pet, @RequestBody Adopter adopter) {
-        return ResponseEntity.ok(petService.setAdopter(pet, adopter));
+    /* POST /cat-shelter/add
+    POST /dog-shelter/add */
+    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ApiResponse(description = "" +
+            "Добавляет кота в кошачий шелтер/собаку в собачий шелтер. " +
+            "Показывает сохраненные значения из БД и сообщает, " +
+            "что данные о животном сохранены или не сохранены.")
+    public ResponseEntity<Pet> add(
+            @RequestBody Pet pet,
+            @RequestParam(required = false) MultipartFile img) {
+        return ResponseEntity.ok(petService.add(pet, img));
     }
 
-    /* PUT /pet/prolongTrial14/{petId} */
-    @PutMapping("/prolongTrial14/{petId}")
-    public ResponseEntity<Pet> prolongTrial14(@PathVariable Long petId) {
-        return ResponseEntity.ok(petService.prolongTrial14(petId));
+    @PostMapping(value = "/add/img", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ApiResponse(description = "Добавление изображения для животного.")
+    public ResponseEntity<Pet> addImg(
+            @RequestParam Long petId,
+            @RequestParam MultipartFile img) {
+        return ResponseEntity.ok(petService.addImg(petId, img));
     }
 
-    /* /pet/prolongTrial30/{petId} */
-    @PutMapping("prolongTrial30/{petId}")
-    public ResponseEntity<Pet> prolongTrial30(@PathVariable Long petId) {
-        return ResponseEntity.ok(petService.prolongTrial30(petId));
+    @DeleteMapping()
+    @ApiResponse(description = "Удаляет животного.")
+    public ResponseEntity<Pet> delete(@RequestBody Pet pet) {
+        return ResponseEntity.ok(petService.delete(pet));
     }
 
-    /* PUT /pet/cancelTrial/{petId} */
-    @PutMapping("cancelTrial/{petId}")
-    public ResponseEntity<Pet> cancelTrial(@PathVariable Long petId) {
-        return ResponseEntity.ok(petService.cancelTrial(petId));
+    /* GET /cat-shelter/pets
+    GET /dog-shelter/pets */
+    @GetMapping("/{shelterId}")
+    @ApiResponse(description = "" +
+            "Распечатывает страницу из списка всех котов, " +
+            "то есть как находящихся в приюте, так и адоптируемых или находящихся в адоптации. " +
+            "Поиск в методах осуществляется по shelter_id.")
+    public ResponseEntity<List<Pet>> getAllPets(
+            @PathVariable Long shelterId,
+            @RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "10") Integer pageSize) {
+        return ResponseEntity.ok(petService.findAllPets(shelterId, pageNo, pageSize));
     }
+
 }
