@@ -9,10 +9,7 @@ import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.entity.Dialog;
 import pro.sky.petshelterbot.entity.Shelter;
 import pro.sky.petshelterbot.entity.Volunteer;
-import pro.sky.petshelterbot.repository.DialogRepository;
-import pro.sky.petshelterbot.repository.ShelterRepository;
-import pro.sky.petshelterbot.repository.UserMessageRepository;
-import pro.sky.petshelterbot.repository.VolunteerRepository;
+import pro.sky.petshelterbot.repository.*;
 
 /**
  * Handles commands receiving from user supposed
@@ -24,10 +21,12 @@ import pro.sky.petshelterbot.repository.VolunteerRepository;
 public class VolunteerDialogHandler extends AbstractDialogHandler {
 
     public VolunteerDialogHandler(TelegramBot telegramBot,
+                                  AdopterRepository adopterRepository,
                                   ShelterRepository shelterRepository,
                                   UserMessageRepository userMessageRepository,
+                                  ButtonRepository buttonRepository,
                                   VolunteerRepository volunteerRepository, DialogRepository dialogRepository) {
-        super(telegramBot, shelterRepository, userMessageRepository, volunteerRepository, dialogRepository);
+        super(telegramBot, adopterRepository, shelterRepository, userMessageRepository, buttonRepository, volunteerRepository, dialogRepository);
     }
 
     @Override
@@ -77,7 +76,7 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
         logger.debug("processJoinDialog()-method. Volunteer.first_name=\"{}\"",
                 volunteer.getFirstName());
         sendPersonalizedMessage(volunteer,
-                "добро пожаловать в состав волонтёров шелтера "
+                "добро пожаловать в волонтёры шелтера "
                         + volunteer.getShelter().getName()+ " !");
     }
 

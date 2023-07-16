@@ -11,21 +11,17 @@
         A developer can add their own changeSet that assign test-volunteer-entry
         -->
         <insert tableName="volunteers">
-            <column name="chat_id"      valueNumeric="1352662527"/>
-            <column name="first_name"   value="👩 N"/>
-            <column name="shelter_id"   valueNumeric="2"/>
-        </insert>
-        <insert tableName="volunteers">
-            <column name="chat_id"      valueNumeric="89326133"/>
-            <column name="first_name"   value="👨‍🦱 A"/>
-            <column name="shelter_id"   valueNumeric="2"/>
-        </insert>
-        <insert tableName="volunteers">
-            <column name="chat_id"      valueNumeric="414481129"/>
-            <column name="first_name"   value="👨‍🦱 S-1"/>
+            <!-- to play with dialogs at the dev-stage  you should change value for "chat_id" below to some real one -->
+            <column name="chat_id"      valueNumeric="0"/>
+            <column name="first_name"   value="👨‍🦱 Volunteer-A"/>
             <column name="shelter_id"   valueNumeric="1"/>
         </insert>
-
+        <insert tableName="volunteers">
+            <!-- to play with dialogs at the dev-stage  you should change value for "chat_id" below to some real one -->
+            <column name="chat_id"      valueNumeric="1"/>
+            <column name="first_name"   value="👨‍🦱 Volunteer-B"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+        </insert>
     </changeSet>
 
     <changeSet id="remove-Anton_from-volunteers" author="S">
