@@ -2,7 +2,7 @@ package pro.sky.petshelterbot.handler;
 
 import com.pengrad.telegrambot.TelegramBot;
 import org.springframework.stereotype.Component;
-import pro.sky.petshelterbot.constants.DialogCommands;
+import pro.sky.petshelterbot.constants.DialogCommandNames;
 import pro.sky.petshelterbot.entity.AbstractPerson;
 import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Dialog;
@@ -10,6 +10,7 @@ import pro.sky.petshelterbot.entity.Volunteer;
 import pro.sky.petshelterbot.repository.DialogRepository;
 import pro.sky.petshelterbot.repository.ShelterRepository;
 import pro.sky.petshelterbot.repository.UserMessageRepository;
+import pro.sky.petshelterbot.repository.ButtonRepository;
 import pro.sky.petshelterbot.repository.VolunteerRepository;
 
 /**
@@ -20,15 +21,16 @@ import pro.sky.petshelterbot.repository.VolunteerRepository;
 
 @Component
 public abstract class AbstractDialogHandler extends AbstractHandler
-        implements DialogCommands {
+        implements DialogCommandNames {
     final protected VolunteerRepository volunteerRepository;
     final protected DialogRepository dialogRepository;
 
     public AbstractDialogHandler(TelegramBot telegramBot,
                                  ShelterRepository shelterRepository,
                                  UserMessageRepository userMessageRepository,
+                                 ButtonRepository buttonRepository,
                                  VolunteerRepository volunteerRepository, DialogRepository dialogRepository) {
-        super(telegramBot, shelterRepository, userMessageRepository);
+        super(telegramBot, shelterRepository, userMessageRepository, buttonRepository);
         this.volunteerRepository = volunteerRepository;
         this.dialogRepository = dialogRepository;
     }

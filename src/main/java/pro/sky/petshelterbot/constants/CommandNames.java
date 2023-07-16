@@ -1,5 +1,5 @@
 package pro.sky.petshelterbot.constants;
 
-public interface Commands {
+public interface CommandNames {
     String START="/start";
 }

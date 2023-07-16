@@ -11,11 +11,10 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import pro.sky.petshelterbot.entity.Shelter;
 import pro.sky.petshelterbot.handler.ShelterInfoHandler;
-import pro.sky.petshelterbot.repository.ButtonsRepository;
+import pro.sky.petshelterbot.repository.ButtonRepository;
 import pro.sky.petshelterbot.repository.ShelterRepository;
 import pro.sky.petshelterbot.repository.UserMessageRepository;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 @WebMvcTest
@@ -27,7 +26,7 @@ public class ShelterInfoHandlerTest {
     private TelegramBot telegramBot;
 
     @Mock
-    private ButtonsRepository buttonsRepository;
+    private ButtonRepository buttonsRepository;
 
     @Mock
     private UserMessageRepository userMessageRepository;

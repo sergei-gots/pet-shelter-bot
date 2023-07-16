@@ -1,6 +1,7 @@
 package pro.sky.petshelterbot.handler;
 
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.entity.Adopter;
@@ -22,11 +23,12 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
     public AdopterDialogHandler(TelegramBot telegramBot,
                                 ShelterRepository shelterRepository,
                                 UserMessageRepository userMessageRepository,
+                                ButtonRepository buttonRepository,
                                 DialogRepository dialogRepository,
                                 AdopterRepository adopterRepository,
                                 VolunteerRepository volunteerRepository
     ) {
-        super(telegramBot, shelterRepository, userMessageRepository, volunteerRepository, dialogRepository);
+        super(telegramBot, shelterRepository, userMessageRepository, buttonRepository, volunteerRepository, dialogRepository);
         this.adopterRepository = adopterRepository;
     }
 
@@ -51,15 +53,15 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
     }
 
     @Override
-    public boolean handle(Message message, String key, Long chatId, Long shelterId) {
+    public boolean handle(CallbackQuery callbackQuery, Message message, String key, Long chatId, Long shelterId) {
         if (CALL_VOLUNTEER.equals(key)) {
-            handleVolunteerCall(message, chatId, shelterId);
+            handleVolunteerCall(callbackQuery, message, chatId, shelterId);
             return true;
         }
         return false;
     }
 
-    public void handleVolunteerCall(Message message, Long chatId, Long shelterId) {
+    public void handleVolunteerCall(CallbackQuery callbackQuery, Message message, Long chatId, Long shelterId) {
         logger.debug("handleVolunteerCall(chatId={}, shelterId={})", chatId, shelterId);
         if (getDialogIfRequested(chatId) != null) {
             throw new IllegalStateException("Dialog for chatId=" + chatId + " is already requested");

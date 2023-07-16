@@ -32,7 +32,6 @@ public class TelegramBotListener
      */
     public TelegramBotListener(TelegramBot telegramBot,
                                VolunteerDialogHandler volunteerHandler,
-                               DevStageDBHandler catsDevStageHandler,
                                StartHandler startHandler,
                                AdopterDialogHandler adopterDialogHandler,
                                ShelterHandler shelterHandler) {
@@ -44,7 +43,6 @@ public class TelegramBotListener
                 adopterDialogHandler,
                 startHandler,
                 shelterHandler,
-                catsDevStageHandler
         };
     }
 
