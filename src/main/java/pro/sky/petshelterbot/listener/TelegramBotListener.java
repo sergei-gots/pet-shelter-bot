@@ -31,10 +31,11 @@ public class TelegramBotListener
      *                         if the update we have to handle is sent by volunteer.
      */
     public TelegramBotListener(TelegramBot telegramBot,
-                               VolunteerDialogHandler volunteerHandler,
                                StartHandler startHandler,
-                               AdopterDialogHandler adopterDialogHandler,
-                               ShelterHandler shelterHandler) {
+                               ShelterHandler shelterHandler,
+                               VolunteerDialogHandler volunteerHandler,
+                               AdopterDialogHandler adopterDialogHandler
+                               ) {
         this.telegramBot = telegramBot;
 
         handlers = new Handler[]{

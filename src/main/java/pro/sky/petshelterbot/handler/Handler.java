@@ -4,8 +4,9 @@ import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import pro.sky.petshelterbot.constants.ChapterNames;
+import pro.sky.petshelterbot.constants.CommandNames;
 
-public interface Handler extends ChapterNames {
+public interface Handler extends ChapterNames, CommandNames {
     /**
      * Handles update.
      * @param update Telegram bot update

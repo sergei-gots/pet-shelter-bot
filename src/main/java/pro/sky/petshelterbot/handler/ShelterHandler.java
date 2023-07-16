@@ -23,11 +23,13 @@ public class ShelterHandler extends AbstractHandler {
 
 
     public ShelterHandler(TelegramBot telegramBot,
+
                           ShelterRepository shelterRepository,
-                          ShelterInfoHandler shelterInfoHandler,
-                          AdopterDialogHandler volunteerChatHandler,
                           UserMessageRepository userMessageRepository,
-                          ButtonRepository buttonsRepository) {
+                          ButtonRepository buttonsRepository,
+
+                          ShelterInfoHandler shelterInfoHandler,
+                          AdopterDialogHandler volunteerChatHandler) {
         super(telegramBot, shelterRepository, userMessageRepository, buttonsRepository);
         this.shelterInfoHandler = shelterInfoHandler;
         this.dialogHandler = volunteerChatHandler;
@@ -54,6 +56,7 @@ public class ShelterHandler extends AbstractHandler {
             if(START_INFO_MENU.equals(key)) {
                 DeleteMessage deleteMessage = new DeleteMessage(chatId, message.messageId());
                 telegramBot.execute(deleteMessage);
+                logger.trace("handle(CallbackQuery)-method deleted message containing menu: message.messageId()={}", message.messageId());
 
                 sendMessage(chatId, "Вы выбрали шелтер \"<b>"
                         + shelterRepository

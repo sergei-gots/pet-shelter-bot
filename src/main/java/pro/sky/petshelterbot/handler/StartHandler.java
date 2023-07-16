@@ -28,27 +28,30 @@ public class StartHandler extends AbstractHandler {
 
     /** handles command '/start' */
     public boolean handle(Message message) {
-        if (!message.text().equals("/start")) {
+        if (!message.text().equals(START)) {
             return false;
         }
-        SendMessage welcomeMessage = new SendMessage(message.chat().id(), "Здравствуйте, " + message.chat().firstName());
+        Long chatId = message.chat().id();
+        SendMessage welcomeMessage = new SendMessage(chatId, "Здравствуйте, " + message.chat().firstName());
         telegramBot.execute(welcomeMessage);
 
         Collection<Shelter> shelters = shelterRepository.findAll();
 
+
         // Create buttons to choose shelter
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
-        shelters.stream()
-                .forEach(shelter -> {
-                    markup.addRow(
-                            new InlineKeyboardButton(shelter.getName()).callbackData(shelter.getId() + "-start_info_menu")
-                    );
-                });
+        for (Shelter shelter : shelters) {
+            markup.addRow(
+                    new InlineKeyboardButton(shelter.getName())
+                            .callbackData(shelter.getId() + "-" + START_INFO_MENU)
+            );
+        }
 
-                // Send buttons to user
-        telegramBot.execute(new SendMessage(message.chat().id(), "Выберите приют:")
-                .replyMarkup(markup));
+        sendMenu(chatId, "Выберите приют:", markup);
+
+
 
         return true;
     }
+
 }

@@ -5,6 +5,7 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pro.sky.petshelterbot.entity.Button;
@@ -84,11 +85,15 @@ public abstract class AbstractHandler implements Handler{
             markup.addRow(new InlineKeyboardButton(button.getText()).callbackData(shelterId + "-" + button.getKey()));
         }
 
-        telegramBot.execute(new SendMessage(chatId, title)
-                .replyMarkup(markup));
+        sendMenu(chatId, title, markup);
+
         return true;
 
     }
 
+    protected void sendMenu(Long chatId, String text, InlineKeyboardMarkup markup) {
+        SendResponse response =  telegramBot.execute(new SendMessage(chatId, text).replyMarkup(markup));
+        logger.trace("sendMenu()-method: response.message().messageId()={}", response.message().messageId());
+    }
 
 }

@@ -235,4 +235,20 @@
         </insert>
 
     </changeSet>
+
+    <changeSet id="insert-into-buttons-dialog_buttons" author="S">
+        <insert tableName="buttons">
+            <column name="key"          value="cancel_call"/>
+            <column name="chapter"      value="volunteer_is_called"/>
+            <column name="text"         value="Снять заявку на связь с волонтёром"/>
+        </insert>
+
+        <insert tableName="buttons">
+            <column name="key"          value="terminate_dialog"/>
+            <column name="chapter"      value="dialog_is_on"/>
+            <column name="text"         value="Завершить диалог"/>
+        </insert>
+    </changeSet>
+
+
 </databaseChangeLog>
