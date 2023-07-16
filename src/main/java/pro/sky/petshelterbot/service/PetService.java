@@ -26,7 +26,7 @@ public class PetService {
     final private ShelterRepository shelterRepository;
     final private VolunteerRepository volunteerRepository;
 
-    final private Shelter catShelter, dogShelter;
+    /*final private Shelter catShelter, dogShelter;*/
 
     public PetService(
             PetRepository catRepository,
@@ -35,8 +35,8 @@ public class PetService {
 
         this.petRepository = catRepository;
         this.shelterRepository = shelterRepository;
-        catShelter = shelterRepository.getCatShelter();
-        dogShelter = shelterRepository.getDogShelter();
+        /*catShelter = shelterRepository.getCatShelter();
+        dogShelter = shelterRepository.getDogShelter();*/
         this.volunteerRepository = volunteerRepository;
     }
 
@@ -64,6 +64,13 @@ public class PetService {
             if (imgPath != null) {
                 pet.setImgPath(imgPath);
             }
+            return petRepository.save(pet);
+        }
+        throw new ShelterException("Тип животного не соответствует типу размещаемых животных в приюте.");
+    }
+
+    public Pet add(Pet pet) {
+        if (pet.getShelter().getType().equals(pet.getSpecies())) {
             return petRepository.save(pet);
         }
         throw new ShelterException("Тип животного не соответствует типу размещаемых животных в приюте.");
