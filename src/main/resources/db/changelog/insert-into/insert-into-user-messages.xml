@@ -9,7 +9,7 @@
 
         <insert tableName="user_messages">
             <column name="key"          value="shelter_info_menu"/>
-            <column name="message"      value="Меню информации о шелтере (используйте также команду /menu или /меню для отображения данного меню, если меню будет где-то далеко наверху потока чата)"/>
+            <column name="message"      value="Меню информации о шелтере (используйте также команду /menu или /меню для отображения данного меню, если оно будет где-то далеко наверху потока чата)"/>
         </insert>
         <insert tableName="user_messages">
             <column name="key"          value="adoption_info_menu"/>
