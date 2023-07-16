@@ -117,7 +117,7 @@ public class PetService {
     }
 
     /* POST /dog-shelter/volunteers/ */
-    public Volunteer AddVolunteerToShelter(Volunteer volunteer) {
+    public Volunteer addVolunteerToShelter(Volunteer volunteer) {
         if (volunteer.isAvailable()) {
             return volunteerRepository.save(volunteer);
         }

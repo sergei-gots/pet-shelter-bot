@@ -27,8 +27,8 @@ public class VolunteerController {
     POST /dog-shelter/volunteers/ */
     @PostMapping
     @ApiResponse(description = "Добавляет волонтёра в список волонтёров шелтера")
-    public ResponseEntity<Volunteer> AddVolunteerToShelter(@RequestBody Volunteer volunteer) {
-        return ResponseEntity.ok(petService.AddVolunteerToShelter(volunteer));
+    public ResponseEntity<Volunteer> addVolunteerToShelter(@RequestBody Volunteer volunteer) {
+        return ResponseEntity.ok(petService.addVolunteerToShelter(volunteer));
     }
 
     /* GET /dog-shelter/volunteers/ */
