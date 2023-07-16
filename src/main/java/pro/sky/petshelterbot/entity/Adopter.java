@@ -44,10 +44,13 @@ public class Adopter extends AbstractPerson {
                 "}";
     }
 
-    public int getChatMenuMessageId() {
+    public Integer getChatMenuMessageId() {
         return chatMenuMessageId;
     }
 
+    public void resetChatMenuMessageId() {
+        this.chatMenuMessageId = null;
+    }
     public void setChatMenuMessageId(Integer chatMenuMessageId) {
         this.chatMenuMessageId = chatMenuMessageId;
     }

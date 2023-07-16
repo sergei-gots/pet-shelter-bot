@@ -2,12 +2,13 @@ package pro.sky.petshelterbot.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import pro.sky.petshelterbot.entity.Button;
+import pro.sky.petshelterbot.entity.Shelter;
 
 import java.util.Collection;
 
 public interface ButtonRepository extends JpaRepository<Button, Long> {
 
-    Collection<Button> findByShelterIdAndChapterOrderById(Long shelter_id, String chapter);
-    Collection<Button> findByChapterAndShelterIdIsNullOrderById(String chapter);
+    Collection<Button> findByShelterAndChapterOrderById(Shelter shelter, String chapter);
+    Collection<Button> findByChapterAndShelterIsNullOrderById(String chapter);
 
 }

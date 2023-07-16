@@ -1,12 +1,12 @@
 package pro.sky.petshelterbot.entity;
 
-import pro.sky.petshelterbot.constants.ButtonKeys;
+import pro.sky.petshelterbot.constants.Commands;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "buttons")
-public class Button implements ButtonKeys {
+public class Button implements Commands {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,7 +14,9 @@ public class Button implements ButtonKeys {
 
     private String key;
     private String text;
-    private Long shelterId;
+    @JoinColumn(name = "shelter_id")
+    @ManyToOne
+    private Shelter shelter;
     private String chapter;
     private Integer position;
 
@@ -34,12 +36,12 @@ public class Button implements ButtonKeys {
         this.chapter = chapter;
     }
 
-    public Long getShelterId() {
-        return shelterId;
+    public Shelter getShelter() {
+        return shelter;
     }
 
-    public void setShelterId(Long shelter_id) {
-        this.shelterId = shelter_id;
+    public void setShelter(Shelter shelter) {
+        this.shelter = shelter;
     }
 
     public String getKey() {
