@@ -8,102 +8,102 @@
     <changeSet id="insert-into-buttons" author="S">
 
         <insert tableName="buttons">
-            <column name="key"          value="shelter_info"/>
+            <column name="key"          value="about_shelter_info"/>
             <column name="text"         value="Узнать информацию о приюте"/>
-            <column name="chapter"      value="start_info_menu"/>
+            <column name="chapter"      value="shelter_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
-            <column name="key"          value="adoption_info"/>
+            <column name="key"          value="adoption_info_menu"/>
             <column name="text"         value="Как взять животное из приюта"/>
-            <column name="chapter"      value="start_info_menu"/>
+            <column name="chapter"      value="shelter_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="report_info"/>
             <column name="text"         value="Прислать отчет о питомце"/>
-            <column name="chapter"      value="start_info_menu"/>
+            <column name="chapter"      value="shelter_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="/call_volunteer"/>
             <column name="text"         value="Позвать волонтёра"/>
-            <column name="chapter"      value="start_info_menu"/>
+            <column name="chapter"      value="shelter_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="opening_hours_and_address_info"/>
             <column name="text"         value="Расписание работы и адрес"/>
-            <column name="chapter"      value="start_info_menu"/>
+            <column name="chapter"      value="shelter_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="security_info"/>
             <column name="text"         value="Контактные данные охраны"/>
-            <column name="chapter"      value="start_info_menu"/>
+            <column name="chapter"      value="shelter_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="cynologist_advice_info"/>
             <column name="shelter_id"   valueNumeric="2"/>
             <column name="text"         value="Советы кинолога"/>
-            <column name="chapter"      value="adoption_info"/>
+            <column name="chapter"      value="adoption_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="refusal_info"/>
             <column name="shelter_id"   valueNumeric="2"/>
             <column name="text"         value="Почему можем отказать"/>
-            <column name="chapter"      value="adoption_info"/>
+            <column name="chapter"      value="adoption_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="contact_info"/>
             <column name="shelter_id"   valueNumeric="1"/>
             <column name="text"         value="Оставить контактные данные"/>
-            <column name="chapter"      value="shelter_info"/>
+            <column name="chapter"      value="shelter_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="contact_info"/>
             <column name="shelter_id"   valueNumeric="2"/>
             <column name="text"         value="Оставить контактные данные"/>
-            <column name="chapter"      value="shelter_info"/>
+            <column name="chapter"      value="shelter_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="safety_info"/>
             <column name="shelter_id"   valueNumeric="1"/>
             <column name="text"         value="Рекомендации по безопасности"/>
-            <column name="chapter"      value="shelter_info"/>
+            <column name="chapter"      value="shelter_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="safety_info"/>
             <column name="shelter_id"   valueNumeric="2"/>
             <column name="text"         value="Рекомендации по безопасности"/>
-            <column name="chapter"      value="shelter_info"/>
+            <column name="chapter"      value="shelter_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="kitty_at_home_info"/>
             <column name="shelter_id"   valueNumeric="1"/>
             <column name="text"         value="Рекомендации по обустройству для котёнка дома"/>
-            <column name="chapter"      value="adoption_info"/>
+            <column name="chapter"      value="adoption_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="disabled_at_home_info"/>
             <column name="shelter_id"   valueNumeric="1"/>
             <column name="text"         value="Рекомендации по обустройству дома для животного с ограниченными возможностями"/>
-            <column name="chapter"      value="adoption_info"/>
+            <column name="chapter"      value="adoption_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="disabled_at_home_info"/>
             <column name="shelter_id"   valueNumeric="2"/>
             <column name="text"         value="Рекомендации по обустройству дома для животного с ограниченными возможностями"/>
-            <column name="chapter"      value="adoption_info"/>
+            <column name="chapter"      value="adoption_info_menu"/>
         </insert>
 
 
@@ -111,35 +111,35 @@
             <column name="key"          value="adult_at_home_info"/>
             <column name="shelter_id"   valueNumeric="1"/>
             <column name="text"         value="Рекомендации по обустройству для взрослого животного дома"/>
-            <column name="chapter"      value="adoption_info"/>
+            <column name="chapter"      value="adoption_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="adult_at_home_info"/>
             <column name="shelter_id"   valueNumeric="2"/>
             <column name="text"         value="Рекомендации по обустройству для взрослого животного дома"/>
-            <column name="chapter"      value="adoption_info"/>
+            <column name="chapter"      value="adoption_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="dog_at_home_info"/>
             <column name="shelter_id"   valueNumeric="2"/>
             <column name="text"         value="Рекомендации по обустройству для собаки дома"/>
-            <column name="chapter"      value="adoption_info"/>
+            <column name="chapter"      value="adoption_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="documents_info"/>
             <column name="shelter_id"   valueNumeric="1"/>
             <column name="text"         value="Список документов для оформления"/>
-            <column name="chapter"      value="adoption_info"/>
+            <column name="chapter"      value="adoption_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="documents_info"/>
             <column name="shelter_id"   valueNumeric="2"/>
             <column name="text"         value="Список документов для оформления"/>
-            <column name="chapter"      value="adoption_info"/>
+            <column name="chapter"      value="adoption_info_menu"/>
         </insert>
 
 
@@ -147,92 +147,108 @@
             <column name="key"          value="transfer_info"/>
             <column name="shelter_id"   valueNumeric="1"/>
             <column name="text"         value="Рекомендации по транспортировке"/>
-            <column name="chapter"      value="adoption_info"/>
+            <column name="chapter"      value="adoption_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="transfer_info"/>
             <column name="shelter_id"   valueNumeric="2"/>
             <column name="text"         value="Рекомендации по транспортировке"/>
-            <column name="chapter"      value="adoption_info"/>
+            <column name="chapter"      value="adoption_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="adoption_steps"/>
             <column name="shelter_id"   valueNumeric="1"/>
             <column name="text"         value="Правила знакомства до того, как забрать животное из приюта"/>
-            <column name="chapter"      value="adoption_info"/>
+            <column name="chapter"      value="adoption_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="adoption_steps"/>
             <column name="shelter_id"   valueNumeric="2"/>
             <column name="text"         value="Правила знакомства до того, как забрать животное из приюта"/>
-            <column name="chapter"      value="adoption_info"/>
+            <column name="chapter"      value="adoption_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="/call_volunteer"/>
             <column name="shelter_id"   valueNumeric="1"/>
             <column name="text"         value="Позвать волонтёра"/>
-            <column name="chapter"      value="shelter_info"/>
+            <column name="chapter"      value="shelter_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="/call_volunteer"/>
             <column name="shelter_id"   valueNumeric="2"/>
             <column name="text"         value="Позвать волонтёра"/>
-            <column name="chapter"      value="shelter_info"/>
+            <column name="chapter"      value="shelter_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="/call_volunteer"/>
             <column name="shelter_id"   valueNumeric="1"/>
             <column name="text"         value="Позвать волонтёра"/>
-            <column name="chapter"      value="adoption_info"/>
+            <column name="chapter"      value="adoption_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="/call_volunteer"/>
             <column name="shelter_id"   valueNumeric="2"/>
             <column name="text"         value="Позвать волонтёра"/>
-            <column name="chapter"      value="adoption_info"/>
+            <column name="chapter"      value="adoption_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="requirements_info"/>
             <column name="shelter_id"   valueNumeric="1"/>
             <column name="text"         value="Требования к потенциальным владельцам"/>
-            <column name="chapter"      value="adoption_info"/>
+            <column name="chapter"      value="adoption_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="requirements_info"/>
             <column name="shelter_id"   valueNumeric="2"/>
             <column name="text"         value="Требования к потенциальным владельцам"/>
-            <column name="chapter"      value="adoption_info"/>
+            <column name="chapter"      value="adoption_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="best_cynologists_info"/>
             <column name="shelter_id"   valueNumeric="2"/>
             <column name="text"         value="Лучшие кинологи"/>
-            <column name="chapter"      value="adoption_info"/>
+            <column name="chapter"      value="adoption_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="contact_info"/>
             <column name="shelter_id"   valueNumeric="1"/>
             <column name="text"         value="Оставить контактные данные"/>
-            <column name="chapter"      value="adoption_info"/>
+            <column name="chapter"      value="adoption_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
             <column name="key"          value="contact_info"/>
             <column name="shelter_id"   valueNumeric="2"/>
             <column name="text"         value="Оставить контактные данные"/>
-            <column name="chapter"      value="adoption_info"/>
+            <column name="chapter"      value="adoption_info_menu"/>
         </insert>
 
     </changeSet>
+
+    <changeSet id="insert-into-buttons-dialog_buttons" author="S">
+        <insert tableName="buttons">
+            <column name="key"          value="cancel_call"/>
+            <column name="chapter"      value="volunteer_is_called"/>
+            <column name="text"         value="Снять заявку на связь с волонтёром"/>
+        </insert>
+
+        <insert tableName="buttons">
+            <column name="key"          value="terminate_dialog"/>
+            <column name="chapter"      value="dialog_is_on"/>
+            <column name="text"         value="Завершить диалог"/>
+        </insert>
+    </changeSet>
+
+
 </databaseChangeLog>

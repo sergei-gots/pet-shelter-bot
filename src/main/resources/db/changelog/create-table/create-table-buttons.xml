@@ -19,14 +19,14 @@
             <column name="key" type="VARCHAR">
                 <constraints nullable="false"/>
             </column>
+            <column name="chapter" type="VARCHAR">
+                <constraints nullable="true"/>
+            </column>
             <column name="shelter_id" type="BIGINT">
                 <constraints nullable="true"/>
             </column>
             <column name="text" type="VARCHAR">
                 <constraints nullable="false"/>
-            </column>
-            <column name="chapter" type="VARCHAR">
-                <constraints nullable="true"/>
             </column>
             <column name="position" type="INT">
                 <constraints nullable="true"/>

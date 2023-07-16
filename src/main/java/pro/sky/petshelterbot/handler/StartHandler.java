@@ -5,7 +5,10 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Component;
+import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Shelter;
+import pro.sky.petshelterbot.repository.AdopterRepository;
+import pro.sky.petshelterbot.repository.ButtonRepository;
 import pro.sky.petshelterbot.repository.ShelterRepository;
 import pro.sky.petshelterbot.repository.UserMessageRepository;
 
@@ -19,34 +22,42 @@ public class StartHandler extends AbstractHandler {
 
 
     public StartHandler(TelegramBot telegramBot,
+                        AdopterRepository adopterRepository,
                         ShelterRepository shelterRepository,
-                        UserMessageRepository userMessageRepository) {
-        super(telegramBot, shelterRepository, userMessageRepository);
+                        UserMessageRepository userMessageRepository,
+                        ButtonRepository buttonRepository) {
+        super(telegramBot, adopterRepository, shelterRepository, userMessageRepository, buttonRepository);
     }
 
     /** handles command '/start' */
     public boolean handle(Message message) {
-        if (!message.text().equals("/start")) {
+        if (!message.text().equals(START)) {
             return false;
         }
-        SendMessage welcomeMessage = new SendMessage(message.chat().id(), "Здравствуйте, " + message.chat().firstName());
+
+        Long chatId = message.chat().id();
+        Adopter adopter = getAdopter(message);
+
+        SendMessage welcomeMessage = new SendMessage(chatId, "Здравствуйте, " + adopter.getFirstName());
         telegramBot.execute(welcomeMessage);
 
         Collection<Shelter> shelters = shelterRepository.findAll();
 
+
         // Create buttons to choose shelter
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
-        shelters.stream()
-                .forEach(shelter -> {
-                    markup.addRow(
-                            new InlineKeyboardButton(shelter.getName()).callbackData(shelter.getId() + "-start_info_menu")
-                    );
-                });
+        for (Shelter shelter : shelters) {
+            markup.addRow(
+                    new InlineKeyboardButton(shelter.getName())
+                            .callbackData(shelter.getId() + "-" + START_MENU)
+            );
+        }
 
-                // Send buttons to user
-        telegramBot.execute(new SendMessage(message.chat().id(), "Выберите приют:")
-                .replyMarkup(markup));
+        sendMenu(adopter, "Выберите приют:", markup);
 
         return true;
     }
+
+
+
 }
