@@ -1,4 +1,4 @@
-package pro.sky.petshelterbot;
+package pro.sky.petshelterbot.handler;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Message;
