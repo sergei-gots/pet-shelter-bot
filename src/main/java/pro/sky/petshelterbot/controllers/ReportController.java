@@ -30,10 +30,10 @@ public class ReportController {
         return ResponseEntity.ok(reportService.findAllByPetId(id, pageNo, pageSize));
     }
 
-    @GetMapping("/overdue")
+    @GetMapping("/overdue/{shelterId}")
     @ApiResponse(description = "Возвращает животных на пробном периоде адоптации, для которых адоптеры не прислали текущие отчёты своевременно.")
-    public ResponseEntity<List<Pet>> findOverdueReports() {
-        return ResponseEntity.ok(reportService.findOverdueReports());
+    public ResponseEntity<List<Pet>> findOverdueReports(@PathVariable Long shelterId) {
+        return ResponseEntity.ok(reportService.findOverdueReports(shelterId));
     }
 
     @GetMapping("/all/{shelterId}")
@@ -58,12 +58,13 @@ public class ReportController {
         return ResponseEntity.ok(reportService.updateReport(report));
     }
 
-    @GetMapping("/to-review")
+    @GetMapping("/to-review/{shelterId}")
     @ApiResponse(description = "Распечатывает все отчёты пользователей, требующие проверки.")
     public ResponseEntity<List<Report>> findAllReportsToReview(
+            @PathVariable Long shelterId,
             @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize
     ) {
-        return ResponseEntity.ok(reportService.findAllReportsToReview(pageNo, pageSize));
+        return ResponseEntity.ok(reportService.findAllReportsToReview(shelterId, pageNo, pageSize));
     }
 }

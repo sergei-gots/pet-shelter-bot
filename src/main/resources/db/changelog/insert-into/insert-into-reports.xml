@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd"
+>
+    <changeSet id="insert-into-reports" author="V">
+
+        <insert tableName="reports">
+            <column name="id"            valueNumeric="1"/>
+            <column name="pet_id"        valueNumeric="1"/>
+            <column name="sent"          type="DATE" value="2023-07-13"/>
+            <column name="checked"       value="false"/>
+            <column name="approved"      value="false"/>
+            <column name="diet"          value="Diet text."/>
+            <column name="well_being"    value="Well being text."/>
+            <column name="behaviour"     value="Behaviour text."/>
+            <column name="img_path"      value="url"/>
+        </insert>
+
+        <insert tableName="reports">
+            <column name="id"            valueNumeric="2"/>
+            <column name="pet_id"        valueNumeric="1"/>
+            <column name="sent"          type="DATE" value="2023-07-14"/>
+            <column name="checked"       value="false"/>
+            <column name="approved"      value="false"/>
+            <column name="diet"          value="Diet text."/>
+            <column name="well_being"    value="Well being text."/>
+            <column name="behaviour"     value="Behaviour text."/>
+            <column name="img_path"      value="url"/>
+        </insert>
+
+    </changeSet>
+</databaseChangeLog>
