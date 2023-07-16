@@ -8,15 +8,30 @@
     <changeSet id="insert-into-user_messages" author="S">
 
         <insert tableName="user_messages">
-            <column name="key"          value="choose_info"/>
-            <column name="shelter_id"   valueNumeric="1"/>
-            <column name="message"      value="Выберите интересующую вас информацию:"/>
+            <column name="key"          value="shelter_info_menu"/>
+            <column name="message"      value="# Меню информации о шелтере:"/>
+        </insert>
+        <insert tableName="user_messages">
+            <column name="key"          value="adoption_info_menu"/>
+            <column name="message"      value="# Выберите интересующую вас информацию:"/>
         </insert>
 
         <insert tableName="user_messages">
             <column name="key"          value="choose_info"/>
             <column name="shelter_id"   valueNumeric="2"/>
             <column name="message"      value="Выберите интересующую вас информацию:"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="about_shelter_info"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="message"      valueClobFile="../../../initial-data/about_shelter_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="about_shelter_info"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="message"      valueClobFile="../../../initial-data/about_shelter_info.txt"/>
         </insert>
 
         <insert tableName="user_messages">
@@ -31,7 +46,6 @@
             <column name="message"      valueClobFile="../../../initial-data/documents_info.txt"/>
         </insert>
 
-
         <insert tableName="user_messages">
             <column name="key"          value="requirements_info"/>
             <column name="shelter_id"   valueNumeric="1"/>
@@ -42,20 +56,6 @@
             <column name="key"          value="requirements_info"/>
             <column name="shelter_id"   valueNumeric="2"/>
             <column name="message"      valueClobFile="../../../initial-data/requirements_info.txt"/>
-        </insert>
-
-        <insert tableName="user_messages">
-            <column name="key"          value="refusal_info"/>
-            <column name="shelter_id"   valueNumeric="1"/>
-            <column name="message"      value="Возможные причины отказа:
-        - Так себе человек."/>
-        </insert>
-
-        <insert tableName="user_messages">
-            <column name="key"          value="refusal_info"/>
-            <column name="shelter_id"   valueNumeric="2"/>
-            <column name="message"      value="Возможные причины отказа:
-        - Так себе человек."/>
         </insert>
 
         <insert tableName="user_messages">

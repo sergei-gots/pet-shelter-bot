@@ -10,7 +10,7 @@
         <insert tableName="shelters">
             <column name="id"           valueNumeric="1"/>
             <column name="type"         value="cat"/>
-            <column name="name"         value="Для кошек"/>
+            <column name="name"         value="Для кошек🐈"/>
             <column name="address"      value="ул. Пушкина, 123"/>
             <column name="work_time"    value="понедельник-пятница: 9:00-18:00"/>
             <column name="email"        value="cat@shelter.org"/>

@@ -9,7 +9,7 @@ import javax.persistence.Table;
 public class Adopter extends AbstractPerson {
 
     /** Telegram message id for the message containing last depicted menu in the chat **/
-    private int chatMenuMessageId;
+    private Integer chatMenuMessageId;
 
     public Adopter() {
     }
@@ -20,6 +20,12 @@ public class Adopter extends AbstractPerson {
 
     public Adopter(long chatId, String firstName) {
         super(chatId, firstName);
+    }
+
+    public Adopter(long chatId, String firstName, Integer chatMenuMessageId)
+    {
+        super(chatId, firstName);
+        this.chatMenuMessageId = chatMenuMessageId;
     }
 
     @Override
@@ -34,9 +40,8 @@ public class Adopter extends AbstractPerson {
         return chatMenuMessageId;
     }
 
-    public Adopter setChatMenuMessageId(int chatMenuMessageId) {
+    public void setChatMenuMessageId(int chatMenuMessageId) {
         this.chatMenuMessageId = chatMenuMessageId;
-        return this;
     }
 }
 

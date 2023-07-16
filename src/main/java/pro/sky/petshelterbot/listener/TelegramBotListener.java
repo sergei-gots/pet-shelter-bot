@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.petshelterbot.handler.*;
-import pro.sky.petshelterbot.handler.ShelterHandler;
+import pro.sky.petshelterbot.handler.ShelterInfoHandler;
 
 
 import javax.annotation.PostConstruct;
@@ -32,7 +32,7 @@ public class TelegramBotListener
      */
     public TelegramBotListener(TelegramBot telegramBot,
                                StartHandler startHandler,
-                               ShelterHandler shelterHandler,
+                               ShelterInfoHandler shelterHandler,
                                VolunteerDialogHandler volunteerHandler,
                                AdopterDialogHandler adopterDialogHandler
                                ) {

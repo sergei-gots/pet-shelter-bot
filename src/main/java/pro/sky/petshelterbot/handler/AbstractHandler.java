@@ -45,8 +45,14 @@ public abstract class AbstractHandler implements Handler{
 
     @NotNull
     protected Adopter getAdopter(Message message) {
-        return  adopterRepository.findByChatId(message.chat().id())
-                .orElse(adopterRepository.save(new Adopter(message.chat().id(), message.chat().firstName())));
+        Long chatId = message.chat().id();
+        Adopter adopter = adopterRepository.findByChatId(chatId).orElse(null);
+        if (adopter == null) {
+            adopter = adopterRepository.save(new Adopter(message.chat().id(), message.chat().firstName()));
+        }
+        return adopter;
+        //return  adopterRepository.findByChatId(message.chat().id())
+          //      .orElse(adopterRepository.save(new Adopter(message.chat().id(), message.chat().firstName())));
     }
 
     /** @return Shelter-entity by id
@@ -55,17 +61,24 @@ public abstract class AbstractHandler implements Handler{
     protected Shelter getShelter(Long shelterId) {
         logger.trace("getShelter(shelterId={})", shelterId);
         return shelterRepository.findById(shelterId)
-                .orElseThrow(()->new NoSuchElementException("The shelter with id=" + shelterId + "is not listed in the db."));
+                .orElseThrow(()->new NoSuchElementException(
+                        "The shelter with id=" + shelterId + "is not listed in the db."));
     }
 
-    protected String getUserMessage(String key, Long shelterId) {
-        logger.trace("getUserMessage(key={}, shelterId={})", key, shelterId);
-        return  (userMessageRepository.findByShelterAndKey(
-                    getShelter(shelterId), key)
-                    .orElseThrow(
-                            ()->new NoSuchElementException("The user_message with key=\"" + key + "\"is not listed in the db."))
-        ).getMessage();
-    }
+    protected String getUserMessage(String key) {
+            logger.trace("getUserMessage(key={})", key);
+            return  userMessageRepository.findByKeyAndShelterIsNull(key)
+                    .orElseThrow(()->new NoSuchElementException(
+                            "The user_message with key=\"" + key + "\"is not listed in the db."))
+            .getMessage();
+        }
+        protected String getUserMessage(String key, Long shelterId) {
+            logger.trace("getUserMessage(key={}, shelterId={})", key, shelterId);
+            return  userMessageRepository.findByKeyAndShelterId(key, shelterId)
+                    .orElseThrow(()->new NoSuchElementException(
+                            "The user_message with key=\"" + key + "\"is not listed in the db."))
+            .getMessage();
+        }
 
 
     protected void sendMessage(Long chatId, String text) {
@@ -103,18 +116,17 @@ public abstract class AbstractHandler implements Handler{
                     shelterId, key);
         }
         telegramBot.execute(new SendMessage(adopter.getChatId(), userMessage).parseMode(ParseMode.HTML));
-
     }
-    protected boolean makeButtonList(Adopter adopter, Long shelterId, String chapter) {
+    protected void makeButtonList(Adopter adopter, String chapter, Long shelterId) {
 
         Collection<Button> buttons = buttonsRepository.findByShelterIdAndChapterOrderById(shelterId, chapter);
-        if (buttons.size() == 0) {
-            buttons = buttonsRepository.findByChapterOrderById(chapter);
-        }
+        buttons.addAll(buttonsRepository.findByChapterAndShelterIdIsNullOrderById(chapter));
+
+
         if (buttons.size() == 0) {
             logger.error("makeButtonList(...): There isn't button list in db for {}, shelterId={}, chaptr=\"{}\".",
                     adopter, shelterId, chapter);
-            return false;
+            return;
         }
 
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
@@ -122,19 +134,18 @@ public abstract class AbstractHandler implements Handler{
             markup.addRow(new InlineKeyboardButton(button.getText()).callbackData(shelterId + "-" + button.getKey()));
         }
 
-        sendMenu(adopter, "Выберите, что вас интересует:", markup);
-
-        return true;
-
+        sendMenu(adopter, getUserMessage(chapter), markup);
     }
 
     protected void sendMenu(Adopter adopter, String text, InlineKeyboardMarkup markup) {
         Long chatId = adopter.getChatId();
-        SendResponse response =  telegramBot.execute(new SendMessage(chatId, text).replyMarkup(markup));
+        SendResponse response =  telegramBot.execute(new SendMessage(chatId, text)
+                .replyMarkup(markup));
         int messageId = response.message().messageId();
         logger.trace("sendMenu()-method: response.message().messageId()={}", messageId);
 
-        adopterRepository.save(adopter.setChatMenuMessageId(messageId));
+        adopter.setChatMenuMessageId(messageId);
+        adopterRepository.save(adopter);
     }
 
     protected void deletePreviousMenu(Adopter adopter) {
@@ -145,7 +156,8 @@ public abstract class AbstractHandler implements Handler{
         }
         telegramBot.execute(new DeleteMessage(adopter.getChatId(), chatMenuMessageId));
         logger.trace("deletePreviousMenu(Adopter={})", adopter);
-        adopterRepository.save(adopter.setChatMenuMessageId(-1));
+        adopter.setChatMenuMessageId(-1);
+        adopterRepository.save(adopter);
     }
 
 

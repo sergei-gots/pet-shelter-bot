@@ -250,5 +250,12 @@
         </insert>
     </changeSet>
 
+    <changeSet id="insert-into-buttons-dialog_buttons-back-to-shelter-info-menu" author="S">
+    <insert tableName="buttons">
+        <column name="key"          value="shelter_info_menu"/>
+        <column name="chapter"      value="adoption_info_menu"/>
+        <column name="text"         value="Вернуться в главное меню приюта"/>
+    </insert>
+    </changeSet>
 
 </databaseChangeLog>
