@@ -14,7 +14,7 @@
             <column name="shelter_id"       valueNumeric="1"/>
             <column name="img_path"         value="src\main\resources\uploads\pet_images\1.jpg"/>
             <column name="disabled"         value="false"/>
-            <column name="adoption_date"    type="DATE" value="null"/>
+            <column name="adoption_date"    type="DATE" value="2023-07-20"/>
         </insert>
 
         <insert tableName="pets">

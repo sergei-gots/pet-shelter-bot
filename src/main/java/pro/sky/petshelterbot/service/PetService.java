@@ -23,20 +23,13 @@ import java.util.List;
 @Service
 public class PetService {
     final private PetRepository petRepository;
-    final private ShelterRepository shelterRepository;
     final private VolunteerRepository volunteerRepository;
-
-    final private Shelter catShelter, dogShelter;
 
     public PetService(
             PetRepository catRepository,
-            ShelterRepository shelterRepository,
             VolunteerRepository volunteerRepository) {
 
         this.petRepository = catRepository;
-        this.shelterRepository = shelterRepository;
-        catShelter = shelterRepository.getCatShelter();
-        dogShelter = shelterRepository.getDogShelter();
         this.volunteerRepository = volunteerRepository;
     }
 
@@ -64,6 +57,13 @@ public class PetService {
             if (imgPath != null) {
                 pet.setImgPath(imgPath);
             }
+            return petRepository.save(pet);
+        }
+        throw new ShelterException("Тип животного не соответствует типу размещаемых животных в приюте.");
+    }
+
+    public Pet add(Pet pet) {
+        if (pet.getShelter().getType().equals(pet.getSpecies())) {
             return petRepository.save(pet);
         }
         throw new ShelterException("Тип животного не соответствует типу размещаемых животных в приюте.");
@@ -117,7 +117,7 @@ public class PetService {
     }
 
     /* POST /dog-shelter/volunteers/ */
-    public Volunteer AddVolunteerToShelter(Volunteer volunteer) {
+    public Volunteer addVolunteerToShelter(Volunteer volunteer) {
         if (volunteer.isAvailable()) {
             return volunteerRepository.save(volunteer);
         }

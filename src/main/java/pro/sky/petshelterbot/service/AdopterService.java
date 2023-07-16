@@ -35,32 +35,21 @@ public class AdopterService {
         }
     }
 
-    public Pet setAdopter(Pet pet, Adopter adopter) {
+    public Pet setAdopter(Long petId, Adopter adopter) {
+        Pet pet = petRepository.getPetById(petId);
         pet.setAdopter(adopter);
         pet.setAdoptionDate(LocalDate.now());
         petRepository.save(pet);
         return pet;
     }
 
-    public Pet prolongTrial14(Long petId) {
+    public Pet prolongTrialForNDays(Long petId, Integer days) {
         Pet pet = petRepository.getPetById(petId);
         LocalDate adoptionDate = pet.getAdoptionDate();
         if (adoptionDate == null) {
             pet.setAdoptionDate(LocalDate.now());
         } else {
-            pet.setAdoptionDate(adoptionDate.plus(14, ChronoUnit.DAYS));
-        }
-        petRepository.save(pet);
-        return pet;
-    }
-
-    public Pet prolongTrial30(Long petId) {
-        Pet pet = petRepository.getPetById(petId);
-        LocalDate adoptionDate = pet.getAdoptionDate();
-        if (adoptionDate == null) {
-            pet.setAdoptionDate(LocalDate.now().plus(30, ChronoUnit.DAYS));
-        } else {
-            pet.setAdoptionDate(adoptionDate.plus(30, ChronoUnit.DAYS));
+            pet.setAdoptionDate(adoptionDate.plus(days, ChronoUnit.DAYS));
         }
         petRepository.save(pet);
         return pet;

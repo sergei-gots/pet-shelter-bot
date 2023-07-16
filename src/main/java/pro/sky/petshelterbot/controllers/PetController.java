@@ -24,22 +24,31 @@ public class PetController {
 
     /* POST /cat-shelter/add
     POST /dog-shelter/add */
-    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiResponse(description = "" +
             "Добавляет кота в кошачий шелтер/собаку в собачий шелтер. " +
             "Показывает сохраненные значения из БД и сообщает, " +
             "что данные о животном сохранены или не сохранены.")
     public ResponseEntity<Pet> add(
             @RequestBody Pet pet,
-            @RequestParam(required = false) MultipartFile img) {
+            @RequestPart(required = false) MultipartFile img) {
         return ResponseEntity.ok(petService.add(pet, img));
     }
 
-    @PostMapping(value = "/add/img", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping
+    @ApiResponse(description = "" +
+            "Добавляет кота в кошачий шелтер/собаку в собачий шелтер. " +
+            "Показывает сохраненные значения из БД и сообщает, " +
+            "что данные о животном сохранены или не сохранены.")
+    public ResponseEntity<Pet> add(@RequestBody Pet pet) {
+        return ResponseEntity.ok(petService.add(pet));
+    }
+
+    @PostMapping(value = "/img", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiResponse(description = "Добавление изображения для животного.")
     public ResponseEntity<Pet> addImg(
             @RequestParam Long petId,
-            @RequestParam MultipartFile img) {
+            @RequestPart MultipartFile img) {
         return ResponseEntity.ok(petService.addImg(petId, img));
     }
 
@@ -51,7 +60,7 @@ public class PetController {
 
     /* GET /cat-shelter/pets
     GET /dog-shelter/pets */
-    @GetMapping("/{shelterId}")
+    @GetMapping("/shelter/{shelterId}")
     @ApiResponse(description = "" +
             "Распечатывает страницу из списка всех котов, " +
             "то есть как находящихся в приюте, так и адоптируемых или находящихся в адоптации. " +
@@ -61,6 +70,12 @@ public class PetController {
             @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize) {
         return ResponseEntity.ok(petService.findAllPets(shelterId, pageNo, pageSize));
+    }
+
+    @GetMapping("/{petId}")
+    @ApiResponse(description = "Получение животного по id")
+    public ResponseEntity<Pet> getPet(@PathVariable Long petId) {
+        return ResponseEntity.ok(petService.get(petId));
     }
 
 }
