@@ -31,4 +31,20 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="alter-table-adopters-add-column-chat-shelter-id" author="S">
+        <!-- chat_shelter_id contains shelter_id which is active for adopter within telegram bot chat -->
+        <addColumn tableName="adopters">
+            <column name="chat_shelter_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <addForeignKeyConstraint baseColumnNames="chat_shelter_id"
+                                 baseTableName="adopters"
+                                 constraintName="fk_chat_adopter_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="shelters"/>
+
+    </changeSet>
+
 </databaseChangeLog>

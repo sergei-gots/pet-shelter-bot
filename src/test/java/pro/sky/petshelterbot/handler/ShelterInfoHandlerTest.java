@@ -34,13 +34,16 @@ public class ShelterInfoHandlerTest {
     private ShelterRepository shelterRepository;
 
     @Mock
+    private AdopterDialogHandler adopterDialogHandler;
+
+    @Mock
     private Message message;
 
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        shelterInfoHandler = new ShelterInfoHandler(telegramBot, buttonsRepository, adopterRepository, userMessageRepository, shelterRepository);
-
+        shelterInfoHandler = new ShelterInfoHandler(telegramBot, adopterRepository, shelterRepository,
+                userMessageRepository, buttonsRepository, adopterDialogHandler);
     }
 
     @Test

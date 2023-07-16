@@ -5,11 +5,12 @@ import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.DeleteMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.petshelterbot.handler.*;
-import pro.sky.petshelterbot.handler.ShelterHandler;
+import pro.sky.petshelterbot.handler.ShelterInfoHandler;
 
 
 import javax.annotation.PostConstruct;
@@ -31,8 +32,7 @@ public class TelegramBotListener
      *                         if the update we have to handle is sent by volunteer.
      */
     public TelegramBotListener(TelegramBot telegramBot,
-                               StartHandler startHandler,
-                               ShelterHandler shelterHandler,
+                               ShelterInfoHandler shelterHandler,
                                VolunteerDialogHandler volunteerHandler,
                                AdopterDialogHandler adopterDialogHandler
                                ) {
@@ -42,7 +42,6 @@ public class TelegramBotListener
                 //Important: volunteerHandler MUST BE at first place
                 volunteerHandler,
                 adopterDialogHandler,
-                startHandler,
                 shelterHandler,
         };
     }
@@ -104,6 +103,7 @@ public class TelegramBotListener
                 return true;
             }
         }
+        telegramBot.execute(new DeleteMessage(message.chat().id(), message.messageId()));
         logger.trace("processMessage: there is no suitable handler for text=\"{}\" received from user={} with chat_id={}",
                 message.text(), message.chat().firstName(), message.chat().id());
         return true;
