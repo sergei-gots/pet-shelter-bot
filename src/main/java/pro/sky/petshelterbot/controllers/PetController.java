@@ -31,7 +31,7 @@ public class PetController {
             "что данные о животном сохранены или не сохранены.")
     public ResponseEntity<Pet> add(
             @RequestBody Pet pet,
-            @RequestParam(required = false) MultipartFile img) {
+            @RequestPart(required = false) MultipartFile img) {
         return ResponseEntity.ok(petService.add(pet, img));
     }
 
@@ -48,7 +48,7 @@ public class PetController {
     @ApiResponse(description = "Добавление изображения для животного.")
     public ResponseEntity<Pet> addImg(
             @RequestParam Long petId,
-            @RequestParam MultipartFile img) {
+            @RequestPart MultipartFile img) {
         return ResponseEntity.ok(petService.addImg(petId, img));
     }
 

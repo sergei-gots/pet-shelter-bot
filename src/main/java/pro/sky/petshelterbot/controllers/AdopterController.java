@@ -32,17 +32,17 @@ public class AdopterController {
     /* PUT /pet/prolongTrial14/{petId} */
     @PutMapping("/prolongTrial14/{petId}")
     public ResponseEntity<Pet> prolongTrial14(@PathVariable Long petId) {
-        return ResponseEntity.ok(adopterService.prolongTrial14(petId));
+        return ResponseEntity.ok(adopterService.prolongTrialForNDays(petId, 14));
     }
 
     /* /pet/prolongTrial30/{petId} */
     @PutMapping("prolongTrial30/{petId}")
     public ResponseEntity<Pet> prolongTrial30(@PathVariable Long petId) {
-        return ResponseEntity.ok(adopterService.prolongTrial30(petId));
+        return ResponseEntity.ok(adopterService.prolongTrialForNDays(petId, 30));
     }
 
     /* PUT /pet/cancelTrial/{petId} */
-    @PutMapping("cancelTrial/{petId}")
+    @DeleteMapping("cancelTrial/{petId}")
     public ResponseEntity<Pet> cancelTrial(@PathVariable Long petId) {
         return ResponseEntity.ok(adopterService.cancelTrial(petId));
     }
