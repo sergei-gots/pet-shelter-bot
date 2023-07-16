@@ -8,17 +8,16 @@
     <changeSet id="insert-into-buttons" author="S">
 
         <insert tableName="buttons">
-            <column name="key"          value="about_shelter_info"/>
-            <column name="text"         value="Узнать информацию о приюте"/>
-            <column name="chapter"      value="shelter_info_menu"/>
-        </insert>
-
-        <insert tableName="buttons">
             <column name="key"          value="adoption_info_menu"/>
             <column name="text"         value="Как взять животное из приюта"/>
             <column name="chapter"      value="shelter_info_menu"/>
         </insert>
 
+        <insert tableName="buttons">
+            <column name="key"          value="choose_shelter_info"/>
+            <column name="text"         value="Узнать информацию о приюте"/>
+            <column name="chapter"      value="shelter_info_menu"/>
+        </insert>
         <insert tableName="buttons">
             <column name="key"          value="report_info"/>
             <column name="text"         value="Прислать отчет о питомце"/>
@@ -232,6 +231,12 @@
             <column name="shelter_id"   valueNumeric="2"/>
             <column name="text"         value="Оставить контактные данные"/>
             <column name="chapter"      value="adoption_info_menu"/>
+        </insert>
+
+        <insert tableName="buttons">
+            <column name="key"          value="/start"/>
+            <column name="text"         value="Вернуться к выбору приюта"/>
+            <column name="chapter"      value="shelter_info_menu"/>
         </insert>
 
     </changeSet>

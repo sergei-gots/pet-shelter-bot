@@ -3,6 +3,9 @@ package pro.sky.petshelterbot.handler;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
+import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Shelter;
@@ -11,6 +14,8 @@ import pro.sky.petshelterbot.repository.AdopterRepository;
 import pro.sky.petshelterbot.repository.ButtonRepository;
 import pro.sky.petshelterbot.repository.ShelterRepository;
 import pro.sky.petshelterbot.repository.UserMessageRepository;
+
+import java.util.Collection;
 
 /**
  * Handles user's pressing a button and sends a suitable menu to the user
@@ -31,6 +36,30 @@ public class ShelterInfoHandler extends AbstractHandler {
                               AdopterDialogHandler adopterDialogHandler) {
         super(telegramBot, adopterRepository, shelterRepository, userMessageRepository, buttonsRepository);
         this.dialogHandler = adopterDialogHandler;
+    }
+
+    @Override
+    public boolean handle(Message message) {
+        if(processStartIfShelterIsNotSelected(getAdopter(message))) {
+            return true;
+        }
+        if(START.equals(message.text())) {
+            Adopter adopter = getAdopter(message);
+            processShelterBasicMenu(adopter, SHELTER_BASIC_MENU, adopter.getChatShelter().getId());
+            return true;
+        }
+        return false;
+    }
+
+    private boolean processStartIfShelterIsNotSelected(Adopter adopter) {
+
+        if (adopter.getChatShelter() == null) {
+            logger.trace("processStartIfShelterIsNotSelected(adopter={}) : shelter haven't yet selected by adopter",
+                    adopter);
+            processStart(adopter);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -70,16 +99,21 @@ public class ShelterInfoHandler extends AbstractHandler {
         makeButtonList(adopter, key, shelterId);
     }
 
-    private void processStartMenu(Adopter adopter, String key, Long shelterId) {
+
+    private void processShelterBasicMenu(Adopter adopter, String key, Long shelterId) {
 
         logger.debug("processStartMenu(...)");
         deletePreviousMenu(adopter);
 
-        sendMessage(adopter.getChatId(), "Вы выбрали шелтер \"<b>"
-                + shelterRepository
+        Shelter shelter = shelterRepository
                 .findById(shelterId)
-                .orElseThrow(() -> new ShelterException("There is no shelter with id=" + shelterId + " in db.))"))
-                .getName() + "</b>\"");
+                .orElseThrow(() -> new ShelterException("There is no shelter with id=" + shelterId + " in db.))"));
+
+        adopter.setChatShelter(shelter);
+        adopterRepository.save(adopter);
+
+        sendMessage(adopter.getChatId(), "Вы выбрали шелтер \"<b>"
+                + shelter.getName() + "</b>\"");
         makeButtonList(adopter, SHELTER_INFO_MENU, shelterId);
     }
 
@@ -88,8 +122,11 @@ public class ShelterInfoHandler extends AbstractHandler {
         logger.trace("processCommands");
         Long chatId = adopter.getChatId();
         switch(key) {
-            case START_MENU:
-                processStartMenu(adopter, key, shelterId);
+            case START:
+                processStart(adopter);
+                return true;
+            case SHELTER_BASIC_MENU:
+                processShelterBasicMenu(adopter, key, shelterId);
                 return true;
             case SHELTER_INFO_MENU:
                 processShelterInfoMenu(adopter, key, shelterId);
@@ -107,7 +144,7 @@ public class ShelterInfoHandler extends AbstractHandler {
                 sendSecurityInfo(chatId, shelterId);
                 return true;
         }
-        return false;
+        return processStartIfShelterIsNotSelected(adopter);
     }
 
     private void processAdoptionInfoMenu(Adopter adopter, String key, Long shelterId) {
@@ -136,4 +173,32 @@ public class ShelterInfoHandler extends AbstractHandler {
                 "Телефон: " + shelter.getTel() + "\n" +
                 "Email: " + shelter.getEmail());
     }
+
+
+    public void processStart(Adopter adopter) {
+        if(adopter.getChatShelter() == null) {
+            createSelectShelterMenu(adopter);
+            return;
+        }
+        processShelterBasicMenu(adopter, SHELTER_INFO_MENU, adopter.getChatShelter().getId());
+    }
+    public void createSelectShelterMenu(Adopter adopter) {
+        deletePreviousMenu(adopter);
+
+        telegramBot.execute(new SendMessage(adopter.getChatId(), "Здравствуйте, " + adopter.getFirstName()));
+
+        Collection<Shelter> shelters = shelterRepository.findAll();
+
+        // Create buttons to choose shelter
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        for (Shelter shelter : shelters) {
+            markup.addRow(
+                    new InlineKeyboardButton(shelter.getName())
+                            .callbackData(shelter.getId() + "-" + SHELTER_BASIC_MENU)
+            );
+        }
+
+        sendMenu(adopter, "Выберите приют:", markup);
+    }
+
 }
