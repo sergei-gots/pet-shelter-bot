@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import pro.sky.petshelterbot.entity.Adopter;
@@ -86,8 +88,6 @@ public class AdopterControllerTest {
     public void setAdopterTest() {
         Shelter shelter = addShelter(generateShelter());
         Pet pet = addPet(generatePet(shelter));
-        System.out.println(pet);
-        System.out.println(shelter);
         ResponseEntity<Pet> getForEntityResponse = testRestTemplate.getForEntity(
                 "http://localhost:" + port + "/pets/" + pet.getId(),
                 Pet.class
@@ -97,5 +97,19 @@ public class AdopterControllerTest {
         assertThat(getForEntityResponse.getBody()).usingRecursiveComparison().isEqualTo(pet);
         assertThat(getForEntityResponse.getBody().getShelter()).usingRecursiveComparison()
                 .isEqualTo(shelter);
+
+        /*student.setFaculty(f2);
+
+        ResponseEntity<Student> recordForEntityResponse = testRestTemplate.exchange(
+                "http://localhost:" + port + "/student/" + student.getId(),
+                HttpMethod.PUT,
+                new HttpEntity<>(student),
+                Student.class
+        );
+        assertThat(getForEntityResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(recordForEntityResponse.getBody()).isNotNull();
+        assertThat(recordForEntityResponse.getBody()).usingRecursiveComparison().isEqualTo(student);
+        assertThat(recordForEntityResponse.getBody().getFaculty()).usingRecursiveComparison()
+                .isEqualTo(f2);*/
     }
 }

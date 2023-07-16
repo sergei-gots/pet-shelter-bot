@@ -23,20 +23,13 @@ import java.util.List;
 @Service
 public class PetService {
     final private PetRepository petRepository;
-    final private ShelterRepository shelterRepository;
     final private VolunteerRepository volunteerRepository;
-
-    /*final private Shelter catShelter, dogShelter;*/
 
     public PetService(
             PetRepository catRepository,
-            ShelterRepository shelterRepository,
             VolunteerRepository volunteerRepository) {
 
         this.petRepository = catRepository;
-        this.shelterRepository = shelterRepository;
-        /*catShelter = shelterRepository.getCatShelter();
-        dogShelter = shelterRepository.getDogShelter();*/
         this.volunteerRepository = volunteerRepository;
     }
 
