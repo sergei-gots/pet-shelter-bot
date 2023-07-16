@@ -35,7 +35,8 @@ public class AdopterService {
         }
     }
 
-    public Pet setAdopter(Pet pet, Adopter adopter) {
+    public Pet setAdopter(Long petId, Adopter adopter) {
+        Pet pet = petRepository.getPetById(petId);
         pet.setAdopter(adopter);
         pet.setAdoptionDate(LocalDate.now());
         petRepository.save(pet);

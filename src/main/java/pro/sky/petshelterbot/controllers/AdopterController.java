@@ -24,9 +24,9 @@ public class AdopterController {
     }
 
     /* PUT /pet/setAdopter */
-    @PutMapping("/setAdopter")
-    public ResponseEntity<Pet> setAdopter(@RequestBody Pet pet, @RequestBody Adopter adopter) {
-        return ResponseEntity.ok(adopterService.setAdopter(pet, adopter));
+    @PutMapping("/setAdopter/{petId}")
+    public ResponseEntity<Pet> setAdopter(@PathVariable Long petId, @RequestBody Adopter adopter) {
+        return ResponseEntity.ok(adopterService.setAdopter(petId, adopter));
     }
 
     /* PUT /pet/prolongTrial14/{petId} */

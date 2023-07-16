@@ -136,12 +136,13 @@ public class Pet {
     public String toString() {
         return "Pet{" +
                 "id=" + id +
-                ", the " + species +
+                ", species='" + species + '\'' +
                 ", name='" + name + '\'' +
-                ((disabled) ?
-                        ", with some disabilities" :
-                        ", without any disabilities"
-                ) + ", adopter=" + adopter +
+                ", shelter=" + shelter +
+                ", adopter=" + adopter +
+                ", disabled=" + disabled +
+                ", adoptionDate=" + adoptionDate +
+                ", imgPath='" + imgPath + '\'' +
                 '}';
     }
 }
