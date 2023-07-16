@@ -21,11 +21,12 @@ import pro.sky.petshelterbot.repository.*;
 public class VolunteerDialogHandler extends AbstractDialogHandler {
 
     public VolunteerDialogHandler(TelegramBot telegramBot,
+                                  AdopterRepository adopterRepository,
                                   ShelterRepository shelterRepository,
                                   UserMessageRepository userMessageRepository,
                                   ButtonRepository buttonRepository,
                                   VolunteerRepository volunteerRepository, DialogRepository dialogRepository) {
-        super(telegramBot, shelterRepository, userMessageRepository, buttonRepository, volunteerRepository, dialogRepository);
+        super(telegramBot, adopterRepository, shelterRepository, userMessageRepository, buttonRepository, volunteerRepository, dialogRepository);
     }
 
     @Override

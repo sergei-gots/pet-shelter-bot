@@ -5,7 +5,9 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Component;
+import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Shelter;
+import pro.sky.petshelterbot.repository.AdopterRepository;
 import pro.sky.petshelterbot.repository.ButtonRepository;
 import pro.sky.petshelterbot.repository.ShelterRepository;
 import pro.sky.petshelterbot.repository.UserMessageRepository;
@@ -20,10 +22,11 @@ public class StartHandler extends AbstractHandler {
 
 
     public StartHandler(TelegramBot telegramBot,
+                        AdopterRepository adopterRepository,
                         ShelterRepository shelterRepository,
                         UserMessageRepository userMessageRepository,
                         ButtonRepository buttonRepository) {
-        super(telegramBot, shelterRepository, userMessageRepository, buttonRepository);
+        super(telegramBot, adopterRepository, shelterRepository, userMessageRepository, buttonRepository);
     }
 
     /** handles command '/start' */
@@ -31,8 +34,11 @@ public class StartHandler extends AbstractHandler {
         if (!message.text().equals(START)) {
             return false;
         }
+
         Long chatId = message.chat().id();
-        SendMessage welcomeMessage = new SendMessage(chatId, "Здравствуйте, " + message.chat().firstName());
+        Adopter adopter = getAdopter(message);
+
+        SendMessage welcomeMessage = new SendMessage(chatId, "Здравствуйте, " + adopter.getFirstName());
         telegramBot.execute(welcomeMessage);
 
         Collection<Shelter> shelters = shelterRepository.findAll();
@@ -43,15 +49,15 @@ public class StartHandler extends AbstractHandler {
         for (Shelter shelter : shelters) {
             markup.addRow(
                     new InlineKeyboardButton(shelter.getName())
-                            .callbackData(shelter.getId() + "-" + START_INFO_MENU)
+                            .callbackData(shelter.getId() + "-" + START_MENU)
             );
         }
 
-        sendMenu(chatId, "Выберите приют:", markup);
-
-
+        sendMenu(adopter, "Выберите приют:", markup);
 
         return true;
     }
+
+
 
 }

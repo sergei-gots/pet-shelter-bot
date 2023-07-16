@@ -7,11 +7,7 @@ import pro.sky.petshelterbot.entity.AbstractPerson;
 import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Dialog;
 import pro.sky.petshelterbot.entity.Volunteer;
-import pro.sky.petshelterbot.repository.DialogRepository;
-import pro.sky.petshelterbot.repository.ShelterRepository;
-import pro.sky.petshelterbot.repository.UserMessageRepository;
-import pro.sky.petshelterbot.repository.ButtonRepository;
-import pro.sky.petshelterbot.repository.VolunteerRepository;
+import pro.sky.petshelterbot.repository.*;
 
 /**
  * Handles commands receiving from user supposed
@@ -26,11 +22,12 @@ public abstract class AbstractDialogHandler extends AbstractHandler
     final protected DialogRepository dialogRepository;
 
     public AbstractDialogHandler(TelegramBot telegramBot,
+                                 AdopterRepository adopterRepository,
                                  ShelterRepository shelterRepository,
                                  UserMessageRepository userMessageRepository,
                                  ButtonRepository buttonRepository,
                                  VolunteerRepository volunteerRepository, DialogRepository dialogRepository) {
-        super(telegramBot, shelterRepository, userMessageRepository, buttonRepository);
+        super(telegramBot, adopterRepository, shelterRepository, userMessageRepository, buttonRepository);
         this.volunteerRepository = volunteerRepository;
         this.dialogRepository = dialogRepository;
     }

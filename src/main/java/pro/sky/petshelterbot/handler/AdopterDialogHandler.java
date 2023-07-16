@@ -21,14 +21,14 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
     private final AdopterRepository adopterRepository;
 
     public AdopterDialogHandler(TelegramBot telegramBot,
+                                AdopterRepository adopterRepository,
                                 ShelterRepository shelterRepository,
                                 UserMessageRepository userMessageRepository,
                                 ButtonRepository buttonRepository,
                                 DialogRepository dialogRepository,
-                                AdopterRepository adopterRepository,
                                 VolunteerRepository volunteerRepository
     ) {
-        super(telegramBot, shelterRepository, userMessageRepository, buttonRepository, volunteerRepository, dialogRepository);
+        super(telegramBot, adopterRepository, shelterRepository, userMessageRepository, buttonRepository, volunteerRepository, dialogRepository);
         this.adopterRepository = adopterRepository;
     }
 

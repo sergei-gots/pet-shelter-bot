@@ -1,12 +1,12 @@
 package pro.sky.petshelterbot.entity;
 
+import pro.sky.petshelterbot.constants.ButtonKeys;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "buttons")
-public class Button {
-    public static final String OPENING_HOURS_AND_ADDRESS_INFO = "opening_hours_and_address_info";
-    public static final String SECURITY_INFO = "security_info";
+public class Button implements ButtonKeys {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
