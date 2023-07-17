@@ -22,19 +22,6 @@ public class PetController {
         this.petService = petService;
     }
 
-    /* POST /cat-shelter/add
-    POST /dog-shelter/add */
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @ApiResponse(description = "" +
-            "Добавляет кота в кошачий шелтер/собаку в собачий шелтер. " +
-            "Показывает сохраненные значения из БД и сообщает, " +
-            "что данные о животном сохранены или не сохранены.")
-    public ResponseEntity<Pet> add(
-            @RequestBody Pet pet,
-            @RequestPart(required = false) MultipartFile img) {
-        return ResponseEntity.ok(petService.add(pet, img));
-    }
-
     @PostMapping
     @ApiResponse(description = "" +
             "Добавляет кота в кошачий шелтер/собаку в собачий шелтер. " +
