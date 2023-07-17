@@ -16,7 +16,6 @@ public interface Commands {
     String RESET_SHELTER="/reset-shelter";
     String RESET_SHELTER_RU="/приют";
 
-    //For next stage development
     String HAVE_A_BREAK = "/have_a_break";
     //For next stage development
     String RESUME_SERVICE = "/resume_service";

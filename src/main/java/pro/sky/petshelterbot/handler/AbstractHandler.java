@@ -2,19 +2,14 @@ package pro.sky.petshelterbot.handler;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
-import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import com.pengrad.telegrambot.model.request.ParseMode;
+import com.pengrad.telegrambot.model.request.*;
 import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pro.sky.petshelterbot.entity.Adopter;
-import pro.sky.petshelterbot.entity.Button;
-import pro.sky.petshelterbot.entity.Dialog;
-import pro.sky.petshelterbot.entity.Shelter;
+import pro.sky.petshelterbot.entity.*;
 import pro.sky.petshelterbot.repository.AdopterRepository;
 import pro.sky.petshelterbot.repository.ButtonRepository;
 import pro.sky.petshelterbot.repository.ShelterRepository;
@@ -52,8 +47,6 @@ public abstract class AbstractHandler implements Handler{
             adopter = adopterRepository.save(new Adopter(message.chat().id(), message.chat().firstName()));
         }
         return adopter;
-        //return  adopterRepository.findByChatId(message.chat().id())
-          //      .orElse(adopterRepository.save(new Adopter(message.chat().id(), message.chat().firstName())));
     }
 
     /** @return Shelter-entity by id
@@ -69,45 +62,49 @@ public abstract class AbstractHandler implements Handler{
     protected String getUserMessage(String key) {
             logger.trace("getUserMessage(key={})", key);
             return  userMessageRepository.findByKeyAndShelterIsNull(key)
-                    .orElseThrow(()->new NoSuchElementException(
-                            "The user_message with key=\"" + key + "\"is not listed in the db."))
+                    .orElse(new UserMessage())
             .getMessage();
         }
         protected String getUserMessage(String key, Shelter shelter) {
             logger.trace("getUserMessage(key={}, shelter={})", key, shelter);
-            return  userMessageRepository.findByKeyAndShelter(key, shelter)
-                    .orElseThrow(()->new NoSuchElementException(
-                            "The user_message with key=\"" + key + "\"is not listed in the db."))
+            return  userMessageRepository
+                    .findByKeyAndShelter(key, shelter)
+                    .orElse(userMessageRepository
+                            .findByKeyAndShelterIsNull(key)
+                            .orElseThrow(()->new NoSuchElementException(
+                            "The user_message with key=\"" + key + "\"is not listed in the db.")
+                            )
+                    )
             .getMessage();
         }
 
+    protected void sendMessage(Long chatId, String text, Keyboard keyboard) {
+        logger.trace("sendMessage(chatId={}, text=\"{}\") with kbMarkUp", chatId, text);
+        if(text == null) {
+            return;
+        }
+
+        telegramBot.execute(new SendMessage(chatId, text).parseMode(ParseMode.HTML).replyMarkup(keyboard));
+    }
 
     protected void sendMessage(Long chatId, String text) {
         logger.trace("sendMessage(chatId={}, text=\"{}\")", chatId, text);
+        if(text == null) {
+            return;
+        }
         telegramBot.execute(new SendMessage(chatId, text).parseMode(ParseMode.HTML));
-    }
-
-    protected void sendMessage(Long chatId, String text, String buttonLabel, String callbackData) {
-        logger.trace("sendMessage(chatId={}, text=\"{}\", buttonLabel=\"{}\", callbackData=\"{}\")",
-                chatId, text, buttonLabel, callbackData);
-        telegramBot.execute(new SendMessage(
-                chatId,
-                text).parseMode(ParseMode.HTML)
-                .replyMarkup(new InlineKeyboardMarkup(
-                        new InlineKeyboardButton(buttonLabel).callbackData(callbackData)
-                )));
     }
 
     /** Retrieves message by (key, shelter_id) from the table containing user_messages and send
      * it to the user. If message is not found user will be notified that developers have been
      * working on fixing it.
-     * @param adopter - adopter
+     * @param person - a person, either adopter or volunteer
      * @param key - user_messages.key for message
      */
-    protected void sendUserMessage(Adopter adopter, String key) {
-        Shelter shelter = adopter.getChatShelter();
-        logger.trace("sendUserMessage(chatId={}, key=\"{}\", shelter={})",
-                adopter.getChatId(), key, shelter);
+    protected void sendUserMessage(AbstractPerson person, String key) {
+        Shelter shelter = person.getShelter();
+        logger.trace("sendUserMessage(chatId={}, key=\"{}\", shelter.id={})",
+                person.getChatId(), key, shelter.getId());
         String userMessage;
         try {
             userMessage = getUserMessage(key, shelter);
@@ -116,23 +113,27 @@ public abstract class AbstractHandler implements Handler{
             logger.error("sendUserMessage-method: user_message {shelter={}, key=\"{}\" is not listed in the db.",
                     shelter, key);
         }
-        telegramBot.execute(new SendMessage(adopter.getChatId(), userMessage).parseMode(ParseMode.HTML));
+        telegramBot.execute(new SendMessage(person.getChatId(), userMessage).parseMode(ParseMode.HTML));
     }
-    protected void sendMenu(Adopter adopter, String chapter) {
 
-        Collection<Button> buttons = buttonsRepository.findByShelterAndChapterOrderById(adopter.getChatShelter(), chapter);
+    protected void sendMenu(Adopter adopter, String chapter) {
+        sendMenuAbstractPerson(adopter, chapter);
+        adopterRepository.save(adopter);
+    }
+    protected void sendMenuAbstractPerson(AbstractPerson person, String chapter) {
+
+        Collection<Button> buttons = buttonsRepository.findByShelterAndChapterOrderById(person.getShelter(), chapter);
         buttons.addAll(buttonsRepository.findByChapterAndShelterIsNullOrderById(chapter));
 
-
         if (buttons.size() == 0) {
-            logger.error("makeButtonList(...): There isn't button list in db for {}, shelter={}, chapter=\"{}\".",
-                    adopter, adopter.getChatShelter(), chapter);
+            logger.error("makeButtonList(): There isn't button list in db for person={}, shelter.id={}, chapter=\"{}\".",
+                    person.getChatId(), person.getShelter().getName(), chapter);
             return;
         }
 
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         for (Button button : buttons) {
-            if(getDialogIfRequested(adopter.getChatId()) != null) {
+            if(getDialogIfRequested(person.getChatId()) != null) {
                 if(button.getKey().equals(CALL_VOLUNTEER)) {
                     continue;
                 }
@@ -145,31 +146,40 @@ public abstract class AbstractHandler implements Handler{
             markup.addRow(new InlineKeyboardButton(button.getText()).callbackData(button.getKey()));
         }
 
-        sendMenu(adopter, getUserMessage(chapter), markup);
+        sendMenuAbstractPerson(person, getUserMessage(chapter), markup);
     }
 
     protected void sendMenu(Adopter adopter, String header, InlineKeyboardMarkup markup) {
-        deletePreviousMenu(adopter);
-        Long chatId = adopter.getChatId();
-        SendResponse response =  telegramBot.execute(new SendMessage(chatId, header)
-                .replyMarkup(markup));
-        int messageId = response.message().messageId();
-        logger.trace("sendMenu()-method: response.message().messageId()={}", messageId);
-
-        adopter.setChatMenuMessageId(messageId);
+        sendMenuAbstractPerson(adopter, header, markup);
         adopterRepository.save(adopter);
     }
 
+     protected void sendMenuAbstractPerson(AbstractPerson person, String header, InlineKeyboardMarkup markup) {
+         Long chatId = person.getChatId();
+        logger.trace("sendMenu(): person.chatId={}, header=\"{}\"", chatId, header);
+        deletePreviousMenuAbstractPerson(person);
+        SendResponse response =  telegramBot
+                .execute(new SendMessage(chatId, header)
+                .replyMarkup(markup));
+        int messageId = response.message().messageId();
+        logger.trace("sendMenu(): response.message().messageId()={}", messageId);
+
+        person.setChatMenuMessageId(messageId);
+    }
+
     protected void deletePreviousMenu(Adopter adopter) {
-        Integer chatMenuMessageId = adopter.getChatMenuMessageId();
+        deletePreviousMenuAbstractPerson(adopter);
+        adopterRepository.save(adopter);
+    }
+    protected void deletePreviousMenuAbstractPerson(AbstractPerson person) {
+        Integer chatMenuMessageId = person.getChatMenuMessageId();
         if(chatMenuMessageId==null) {
-            logger.debug("deletePreviousMenu(Adopter={}) => menu for adopter was not defined", adopter);
+            logger.debug("deletePreviousMenu(Person={}) => menu for adopter was not defined", person);
             return;
         }
-        telegramBot.execute(new DeleteMessage(adopter.getChatId(), chatMenuMessageId));
-        logger.trace("deletePreviousMenu(Adopter={})", adopter);
-        adopter.resetChatMenuMessageId();
-        adopterRepository.save(adopter);
+        telegramBot.execute(new DeleteMessage(person.getChatId(), chatMenuMessageId));
+        logger.trace("deletePreviousMenu(Adopter={})", person);
+        person.resetChatMenuMessageId();
     }
 
     protected Dialog getDialogIfRequested(Long adopterChatId) {

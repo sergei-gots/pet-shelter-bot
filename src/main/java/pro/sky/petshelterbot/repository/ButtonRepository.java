@@ -5,6 +5,7 @@ import pro.sky.petshelterbot.entity.Button;
 import pro.sky.petshelterbot.entity.Shelter;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public interface ButtonRepository extends JpaRepository<Button, Long> {
 

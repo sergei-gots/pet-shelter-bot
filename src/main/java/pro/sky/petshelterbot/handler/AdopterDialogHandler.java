@@ -17,7 +17,6 @@ import java.util.List;
 @Component
 public class AdopterDialogHandler extends AbstractDialogHandler {
 
-    private final AdopterRepository adopterRepository;
 
     public AdopterDialogHandler(TelegramBot telegramBot,
                                 AdopterRepository adopterRepository,
@@ -28,12 +27,15 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
                                 VolunteerRepository volunteerRepository
     ) {
         super(telegramBot, adopterRepository, shelterRepository, userMessageRepository, buttonRepository, volunteerRepository, dialogRepository);
-        this.adopterRepository = adopterRepository;
     }
 
 
     @Override
     public boolean handle(Message message) {
+        if(handle(message, message.text())) {
+            return true;
+        }
+
         Long chatId = message.chat().id();
         Dialog dialog = getDialogIfRequested(message.chat().id());
         if (dialog == null) {
@@ -59,36 +61,15 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
 
     @Override
     public boolean handle(Message message, String key) {
+
+        if(getAdopter(message).getShelter() == null) {
+            return false;
+        }
         switch(key) {
             case CALL_VOLUNTEER:
                 handleVolunteerCall(message);
                 return true;
-            case CANCEL_VOLUNTEER_CALL:
-            case CLOSE_DIALOG:
-            case CLOSE_DIALOG_RU:
-                handleCancelVolunteerCall(message);
-                return true;
-        }
-        return false;
-    }
-
-    private void handleCancelVolunteerCall(Message message) {
-        logger.debug("handleCancelVolunteerCall(message={})", message);
-        Adopter adopter = getAdopter(message);
-        long chatId = adopter.getChatId();
-        Dialog dialog = getDialogIfRequested(chatId);
-        if (dialog == null) {
-            showShelterInfoMenu(adopter);
-            throw new IllegalStateException("Dialog for chatId=" + chatId + " is not listed in db.");
-        }
-        Volunteer volunteer = dialog.getVolunteer();
-        dialogRepository.delete(dialog);
-        if(volunteer != null) {
-            volunteer.setAvailable(true);
-            volunteerRepository.save(volunteer);
-        } else {
-            showShelterInfoMenu(adopter);
-            sendMessage(chatId, "Заявка на диалог с волонтёром снята");
+            default: return super.handle(message, key);
         }
     }
 
@@ -114,7 +95,7 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
 
         //Get List of Available Volunteers
         List<Volunteer> availableVolunteers =
-                volunteerRepository.findByShelterAndAvailableIsTrue(adopter.getChatShelter());
+                volunteerRepository.findByShelterAndAvailableIsTrue(adopter.getShelter());
 
         if (availableVolunteers.size() == 0) {
             //If there isn't any available Volunteer out
@@ -125,12 +106,10 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
 
         //Else notify all the available volunteers about new dialog request
         for (Volunteer volunteer : availableVolunteers) {
-            sendMessage(volunteer.getChatId(),
-                    volunteer.getFirstName() + "! C вами хотел бы связаться " + adopter.getFirstName() +
-                            ". Нажмите кнопку 'Присоединиться к чату' для начала общения.",
-                    "Присоединиться к чату",
-                    JOIN_DIALOG
-            );
+            long chatId = volunteer.getChatId();
+            sendMessage(chatId,
+                    volunteer.getFirstName() + "! C вами хотел бы связаться " + adopter.getFirstName());
+            sendMenu(volunteer, JOIN_DIALOG);
         }
         sendMessage(adopter.getChatId(), "Волонтёру отослано уведомление. Волонтёр свяжется с вами " +
                 "насколько это возможно скоро. ");

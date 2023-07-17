@@ -170,10 +170,21 @@
     </changeSet>
 
     <changeSet id="insert-into-buttons--dialog-is-on" author="S">
-    <insert tableName="buttons">
-            <column name="key"          value="cancel"/>
-            <column name="chapter"      value="dialog_is_on"/>
+        <insert tableName="buttons">
+            <column name="key"          value="/close"/>
+            <column name="chapter"      value="DIALOG"/>
             <column name="text"         value="Завершить диалог"/>
+        </insert>
+
+        <insert tableName="buttons">
+            <column name="key"          value="/close"/>
+            <column name="chapter"      value="DIALOG_VOLUNTEER_PART"/>
+            <column name="text"         value="Завершить диалог"/>
+        </insert>
+        <insert tableName="buttons">
+            <column name="key"          value="/join"/>
+            <column name="chapter"      value="/join"/>
+            <column name="text"         value="Присоединиться к чату"/>
         </insert>
     </changeSet>
 

@@ -49,7 +49,7 @@ public class ShelterInfoHandler extends AbstractHandler {
     private boolean handleStartOrReset(Message message, String key) {
         Adopter adopter = getAdopter(message);
 
-        if(adopter.getChatShelter() == null) {
+        if(adopter.getShelter() == null) {
             processStart(adopter);
             return true;
         }
@@ -57,7 +57,7 @@ public class ShelterInfoHandler extends AbstractHandler {
         switch(key) {
             case RESET_SHELTER:
             case RESET_SHELTER_RU:
-                adopter.setChatShelter(null);
+                adopter.setShelter(null);
                 adopterRepository.save(adopter);
             case START:
                 processStart(adopter);
@@ -113,7 +113,7 @@ public class ShelterInfoHandler extends AbstractHandler {
                 .findById(shelterId)
                 .orElseThrow(() -> new ShelterException("There is no shelter with id=" + shelterId + " in db.))"));
 
-        adopter.setChatShelter(shelter);
+        adopter.setShelter(shelter);
         adopterRepository.save(adopter);
 
         sendMessage(adopter.getChatId(), "Вы выбрали шелтер \"<b>"
@@ -129,7 +129,7 @@ public class ShelterInfoHandler extends AbstractHandler {
         switch(key) {
             case RESET_SHELTER:
             case RESET_SHELTER_RU:
-                adopter.setChatShelter(null);
+                adopter.setShelter(null);
                 adopterRepository.save(adopter);
             case START:
                 processStart(adopter);
@@ -159,7 +159,7 @@ public class ShelterInfoHandler extends AbstractHandler {
      */
     public void sendOpeningHours(Adopter adopter) {
         logger.trace("sendOpeningHours");
-        Shelter shelter = adopter.getChatShelter();
+        Shelter shelter = adopter.getShelter();
         sendMessage(adopter.getChatId(), "<u>Расписание работы и адрес приюта</u>:\n" +
                 shelter.getWorkTime() + "\n" +
                 "Адрес: " + shelter.getAddress());
@@ -169,7 +169,7 @@ public class ShelterInfoHandler extends AbstractHandler {
      */
     public void sendSecurityInfo(Adopter adopter) {
         logger.trace("sendSecurityInfo");
-        Shelter shelter = adopter.getChatShelter();
+        Shelter shelter = adopter.getShelter();
         sendMessage(adopter.getChatId(), "<u>Контактные данные охраны приюта</u>:\n" +
                 "Телефон: " + shelter.getTel() + "\n" +
                 "Email: " + shelter.getEmail());
@@ -177,7 +177,7 @@ public class ShelterInfoHandler extends AbstractHandler {
 
     public void processStart(Adopter adopter) {
         sendMessage(adopter.getChatId(), "Здравствуйте, " + adopter.getFirstName());
-        if(adopter.getChatShelter() == null) {
+        if(adopter.getShelter() == null) {
             showShelterChoiceMenu(adopter);
         }
         else {

@@ -26,7 +26,7 @@ public interface DialogRepository extends JpaRepository<Dialog, Long> {
     /**
      * @return Dialog entry with the least ID  where Volunteer==null within specified Shelter
      */
-    @Query("from Dialog d where d.volunteer = null and d.adopter.chatShelter = :shelter order by d.id asc")
+    @Query("from Dialog d where d.volunteer = null and d.adopter.shelter = :shelter order by d.id asc")
     Collection<Dialog> findWaitingDialogsByVolunteerShelterOrderByIdAsc(Shelter shelter);
 
 

@@ -1,6 +1,9 @@
 package pro.sky.petshelterbot.handler;
 
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.entity.*;
 import pro.sky.petshelterbot.repository.*;
@@ -55,17 +58,75 @@ public abstract class AbstractDialogHandler extends AbstractHandler  {
         sendMessage(person.getChatId(), person.getFirstName() + ", " + text);
     }
 
+    @Override
+    public boolean handle(Message message, String key) {
+        switch(key) {
+            case CANCEL_VOLUNTEER_CALL:
+            case CLOSE_DIALOG:
+            case CLOSE_DIALOG_RU:
+                handleCancelVolunteerCall(message);
+                return true;
+            default: return false;
+        }
+    }
 
-    public void sendJoinInvitationsToVolunteersAndNotifyAdopter(Dialog dialog){
+
+    private void handleCancelVolunteerCall(Message message) {
+        logger.debug("handleCancelVolunteerCall(message={})", message);
+        Adopter adopter = getAdopter(message);
+        long chatId = adopter.getChatId();
+        Dialog dialog = getDialogIfRequested(chatId);
+        if (dialog == null) {
+            showShelterInfoMenu(adopter);
+            throw new IllegalStateException("Dialog for chatId=" + chatId + " is not listed in db.");
+        }
+        Volunteer volunteer = dialog.getVolunteer();
+        dialogRepository.delete(dialog);
+        showShelterInfoMenu(adopter);
+        if(volunteer != null) {
+            deletePreviousMenu(volunteer);
+            showShelterInfoMenu(adopter);
+            sendDialogMessageToAdopter(dialog, "Всего вам наилучшего:) Если у вас возникнут вопросы, обращайтесь ещё!");
+            sendMessage(volunteer.getChatId(), "Диалог c "
+                    + adopter.getFirstName() + " завершён. Спасибо:)");
+            volunteer.setAvailable(true);
+            volunteerRepository.save(volunteer);
+        } else {
+            sendMessage(chatId, "Заявка на диалог с волонтёром снята");
+        }
+    }
+    public void sendHandshakes(Dialog dialog){
         Volunteer volunteer = dialog.getVolunteer();
         Adopter adopter = dialog.getAdopter();
-        sendMessage(volunteer.getChatId(),
+
+        long volunteerChatId = volunteer.getChatId();
+        long adopterChatId = adopter.getChatId();
+
+        sendMessage(volunteerChatId,
                 volunteer.getFirstName() + "! C вами хотел бы связаться " + adopter.getFirstName() +
-                        ". Нажмите кнопку 'Присоединиться к чату' для начала общения.",
-                "Присоединиться к чату",
-                JOIN_DIALOG
-        );
-        sendMessage(dialog.getAdopter().getChatId(), "Волонтёру отослано уведомление. Волонтёр свяжется с вами " +
-                "насколько это возможно скоро. ");
+                        ". Нажмите кнопку 'Присоединиться к чату' для начала общения.");
+        sendMenu(volunteer, JOIN_DIALOG);
+
+        deletePreviousMenu(adopter);
+
+        sendMenu(adopter, CLOSE_DIALOG);
+        sendMessage(adopterChatId, "Волонтёру отослано уведомление. Волонтёр свяжется с вами " +
+                "насколько это возможно скоро. Основное меню на время диалога будет скрыто ", new ReplyKeyboardRemove());
     }
+
+
+    protected void sendMenu(Volunteer volunteer, String chapter) {
+        sendMenuAbstractPerson(volunteer, chapter);
+        volunteerRepository.save(volunteer);
+    }
+
+    protected void sendMenu(Volunteer volunteer, String header, InlineKeyboardMarkup markup) {
+        sendMenuAbstractPerson(volunteer, header, markup);
+        volunteerRepository.save(volunteer);
+    }
+    protected void deletePreviousMenu(Volunteer volunteer) {
+        deletePreviousMenuAbstractPerson(volunteer);
+        volunteerRepository.save(volunteer);
+    }
+
 }
