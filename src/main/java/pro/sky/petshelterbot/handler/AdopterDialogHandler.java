@@ -43,7 +43,9 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
         }
 
         if (dialog.getVolunteer() == null) {
-            sendMessage(chatId, "Подождите, волонтёр скоро свяжется с вами. Приношу извинения за ваше ожидание! Спасибо)");
+            sendMessage(chatId, "Подождите, волонтёр скоро свяжется с вами. Приношу извинения за ваше ожидание! " +
+                    " Вы также можете снять заявку на диалог с волонтёром комадой " +
+                    CANCEL_VOLUNTEER_CALL +  ". Спасибо)");
             return true;
         }
 
@@ -67,23 +69,25 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
         }
         switch(key) {
             case CALL_VOLUNTEER:
-                handleVolunteerCall(message);
+            case CALL_VOLUNTEER_ADOPTION_INFO_MENU:
+            case CALL_VOLUNTEER_SHELTER_INFO_MENU:
+                handleVolunteerCall(message, key);
                 return true;
             default: return super.handle(message, key);
         }
     }
 
-    public void handleVolunteerCall(Message message) {
+    public void handleVolunteerCall(Message message, String key) {
         logger.debug("handleVolunteerCall(message={})", message);
         Adopter adopter = getAdopter(message);
         long chatId = adopter.getChatId();
         if (getDialogIfRequested(chatId) != null) {
             throw new IllegalStateException("Dialog for chatId=" + chatId + " is already requested");
         }
-        createDialogRequest(adopter);
+        createDialogRequest(adopter, key);
     }
 
-    private void createDialogRequest(Adopter adopter) {
+    private void createDialogRequest(Adopter adopter, String key) {
 
         logger.trace("createDialogRequest(adopter={})", adopter);
 
@@ -91,7 +95,11 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
         Dialog dialog = new Dialog(adopter);
         dialogRepository.save(dialog);
 
-        showShelterInfoMenu(dialog.getAdopter());
+        if(CALL_VOLUNTEER_ADOPTION_INFO_MENU.equals(key)) {
+            sendMenu(dialog.getAdopter(), ADOPTION_INFO_MENU);
+        } else {
+            showShelterInfoMenu(dialog.getAdopter());
+        }
 
         //Get List of Available Volunteers
         List<Volunteer> availableVolunteers =
@@ -99,8 +107,10 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
 
         if (availableVolunteers.size() == 0) {
             //If there isn't any available Volunteer out
-            sendMessage(adopter.getChatId(), "В настоящий момент все волонтёры заняты. "
-                    + "Как только один из волонтёров освободится, он свяжется с вами.");
+            sendMessage(adopter.getChatId(), "В настоящий момент все волонтёры заняты. " +
+                     "Как только один из волонтёров освободится, он свяжется с вами. " +
+                    getUserMessage(MessageKey.WAIT_FOR_VOLUNTEER_BOT_RESTRICTIONS)
+            );
             return;
         }
 
@@ -114,5 +124,4 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
         sendMessage(adopter.getChatId(), "Волонтёру отослано уведомление. Волонтёр свяжется с вами " +
                 "насколько это возможно скоро. ");
     }
-
 }

@@ -62,23 +62,29 @@ public abstract class AbstractDialogHandler extends AbstractHandler  {
     public boolean handle(Message message, String key) {
         switch(key) {
             case CANCEL_VOLUNTEER_CALL:
+            case CANCEL_VOLUNTEER_CALL_ADOPTION_INFO_MENU:
+            case CALL_VOLUNTEER_SHELTER_INFO_MENU:
             case CLOSE_DIALOG:
             case CLOSE_DIALOG_RU:
-                handleCancelVolunteerCall(message);
+                handleCancelVolunteerCall(getAdopter(message), key);
                 return true;
             default: return false;
         }
     }
 
 
-    private void handleCancelVolunteerCall(Message message) {
-        logger.debug("handleCancelVolunteerCall(message={})", message);
-        Adopter adopter = getAdopter(message);
+    public void handleCancelVolunteerCall(Adopter adopter, String key) {
         long chatId = adopter.getChatId();
+        logger.debug("handleCancelVolunteerCall(adopter.chat_id={})", chatId);
         Dialog dialog = getDialogIfRequested(chatId);
         if (dialog == null) {
-            showShelterInfoMenu(adopter);
-            throw new IllegalStateException("Dialog for chatId=" + chatId + " is not listed in db.");
+            if(CANCEL_VOLUNTEER_CALL_ADOPTION_INFO_MENU.equals(key)) {
+                showShelterInfoMenu(adopter);
+            } else {
+                sendMenu(adopter, ADOPTION_INFO_MENU);
+            }
+            logger.debug("Dialog for chatId=" + chatId + " is not listed in db. It could be ok.");
+            return;
         }
         Volunteer volunteer = dialog.getVolunteer();
         dialogRepository.delete(dialog);

@@ -5,9 +5,8 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import pro.sky.petshelterbot.constants.ChapterNames;
 import pro.sky.petshelterbot.constants.Commands;
-import pro.sky.petshelterbot.constants.MessageKeys;
 
-public interface Handler extends ChapterNames, Commands, MessageKeys {
+public interface Handler extends ChapterNames, Commands {
     /**
      * Handles update.
      * @param update Telegram bot update

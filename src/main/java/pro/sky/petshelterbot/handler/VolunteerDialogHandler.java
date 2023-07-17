@@ -153,7 +153,7 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
         sendDialogMessageToAdopter(dialogToJoin,
                 dialogToJoin.getAdopter().getFirstName() + ", здравствуйте! Расскажите, какой у вас вопрос?");
         sendMenu(volunteer, DIALOG_VOLUNTEER_PART);
-        sendUserMessage(volunteer, CLARIFICATION_FOR_VOLUNTEER);
+        sendUserMessage(volunteer, MessageKey.DIALOG_INIT_CLARIFICATION_FOR_VOLUNTEER.name());
 
         Dialog nextDialog = nextDialogInWaiting(volunteer.getShelter());
         if(nextDialog == null) {

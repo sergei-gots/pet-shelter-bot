@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface UserMessageRepository extends JpaRepository<UserMessage, Long> {
 
 
-    Optional<UserMessage> findByKeyAndShelter(String key, Shelter shelter);
-    Optional<UserMessage> findByKeyAndShelterIsNull(String key);
+    Optional<UserMessage> findFirstByKeyAndShelter(String key, Shelter shelter);
+    Optional<UserMessage> findFirstByKeyAndShelterIsNull(String key);
 
 }

@@ -59,21 +59,21 @@ public abstract class AbstractHandler implements Handler{
                         "The shelter with id=" + shelterId + "is not listed in the db."));
     }
 
+    protected String getUserMessage(MessageKey key) {
+        return getUserMessage(key.name());
+    }
     protected String getUserMessage(String key) {
             logger.trace("getUserMessage(key={})", key);
-            return  userMessageRepository.findByKeyAndShelterIsNull(key)
+            return  userMessageRepository.findFirstByKeyAndShelterIsNull(key)
                     .orElse(new UserMessage())
             .getMessage();
         }
         protected String getUserMessage(String key, Shelter shelter) {
-            logger.trace("getUserMessage(key={}, shelter={})", key, shelter);
+            logger.trace("getUserMessage(key={}, shelter.id={})", key, shelter.getId());
             return  userMessageRepository
-                    .findByKeyAndShelter(key, shelter)
-                    .orElse(userMessageRepository
-                            .findByKeyAndShelterIsNull(key)
-                            .orElseThrow(()->new NoSuchElementException(
+                    .findFirstByKeyAndShelter(key, shelter)
+                    .orElseThrow(()->new NoSuchElementException(
                             "The user_message with key=\"" + key + "\"is not listed in the db.")
-                            )
                     )
             .getMessage();
         }
@@ -110,8 +110,8 @@ public abstract class AbstractHandler implements Handler{
             userMessage = getUserMessage(key, shelter);
         } catch(NoSuchElementException e) {
             userMessage = "Раздел не создан. Разработчики скоро сформируют этот раздел";
-            logger.error("sendUserMessage-method: user_message {shelter={}, key=\"{}\" is not listed in the db.",
-                    shelter, key);
+            logger.error("sendUserMessage-method: user_message {shelter.id={}, key=\"{}\" is not listed in the db.",
+                    shelter.getId(), key);
         }
         telegramBot.execute(new SendMessage(person.getChatId(), userMessage).parseMode(ParseMode.HTML));
     }
@@ -133,17 +133,21 @@ public abstract class AbstractHandler implements Handler{
 
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         for (Button button : buttons) {
+            String key = button.getKey();
             if(getDialogIfRequested(person.getChatId()) != null) {
-                if(button.getKey().equals(CALL_VOLUNTEER)) {
+                if(key.startsWith(CALL_VOLUNTEER) ||
+                        key.equals(ENTER_CONTACTS) ||
+                        key.equals(ENTER_REPORT)
+                ) {
                     continue;
                 }
             }
             else {
-                if(button.getKey().equals(CANCEL_VOLUNTEER_CALL)) {
+                if(key.startsWith(CANCEL_VOLUNTEER_CALL)) {
                     continue;
                 }
             }
-            markup.addRow(new InlineKeyboardButton(button.getText()).callbackData(button.getKey()));
+            markup.addRow(new InlineKeyboardButton(button.getText()).callbackData(key));
         }
 
         sendMenuAbstractPerson(person, getUserMessage(chapter), markup);
