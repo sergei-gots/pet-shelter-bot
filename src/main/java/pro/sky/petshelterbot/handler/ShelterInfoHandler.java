@@ -71,7 +71,6 @@ public class ShelterInfoHandler extends AbstractHandler {
             logger.debug("handle(CallbackQuery)-method");
             Message message = callbackQuery.message();
             String key = callbackQuery.data();
-            Long chatId = message.chat().id();
             Adopter adopter = getAdopter(message);
 
             logger.debug("handle(CallbackQuery): callbackQuery{key=\"{}\"", key);
@@ -123,7 +122,7 @@ public class ShelterInfoHandler extends AbstractHandler {
     }
 
     private void processResetShelter(Adopter adopter) {
-        dialogHandler.handleCancelVolunteerCall(adopter);
+        dialogHandler.handleCancelVolunteerCall(adopter, "");
         adopter.setShelter(null);
         adopterRepository.save(adopter);
     }

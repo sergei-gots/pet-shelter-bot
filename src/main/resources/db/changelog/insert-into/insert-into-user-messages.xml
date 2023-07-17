@@ -189,11 +189,11 @@
         </insert>
 
         <insert tableName="user_messages">
-            <column name="key"          value="DIALOG_INIT_CLARIFICATION_FOR_VOLUNTEER"/>
+            <column name="key"          value="DIALOG_INIT_CLARIFICATION_FOR_VOLUNTEER_1"/>
             <column name="message"      value="Отлично, вы в чате. Для завершения диалога кнопку ниже или используйте команды: /close и /завершить"/>
         </insert>
         <insert tableName="user_messages">
-            <column name="key"          value="dialog_init_clarification"/>
+            <column name="key"          value="DIALOG_INIT_CLARIFICATION_FOR_VOLUNTEER_2"/>
             <column name="message"      value="Пользователю направлено приветствие и предложение сформировать интересующий его вопрос."/>
         </insert>
     </changeSet>
