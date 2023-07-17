@@ -178,12 +178,18 @@
 
     <changeSet id="insert-into-user-messages--join" author="S">
         <insert tableName="user_messages">
+            <column name="key"          value="WAIT_FOR_VOLUNTEER_BOT_RESTRICTIONS"/>
+            <column name="message"      value="На этапе ожидания подключения волонтёра часть функциональности, связанной с вводом данных будет закрыта. Всё в порядке)"/>
+        </insert>
+
+
+        <insert tableName="user_messages">
             <column name="key"          value="/join"/>
             <column name="message"      value="Нажмите кнопку 'Присоединиться к чату' для начала общения:"/>
         </insert>
 
         <insert tableName="user_messages">
-            <column name="key"          value="DIALOG_VOLUNTEER_PART"/>
+            <column name="key"          value="DIALOG_INIT_CLARIFICATION_FOR_VOLUNTEER"/>
             <column name="message"      value="Отлично, вы в чате. Для завершения диалога кнопку ниже или используйте команды: /close и /завершить"/>
         </insert>
         <insert tableName="user_messages">

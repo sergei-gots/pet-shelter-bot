@@ -59,6 +59,9 @@ public abstract class AbstractHandler implements Handler{
                         "The shelter with id=" + shelterId + "is not listed in the db."));
     }
 
+    protected String getUserMessage(MessageKey key) {
+        return getUserMessage(key.name());
+    }
     protected String getUserMessage(String key) {
             logger.trace("getUserMessage(key={})", key);
             return  userMessageRepository.findByKeyAndShelterIsNull(key)

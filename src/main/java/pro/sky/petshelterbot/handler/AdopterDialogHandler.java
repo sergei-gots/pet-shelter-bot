@@ -99,8 +99,10 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
 
         if (availableVolunteers.size() == 0) {
             //If there isn't any available Volunteer out
-            sendMessage(adopter.getChatId(), "В настоящий момент все волонтёры заняты. "
-                    + "Как только один из волонтёров освободится, он свяжется с вами.");
+            sendMessage(adopter.getChatId(), "В настоящий момент все волонтёры заняты. " +
+                     "Как только один из волонтёров освободится, он свяжется с вами. " +
+                    getUserMessage(MessageKey.WAIT_FOR_VOLUNTEER_BOT_RESTRICTIONS)
+            );
             return;
         }
 
