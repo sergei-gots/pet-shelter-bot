@@ -13,7 +13,7 @@
         </insert>
         <insert tableName="user_messages">
             <column name="key"          value="adoption_info_menu"/>
-            <column name="message"      value="# Выберите интересующую вас информацию:"/>
+            <column name="message"      value="Выберите интересующую вас информацию:"/>
         </insert>
 
         <insert tableName="user_messages">
@@ -48,14 +48,12 @@
 
         <insert tableName="user_messages">
             <column name="key"          value="requirements_info"/>
-            <column name="shelter_id"   valueNumeric="1"/>
             <column name="message"      valueClobFile="../../../initial-data/requirements_info.txt"/>
         </insert>
 
         <insert tableName="user_messages">
-            <column name="key"          value="requirements_info"/>
-            <column name="shelter_id"   valueNumeric="2"/>
-            <column name="message"      valueClobFile="../../../initial-data/requirements_info.txt"/>
+            <column name="key"          value="refusal_info"/>
+            <column name="message"      valueClobFile="../../../initial-data/refusal_info.txt"/>
         </insert>
 
         <insert tableName="user_messages">
