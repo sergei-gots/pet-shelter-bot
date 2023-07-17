@@ -20,5 +20,6 @@ public interface Handler extends ChapterNames, Commands, MessageKeys {
     default boolean handle(CallbackQuery callbackQuery)   { return false; }
     default boolean handle(Message message)  { return false; }
 
-    default boolean handle(CallbackQuery callbackQuery, Message message, String key) { return false; }
+    default boolean handle(Message message, String key) { return false; }
+
 }

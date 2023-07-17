@@ -54,11 +54,42 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
     @Override
     public boolean handle(CallbackQuery callbackQuery) {
 
-        if (CALL_VOLUNTEER.equals(callbackQuery.data())) {
-            handleVolunteerCall(callbackQuery.message());
-            return true;
+        return handle(callbackQuery.message(), callbackQuery.data());
+    }
+
+    @Override
+    public boolean handle(Message message, String key) {
+        switch(key) {
+            case CALL_VOLUNTEER:
+                handleVolunteerCall(message);
+                return true;
+            case CANCEL_VOLUNTEER_CALL:
+            case CLOSE_DIALOG:
+            case CLOSE_DIALOG_RU:
+                handleCancelVolunteerCall(message);
+                return true;
         }
         return false;
+    }
+
+    private void handleCancelVolunteerCall(Message message) {
+        logger.debug("handleCancelVolunteerCall(message={})", message);
+        Adopter adopter = getAdopter(message);
+        long chatId = adopter.getChatId();
+        Dialog dialog = getDialogIfRequested(chatId);
+        if (dialog == null) {
+            showShelterInfoMenu(adopter);
+            throw new IllegalStateException("Dialog for chatId=" + chatId + " is not listed in db.");
+        }
+        Volunteer volunteer = dialog.getVolunteer();
+        dialogRepository.delete(dialog);
+        if(volunteer != null) {
+            volunteer.setAvailable(true);
+            volunteerRepository.save(volunteer);
+        } else {
+            showShelterInfoMenu(adopter);
+            sendMessage(chatId, "Заявка на диалог с волонтёром снята");
+        }
     }
 
     public void handleVolunteerCall(Message message) {

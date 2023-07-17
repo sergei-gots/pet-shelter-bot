@@ -154,11 +154,6 @@ public class ShelterInfoHandler extends AbstractHandler {
         }
         return false;
     }
-    private void processAdoptionInfoMenu(Adopter adopter) {
-        logger.trace("processAdoptionInfoMenu");
-
-        sendMenu(adopter, ADOPTION_INFO_MENU);
-    }
 
     /** Sends information about shelter's opening hours
      */

@@ -44,14 +44,14 @@
         </insert>
 
         <insert tableName="buttons">
-            <column name="key"          value="/cancel"/>
-            <column name="text"         value="Снять заявку на диалог с волонтёром"/>
+            <column name="key"          value="/reset-shelter"/>
+            <column name="text"         value="Вернуться к выбору приюта"/>
             <column name="chapter"      value="shelter_info_menu"/>
         </insert>
 
         <insert tableName="buttons">
-            <column name="key"          value="/reset-shelter"/>
-            <column name="text"         value="Вернуться к выбору приюта"/>
+            <column name="key"          value="/cancel"/>
+            <column name="text"         value="Снять заявку на диалог с волонтёром"/>
             <column name="chapter"      value="shelter_info_menu"/>
         </insert>
     </changeSet>
