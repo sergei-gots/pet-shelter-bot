@@ -6,7 +6,6 @@ import com.pengrad.telegrambot.model.Message;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Dialog;
-import pro.sky.petshelterbot.entity.Shelter;
 import pro.sky.petshelterbot.entity.Volunteer;
 import pro.sky.petshelterbot.repository.*;
 
@@ -53,46 +52,43 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
     }
 
     @Override
-    public boolean handle(CallbackQuery callbackQuery, Message message, String key, Long chatId, Long shelterId) {
-        if (CALL_VOLUNTEER.equals(key)) {
-            handleVolunteerCall(callbackQuery, message, chatId, shelterId);
+    public boolean handle(CallbackQuery callbackQuery) {
+
+        if (CALL_VOLUNTEER.equals(callbackQuery.data())) {
+            handleVolunteerCall(callbackQuery.message());
             return true;
         }
         return false;
     }
 
-    public void handleVolunteerCall(CallbackQuery callbackQuery, Message message, Long chatId, Long shelterId) {
-        logger.debug("handleVolunteerCall(chatId={}, shelterId={})", chatId, shelterId);
+    public void handleVolunteerCall(Message message) {
+        logger.debug("handleVolunteerCall(message={})", message);
+        Adopter adopter = getAdopter(message);
+        long chatId = adopter.getChatId();
         if (getDialogIfRequested(chatId) != null) {
             throw new IllegalStateException("Dialog for chatId=" + chatId + " is already requested");
         }
-        createDialogRequest(message, chatId, shelterId);
+        createDialogRequest(adopter);
     }
 
-    private void createDialogRequest(Message message, Long chatId, Long shelterId) {
+    private void createDialogRequest(Adopter adopter) {
 
-        logger.trace("createDialogRequest(message={}, ...", message);
-
-        //Get Adopter if exists or Create a New Adopter Entry
-        Adopter adopter = adopterRepository.findByChatId(chatId)
-                .orElse(adopterRepository.save(new Adopter(chatId, message.chat().firstName()))
-                );
+        logger.trace("createDialogRequest(adopter={})", adopter);
 
         //Create Dialog Entry
-        Shelter shelter = getShelter(shelterId);
-        Dialog dialog = new Dialog(adopter, shelter);
+        Dialog dialog = new Dialog(adopter);
         dialogRepository.save(dialog);
 
         //Get List of Available Volunteers
-        List<Volunteer> availableVolunteers = volunteerRepository.findByShelterAndAvailableIsTrue(shelter);
+        List<Volunteer> availableVolunteers =
+                volunteerRepository.findByShelterAndAvailableIsTrue(adopter.getChatShelter());
 
         if (availableVolunteers.size() == 0) {
             //If there isn't any available Volunteer out
-            sendMessage(chatId, "В настоящий момент все волонтёры заняты. "
+            sendMessage(adopter.getChatId(), "В настоящий момент все волонтёры заняты. "
                     + "Как только один из волонтёров освободится, он свяжется с вами.");
             return;
         }
-
 
         //Else notify all the available volunteers about new dialog request
         for (Volunteer volunteer : availableVolunteers) {
@@ -105,10 +101,6 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
         }
         sendMessage(adopter.getChatId(), "Волонтёру отослано уведомление. Волонтёр свяжется с вами " +
                 "насколько это возможно скоро. ");
-    }
-
-    private Dialog getDialogIfRequested(long chatId) {
-        return dialogRepository.findByAdopterChatId(chatId).orElse(null);
     }
 
 }

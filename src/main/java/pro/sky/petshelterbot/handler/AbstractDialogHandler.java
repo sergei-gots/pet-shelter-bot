@@ -3,11 +3,10 @@ package pro.sky.petshelterbot.handler;
 import com.pengrad.telegrambot.TelegramBot;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.constants.DialogCommandNames;
-import pro.sky.petshelterbot.entity.AbstractPerson;
-import pro.sky.petshelterbot.entity.Adopter;
-import pro.sky.petshelterbot.entity.Dialog;
-import pro.sky.petshelterbot.entity.Volunteer;
+import pro.sky.petshelterbot.entity.*;
 import pro.sky.petshelterbot.repository.*;
+
+import java.util.Collection;
 
 /**
  * Handles commands receiving from user supposed
@@ -30,6 +29,16 @@ public abstract class AbstractDialogHandler extends AbstractHandler
         super(telegramBot, adopterRepository, shelterRepository, userMessageRepository, buttonRepository);
         this.volunteerRepository = volunteerRepository;
         this.dialogRepository = dialogRepository;
+    }
+
+    protected Dialog nextDialogInWaiting(Shelter shelter) {
+        Collection<Dialog> dialogsInWaiting
+                = dialogRepository.findWaitingDialogsByVolunteerShelterOrderByIdAsc(shelter);
+        if (dialogsInWaiting.isEmpty()) {
+            return null;
+        } else {
+            return dialogsInWaiting.iterator().next();
+        }
     }
 
     protected void sendDialogMessageToAdopter(Dialog dialog, String text) {

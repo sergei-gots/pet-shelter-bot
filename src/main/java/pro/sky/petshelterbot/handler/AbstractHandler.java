@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Button;
+import pro.sky.petshelterbot.entity.Dialog;
 import pro.sky.petshelterbot.entity.Shelter;
 import pro.sky.petshelterbot.repository.AdopterRepository;
 import pro.sky.petshelterbot.repository.ButtonRepository;
@@ -158,5 +159,15 @@ public abstract class AbstractHandler implements Handler{
         logger.trace("deletePreviousMenu(Adopter={})", adopter);
         adopter.resetChatMenuMessageId();
         adopterRepository.save(adopter);
+    }
+
+    protected void processShelterInfoMenu(Adopter adopter) {
+        logger.debug("processShelterInfoMenu(...)");
+        deletePreviousMenu(adopter);
+        makeButtonList(adopter, SHELTER_INFO_MENU);
+    }
+
+    protected Dialog getDialogIfRequested(Long adopterChatId) {
+        return adopterRepository.findDialogByAdopterChatId(adopterChatId).orElse(null);
     }
 }
