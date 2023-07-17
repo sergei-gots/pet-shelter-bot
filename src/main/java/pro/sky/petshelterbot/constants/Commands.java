@@ -7,7 +7,7 @@ public interface Commands {
     String CALL_VOLUNTEER_SHELTER_INFO_MENU = "/call_volunteer_shelter_info_menu";
     String CANCEL_VOLUNTEER_CALL = "/cancel";
     String CANCEL_VOLUNTEER_CALL_ADOPTION_INFO_MENU = "/cancel_adoption_info_menu";
-    String CANCEL_VOLUNTEER_CALL_SHELTER_INFO_MENU = "/cancel_volunteer_shelter_info_menu";
+    String CANCEL_VOLUNTEER_CALL_SHELTER_INFO_MENU = "/cancel_shelter_info_menu";
     String CLOSE_DIALOG="/close";
     String CLOSE_DIALOG_RU="/завершить";
     String ENTER_CONTACTS="/enter_contacts";

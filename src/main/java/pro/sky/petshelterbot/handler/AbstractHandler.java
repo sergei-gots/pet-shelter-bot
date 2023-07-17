@@ -70,12 +70,18 @@ public abstract class AbstractHandler implements Handler{
         }
         protected String getUserMessage(String key, Shelter shelter) {
             logger.trace("getUserMessage(key={}, shelter.id={})", key, shelter.getId());
-            return  userMessageRepository
-                    .findFirstByKeyAndShelter(key, shelter)
-                    .orElseThrow(()->new NoSuchElementException(
-                            "The user_message with key=\"" + key + "\"is not listed in the db.")
-                    )
-            .getMessage();
+            UserMessage userMessage =  userMessageRepository
+                    .findFirstByKeyAndShelterId(key, shelter.getId())
+                    .orElse(null);
+            if(userMessage == null) {
+                logger.trace("getUserMessage: try to find by key={}, shelter.id=null", key);
+                userMessage = userMessageRepository.findFirstByKeyAndShelterIsNull(key)
+                        .orElseThrow(()->new NoSuchElementException(
+                                "The user_message with key=\"" + key + "\"is not listed in the db.")
+                        );
+            }
+
+            return userMessage.getMessage();
         }
 
     protected void sendMessage(Long chatId, String text, Keyboard keyboard) {

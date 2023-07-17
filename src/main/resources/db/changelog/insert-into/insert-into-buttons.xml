@@ -150,7 +150,7 @@
 
 
         <insert tableName="buttons">
-            <column name="key"          value="/call_volunteer"/>
+            <column name="key"          value="/call_volunteer_adoption_info_menu"/>
             <column name="text"         value="Позвать волонтёра"/>
             <column name="chapter"      value="adoption_info_menu"/>
         </insert>

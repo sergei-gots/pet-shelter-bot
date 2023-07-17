@@ -32,7 +32,7 @@ public class TelegramBotListener
      *                         if the update we have to handle is sent by volunteer.
      */
     public TelegramBotListener(TelegramBot telegramBot,
-                               ShelterInfoHandler shelterHandler,
+                               ShelterInfoHandler shelterInfoHandler,
                                VolunteerDialogHandler volunteerHandler,
                                AdopterDialogHandler adopterDialogHandler
                                ) {
@@ -41,8 +41,10 @@ public class TelegramBotListener
         handlers = new Handler[]{
                 //Important: volunteerHandler MUST BE at first place
                 volunteerHandler,
+                //then - adopter dialog handler
                 adopterDialogHandler,
-                shelterHandler,
+                //the last one should be shelterInfoHandler
+                shelterInfoHandler
         };
     }
 

@@ -22,9 +22,7 @@ import java.util.Collection;
 @Component
 public class ShelterInfoHandler extends AbstractHandler {
 
-    private final AdopterDialogHandler dialogHandler;
-
-
+    private final AdopterDialogHandler adopterDialogHandler;
     public ShelterInfoHandler(TelegramBot telegramBot,
 
                               AdopterRepository adopterRepository,
@@ -32,9 +30,12 @@ public class ShelterInfoHandler extends AbstractHandler {
                               UserMessageRepository userMessageRepository,
                               ButtonRepository buttonsRepository,
 
-                              AdopterDialogHandler adopterDialogHandler) {
+                              AdopterDialogHandler adopterDialogHandler
+
+                              ) {
         super(telegramBot, adopterRepository, shelterRepository, userMessageRepository, buttonsRepository);
-        this.dialogHandler = adopterDialogHandler;
+
+        this.adopterDialogHandler = adopterDialogHandler;
     }
 
     @Override
@@ -82,14 +83,8 @@ public class ShelterInfoHandler extends AbstractHandler {
             if (handleStartOrReset(message, key)) {
                 return true;
             }
-            if (dialogHandler.handle(callbackQuery)) {
-                return true;
-            }
-            if (processCommands(adopter, key)) {
-                return true;
-            }
-            sendUserMessage(adopter, key);
-            return true;
+
+            return processCommands(adopter, key);
         }
 
 
@@ -122,14 +117,14 @@ public class ShelterInfoHandler extends AbstractHandler {
     }
 
     private void processResetShelter(Adopter adopter) {
-        dialogHandler.handleCancelVolunteerCall(adopter, "");
+        adopterDialogHandler.handleCancelVolunteerCall(adopter, "");
         adopter.setShelter(null);
         adopterRepository.save(adopter);
     }
 
     public boolean processCommands(Adopter adopter, String key) {
-        logger.trace("processCommands(adopter={}, key=\"{}\")",
-                adopter, key);
+        logger.trace("processCommands(adopter.chatId={}, key=\"{}\")",
+                adopter.getChatId(), key);
 
         switch(key) {
             case RESET_SHELTER:
@@ -157,7 +152,8 @@ public class ShelterInfoHandler extends AbstractHandler {
                 sendSecurityInfo(adopter);
                 return true;
         }
-        return false;
+        sendUserMessage(adopter, key);
+        return true;
     }
 
     /** Sends information about shelter's opening hours

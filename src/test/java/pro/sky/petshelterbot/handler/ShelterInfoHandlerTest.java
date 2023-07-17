@@ -55,7 +55,7 @@ public class ShelterInfoHandlerTest {
         shelter.setWorkTime("9:00 - 18:00");
         shelter.setAddress("123 Main Street");
         Adopter adopter = new Adopter();
-        adopter.setChatShelter(shelter);
+        adopter.setShelter(shelter);
 
         when(shelterRepository.findById(shelterId)).thenReturn(java.util.Optional.of(shelter));
 
