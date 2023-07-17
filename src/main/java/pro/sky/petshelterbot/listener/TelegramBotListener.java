@@ -5,7 +5,7 @@ import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.request.DeleteMessage;
+import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -103,7 +103,8 @@ public class TelegramBotListener
                 return true;
             }
         }
-        telegramBot.execute(new DeleteMessage(message.chat().id(), message.messageId()));
+        telegramBot.execute(new SendMessage(message.chat().id(), "Воспользуйтесь пунктами меню или напишите " +
+                "и отправьте команду '/меню' или '/menu', если меню далеко вверху."));
         logger.trace("processMessage: there is no suitable handler for text=\"{}\" received from user={} with chat_id={}",
                 message.text(), message.chat().firstName(), message.chat().id());
         return true;

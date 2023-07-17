@@ -18,6 +18,6 @@ public interface Handler extends ChapterNames, Commands {
     default boolean handle(Update update)                 { return false; }
     default boolean handle(CallbackQuery callbackQuery)   { return false; }
     default boolean handle(Message message)  { return false; }
-    default boolean handle(Message message, String key, Long chatId, Long shelterId) { return false; }
-    default boolean handle(CallbackQuery callbackQuery, Message message, String key, Long chatId, Long shelterId) { return false; }
+
+    default boolean handle(CallbackQuery callbackQuery, Message message, String key) { return false; }
 }

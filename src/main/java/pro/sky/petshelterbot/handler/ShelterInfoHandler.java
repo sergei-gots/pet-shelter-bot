@@ -83,7 +83,7 @@ public class ShelterInfoHandler extends AbstractHandler {
             if (handleStartOrReset(message, key)) {
                 return true;
             }
-            if (dialogHandler.handle(callbackQuery, message, key, chatId, adopter.getChatId())) {
+            if (dialogHandler.handle(callbackQuery)) {
                 return true;
             }
             if (processCommands(adopter, key)) {
@@ -93,11 +93,7 @@ public class ShelterInfoHandler extends AbstractHandler {
             return true;
         }
 
-    private void processShelterInfoMenu(Adopter adopter) {
-        logger.debug("processShelterInfoMenu(...)");
-        deletePreviousMenu(adopter);
-        makeButtonList(adopter, SHELTER_INFO_MENU);
-    }
+
 
 
     private void processShelterChoice(Adopter adopter, String key) {

@@ -7,7 +7,6 @@ import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.entity.Dialog;
-import pro.sky.petshelterbot.entity.Shelter;
 import pro.sky.petshelterbot.entity.Volunteer;
 import pro.sky.petshelterbot.repository.*;
 
@@ -115,14 +114,13 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
 
         dialogRepository.delete(dialog);
 
-        Dialog dialogInWaiting =   dialogRepository.findFirstByVolunteerIsNullAndShelterOrderByIdAsc(volunteer.getShelter()).orElse(null);
-        if(dialogInWaiting == null) {
+        Dialog nextDialog = nextDialogInWaiting(volunteer.getShelter());
+        if(nextDialog == null) {
             volunteer.setAvailable(true);
             volunteerRepository.save(volunteer);
-
         } else {
-            dialogInWaiting.setVolunteer(volunteer);
-            dialogRepository.save(dialogInWaiting);
+            nextDialog.setVolunteer(volunteer);
+            dialogRepository.save(nextDialog);
             sendJoinInvitationsToVolunteersAndNotifyAdopter(dialog);
         }
     }
@@ -140,7 +138,7 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
         logger.debug("processJoinDialog()-method. Volunteer.first_name=\"{}\"",
             volunteer.getFirstName());
 
-        Dialog dialogToJoin = getFirstWaitingDialog(volunteer.getShelter());
+        Dialog dialogToJoin = nextDialogInWaiting(volunteer.getShelter());
 
         if(dialogToJoin == null) {
             logger.debug("processJoinDialog()-method. dialogToJoin == null is true");
@@ -168,7 +166,7 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
                 "Отлично, вы в чате. Пользователю направлено приветствие и предложение сформировать интересующий вопрос.\n" +
                 "Для завершения диалога используйте команды: \n\t" + CLOSE_DIALOG_RU + " или " + CLOSE_DIALOG);
 
-        Dialog nextDialog = getFirstWaitingDialog(volunteer.getShelter());
+        Dialog nextDialog = nextDialogInWaiting(volunteer.getShelter());
 
         if(nextDialog == null) {
             logger.debug("processJoinDialog()-method. nextToJoin == null is true");
@@ -187,9 +185,7 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
         }
     }
 
-    private Dialog getFirstWaitingDialog(Shelter shelter) {
-        return dialogRepository.findFirstByVolunteerIsNullAndShelterOrderByIdAsc(shelter).orElse(null);
-    }
+
 
 
 }
