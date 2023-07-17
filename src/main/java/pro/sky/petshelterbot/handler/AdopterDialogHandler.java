@@ -114,5 +114,4 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
         sendMessage(adopter.getChatId(), "Волонтёру отослано уведомление. Волонтёр свяжется с вами " +
                 "насколько это возможно скоро. ");
     }
-
 }

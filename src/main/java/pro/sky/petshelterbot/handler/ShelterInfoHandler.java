@@ -57,14 +57,14 @@ public class ShelterInfoHandler extends AbstractHandler {
         switch(key) {
             case RESET_SHELTER:
             case RESET_SHELTER_RU:
-                adopter.setShelter(null);
-                adopterRepository.save(adopter);
+                processResetShelter(adopter);
             case START:
                 processStart(adopter);
                 return true;
         }
         return false;
     }
+
     @Override
     public boolean handle(CallbackQuery callbackQuery) {
 
@@ -120,6 +120,12 @@ public class ShelterInfoHandler extends AbstractHandler {
                 + shelter.getName() + "</b>\"");
 
         showShelterInfoMenu(adopter);
+    }
+
+    private void processResetShelter(Adopter adopter) {
+        dialogHandler.handleCancelVolunteerCall(adopter);
+        adopter.setShelter(null);
+        adopterRepository.save(adopter);
     }
 
     public boolean processCommands(Adopter adopter, String key) {
