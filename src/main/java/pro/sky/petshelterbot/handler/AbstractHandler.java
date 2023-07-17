@@ -118,7 +118,7 @@ public abstract class AbstractHandler implements Handler{
         }
         telegramBot.execute(new SendMessage(adopter.getChatId(), userMessage).parseMode(ParseMode.HTML));
     }
-    protected void makeButtonList(Adopter adopter, String chapter) {
+    protected void sendMenu(Adopter adopter, String chapter) {
 
         Collection<Button> buttons = buttonsRepository.findByShelterAndChapterOrderById(adopter.getChatShelter(), chapter);
         buttons.addAll(buttonsRepository.findByChapterAndShelterIsNullOrderById(chapter));
@@ -132,15 +132,26 @@ public abstract class AbstractHandler implements Handler{
 
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         for (Button button : buttons) {
+            if(getDialogIfRequested(adopter.getChatId()) != null) {
+                if(button.getKey().equals(CALL_VOLUNTEER)) {
+                    continue;
+                }
+            }
+            else {
+                if(button.getKey().equals(CANCEL_VOLUNTEER_CALL)) {
+                    continue;
+                }
+            }
             markup.addRow(new InlineKeyboardButton(button.getText()).callbackData(button.getKey()));
         }
 
         sendMenu(adopter, getUserMessage(chapter), markup);
     }
 
-    protected void sendMenu(Adopter adopter, String text, InlineKeyboardMarkup markup) {
+    protected void sendMenu(Adopter adopter, String header, InlineKeyboardMarkup markup) {
+        deletePreviousMenu(adopter);
         Long chatId = adopter.getChatId();
-        SendResponse response =  telegramBot.execute(new SendMessage(chatId, text)
+        SendResponse response =  telegramBot.execute(new SendMessage(chatId, header)
                 .replyMarkup(markup));
         int messageId = response.message().messageId();
         logger.trace("sendMenu()-method: response.message().messageId()={}", messageId);
@@ -161,13 +172,11 @@ public abstract class AbstractHandler implements Handler{
         adopterRepository.save(adopter);
     }
 
-    protected void processShelterInfoMenu(Adopter adopter) {
-        logger.debug("processShelterInfoMenu(...)");
-        deletePreviousMenu(adopter);
-        makeButtonList(adopter, SHELTER_INFO_MENU);
-    }
-
     protected Dialog getDialogIfRequested(Long adopterChatId) {
         return adopterRepository.findDialogByAdopterChatId(adopterChatId).orElse(null);
+    }
+
+    public void showShelterInfoMenu(Adopter adopter) {
+        sendMenu(adopter, SHELTER_INFO_MENU);
     }
 }

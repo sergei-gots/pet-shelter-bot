@@ -99,7 +99,6 @@ public class ShelterInfoHandler extends AbstractHandler {
     private void processShelterChoice(Adopter adopter, String key) {
 
         logger.debug("processShelterChoice(adopter={}, key=\"{}\")", adopter, key);
-        deletePreviousMenu(adopter);
         long shelterId;
         try {
             shelterId = Long.parseLong(key.substring(SHELTER_CHOICE.length()));
@@ -123,9 +122,6 @@ public class ShelterInfoHandler extends AbstractHandler {
         showShelterInfoMenu(adopter);
     }
 
-    public void showShelterInfoMenu(Adopter adopter) {
-        makeButtonList(adopter, SHELTER_INFO_MENU);
-    }
     public boolean processCommands(Adopter adopter, String key) {
         logger.trace("processCommands(adopter={}, key=\"{}\")",
                 adopter, key);
@@ -141,10 +137,10 @@ public class ShelterInfoHandler extends AbstractHandler {
             case SHELTER_INFO_MENU:
             case MENU:
             case MENU_RU:
-                processShelterInfoMenu(adopter);
+                sendMenu(adopter, SHELTER_INFO_MENU);
                 return true;
             case ADOPTION_INFO_MENU:
-                processAdoptionInfoMenu(adopter);
+                sendMenu(adopter, ADOPTION_INFO_MENU);
                 return true;
             case ABOUT_SHELTER_INFO:
                 sendUserMessage(adopter, key);
@@ -160,8 +156,8 @@ public class ShelterInfoHandler extends AbstractHandler {
     }
     private void processAdoptionInfoMenu(Adopter adopter) {
         logger.trace("processAdoptionInfoMenu");
-        deletePreviousMenu(adopter);
-        makeButtonList(adopter, ADOPTION_INFO_MENU);
+
+        sendMenu(adopter, ADOPTION_INFO_MENU);
     }
 
     /** Sends information about shelter's opening hours
@@ -194,8 +190,6 @@ public class ShelterInfoHandler extends AbstractHandler {
         }
     }
     public void showShelterChoiceMenu(Adopter adopter) {
-        deletePreviousMenu(adopter);
-
         Collection<Shelter> shelters = shelterRepository.findAll();
         // Create buttons to choose shelter
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();

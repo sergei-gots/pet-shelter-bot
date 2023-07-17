@@ -79,6 +79,8 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
         Dialog dialog = new Dialog(adopter);
         dialogRepository.save(dialog);
 
+        showShelterInfoMenu(dialog.getAdopter());
+
         //Get List of Available Volunteers
         List<Volunteer> availableVolunteers =
                 volunteerRepository.findByShelterAndAvailableIsTrue(adopter.getChatShelter());

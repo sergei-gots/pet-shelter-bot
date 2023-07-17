@@ -2,7 +2,6 @@ package pro.sky.petshelterbot.handler;
 
 import com.pengrad.telegrambot.TelegramBot;
 import org.springframework.stereotype.Component;
-import pro.sky.petshelterbot.constants.DialogCommandNames;
 import pro.sky.petshelterbot.entity.*;
 import pro.sky.petshelterbot.repository.*;
 
@@ -15,8 +14,7 @@ import java.util.Collection;
  **/
 
 @Component
-public abstract class AbstractDialogHandler extends AbstractHandler
-        implements DialogCommandNames {
+public abstract class AbstractDialogHandler extends AbstractHandler  {
     final protected VolunteerRepository volunteerRepository;
     final protected DialogRepository dialogRepository;
 

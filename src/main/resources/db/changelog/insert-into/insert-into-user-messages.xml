@@ -169,5 +169,13 @@
 
     </changeSet>
 
+    <changeSet id="insert-into-user-messages-2023-07-17" author="S">
+        <insert tableName="user_messages">
+            <column name="key"          value="dialog_already_requested"/>
+            <column name="message"      value="Запрос на чат с волонтёром уже сформирован. Как только один из наших волонтёров будет свободен, он свяжется с вами. Если вы хотите отменить заявку на чат с волонтёром, воспользуйтесь соответствующим пунктом меню или командами '/cancel' или '/отменить'"/>
+        </insert>
+
+    </changeSet>
+
 
 </databaseChangeLog>
