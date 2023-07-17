@@ -49,7 +49,7 @@ public class ShelterInfoHandler extends AbstractHandler {
     private boolean handleStartOrReset(Message message, String key) {
         Adopter adopter = getAdopter(message);
 
-        if(adopter.getChatShelter() == null) {
+        if(adopter.getShelter() == null) {
             processStart(adopter);
             return true;
         }
@@ -57,7 +57,7 @@ public class ShelterInfoHandler extends AbstractHandler {
         switch(key) {
             case RESET_SHELTER:
             case RESET_SHELTER_RU:
-                adopter.setChatShelter(null);
+                adopter.setShelter(null);
                 adopterRepository.save(adopter);
             case START:
                 processStart(adopter);
@@ -99,7 +99,6 @@ public class ShelterInfoHandler extends AbstractHandler {
     private void processShelterChoice(Adopter adopter, String key) {
 
         logger.debug("processShelterChoice(adopter={}, key=\"{}\")", adopter, key);
-        deletePreviousMenu(adopter);
         long shelterId;
         try {
             shelterId = Long.parseLong(key.substring(SHELTER_CHOICE.length()));
@@ -114,7 +113,7 @@ public class ShelterInfoHandler extends AbstractHandler {
                 .findById(shelterId)
                 .orElseThrow(() -> new ShelterException("There is no shelter with id=" + shelterId + " in db.))"));
 
-        adopter.setChatShelter(shelter);
+        adopter.setShelter(shelter);
         adopterRepository.save(adopter);
 
         sendMessage(adopter.getChatId(), "Вы выбрали шелтер \"<b>"
@@ -123,9 +122,6 @@ public class ShelterInfoHandler extends AbstractHandler {
         showShelterInfoMenu(adopter);
     }
 
-    public void showShelterInfoMenu(Adopter adopter) {
-        makeButtonList(adopter, SHELTER_INFO_MENU);
-    }
     public boolean processCommands(Adopter adopter, String key) {
         logger.trace("processCommands(adopter={}, key=\"{}\")",
                 adopter, key);
@@ -133,7 +129,7 @@ public class ShelterInfoHandler extends AbstractHandler {
         switch(key) {
             case RESET_SHELTER:
             case RESET_SHELTER_RU:
-                adopter.setChatShelter(null);
+                adopter.setShelter(null);
                 adopterRepository.save(adopter);
             case START:
                 processStart(adopter);
@@ -141,10 +137,10 @@ public class ShelterInfoHandler extends AbstractHandler {
             case SHELTER_INFO_MENU:
             case MENU:
             case MENU_RU:
-                processShelterInfoMenu(adopter);
+                sendMenu(adopter, SHELTER_INFO_MENU);
                 return true;
             case ADOPTION_INFO_MENU:
-                processAdoptionInfoMenu(adopter);
+                sendMenu(adopter, ADOPTION_INFO_MENU);
                 return true;
             case ABOUT_SHELTER_INFO:
                 sendUserMessage(adopter, key);
@@ -158,17 +154,12 @@ public class ShelterInfoHandler extends AbstractHandler {
         }
         return false;
     }
-    private void processAdoptionInfoMenu(Adopter adopter) {
-        logger.trace("processAdoptionInfoMenu");
-        deletePreviousMenu(adopter);
-        makeButtonList(adopter, ADOPTION_INFO_MENU);
-    }
 
     /** Sends information about shelter's opening hours
      */
     public void sendOpeningHours(Adopter adopter) {
         logger.trace("sendOpeningHours");
-        Shelter shelter = adopter.getChatShelter();
+        Shelter shelter = adopter.getShelter();
         sendMessage(adopter.getChatId(), "<u>Расписание работы и адрес приюта</u>:\n" +
                 shelter.getWorkTime() + "\n" +
                 "Адрес: " + shelter.getAddress());
@@ -178,7 +169,7 @@ public class ShelterInfoHandler extends AbstractHandler {
      */
     public void sendSecurityInfo(Adopter adopter) {
         logger.trace("sendSecurityInfo");
-        Shelter shelter = adopter.getChatShelter();
+        Shelter shelter = adopter.getShelter();
         sendMessage(adopter.getChatId(), "<u>Контактные данные охраны приюта</u>:\n" +
                 "Телефон: " + shelter.getTel() + "\n" +
                 "Email: " + shelter.getEmail());
@@ -186,7 +177,7 @@ public class ShelterInfoHandler extends AbstractHandler {
 
     public void processStart(Adopter adopter) {
         sendMessage(adopter.getChatId(), "Здравствуйте, " + adopter.getFirstName());
-        if(adopter.getChatShelter() == null) {
+        if(adopter.getShelter() == null) {
             showShelterChoiceMenu(adopter);
         }
         else {
@@ -194,8 +185,6 @@ public class ShelterInfoHandler extends AbstractHandler {
         }
     }
     public void showShelterChoiceMenu(Adopter adopter) {
-        deletePreviousMenu(adopter);
-
         Collection<Shelter> shelters = shelterRepository.findAll();
         // Create buttons to choose shelter
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();

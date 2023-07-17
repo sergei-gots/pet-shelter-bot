@@ -17,7 +17,6 @@ import java.util.List;
 @Component
 public class AdopterDialogHandler extends AbstractDialogHandler {
 
-    private final AdopterRepository adopterRepository;
 
     public AdopterDialogHandler(TelegramBot telegramBot,
                                 AdopterRepository adopterRepository,
@@ -28,12 +27,15 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
                                 VolunteerRepository volunteerRepository
     ) {
         super(telegramBot, adopterRepository, shelterRepository, userMessageRepository, buttonRepository, volunteerRepository, dialogRepository);
-        this.adopterRepository = adopterRepository;
     }
 
 
     @Override
     public boolean handle(Message message) {
+        if(handle(message, message.text())) {
+            return true;
+        }
+
         Long chatId = message.chat().id();
         Dialog dialog = getDialogIfRequested(message.chat().id());
         if (dialog == null) {
@@ -54,11 +56,21 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
     @Override
     public boolean handle(CallbackQuery callbackQuery) {
 
-        if (CALL_VOLUNTEER.equals(callbackQuery.data())) {
-            handleVolunteerCall(callbackQuery.message());
-            return true;
+        return handle(callbackQuery.message(), callbackQuery.data());
+    }
+
+    @Override
+    public boolean handle(Message message, String key) {
+
+        if(getAdopter(message).getShelter() == null) {
+            return false;
         }
-        return false;
+        switch(key) {
+            case CALL_VOLUNTEER:
+                handleVolunteerCall(message);
+                return true;
+            default: return super.handle(message, key);
+        }
     }
 
     public void handleVolunteerCall(Message message) {
@@ -79,9 +91,11 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
         Dialog dialog = new Dialog(adopter);
         dialogRepository.save(dialog);
 
+        showShelterInfoMenu(dialog.getAdopter());
+
         //Get List of Available Volunteers
         List<Volunteer> availableVolunteers =
-                volunteerRepository.findByShelterAndAvailableIsTrue(adopter.getChatShelter());
+                volunteerRepository.findByShelterAndAvailableIsTrue(adopter.getShelter());
 
         if (availableVolunteers.size() == 0) {
             //If there isn't any available Volunteer out
@@ -92,12 +106,10 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
 
         //Else notify all the available volunteers about new dialog request
         for (Volunteer volunteer : availableVolunteers) {
-            sendMessage(volunteer.getChatId(),
-                    volunteer.getFirstName() + "! C вами хотел бы связаться " + adopter.getFirstName() +
-                            ". Нажмите кнопку 'Присоединиться к чату' для начала общения.",
-                    "Присоединиться к чату",
-                    JOIN_DIALOG
-            );
+            long chatId = volunteer.getChatId();
+            sendMessage(chatId,
+                    volunteer.getFirstName() + "! C вами хотел бы связаться " + adopter.getFirstName());
+            sendMenu(volunteer, JOIN_DIALOG);
         }
         sendMessage(adopter.getChatId(), "Волонтёру отослано уведомление. Волонтёр свяжется с вами " +
                 "насколько это возможно скоро. ");

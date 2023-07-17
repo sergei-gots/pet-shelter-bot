@@ -169,5 +169,29 @@
 
     </changeSet>
 
+    <changeSet id="insert-into-user-messages--dialog" author="S">
+        <insert tableName="user_messages">
+            <column name="key"          value="DIALOG"/>
+            <column name="message"      value="Для завершения диалога нажмите эту клавишу или введите команду /завершить или /close"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-into-user-messages--join" author="S">
+        <insert tableName="user_messages">
+            <column name="key"          value="/join"/>
+            <column name="message"      value="Нажмите кнопку 'Присоединиться к чату' для начала общения:"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="DIALOG_VOLUNTEER_PART"/>
+            <column name="message"      value="Отлично, вы в чате. Для завершения диалога кнопку ниже или используйте команды: /close и /завершить"/>
+        </insert>
+        <insert tableName="user_messages">
+            <column name="key"          value="dialog_init_clarification"/>
+            <column name="message"      value="Пользователю направлено приветствие и предложение сформировать интересующий его вопрос."/>
+        </insert>
+    </changeSet>
+
+
 
 </databaseChangeLog>

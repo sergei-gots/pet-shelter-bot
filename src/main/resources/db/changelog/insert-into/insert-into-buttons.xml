@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
             http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd"
 >
-    <changeSet id="insert-into-buttons" author="S">
+    <changeSet id="insert-into-buttons--shelter-info-menu" author="S">
 
         <insert tableName="buttons">
             <column name="key"          value="about_shelter_info"/>
@@ -26,12 +26,6 @@
         </insert>
 
         <insert tableName="buttons">
-            <column name="key"          value="/call_volunteer"/>
-            <column name="text"         value="Позвать волонтёра"/>
-            <column name="chapter"      value="shelter_info_menu"/>
-        </insert>
-
-        <insert tableName="buttons">
             <column name="key"          value="opening_hours_and_address_info"/>
             <column name="text"         value="Расписание работы и адрес"/>
             <column name="chapter"      value="shelter_info_menu"/>
@@ -43,6 +37,26 @@
             <column name="chapter"      value="shelter_info_menu"/>
         </insert>
 
+        <insert tableName="buttons">
+            <column name="key"          value="/call_volunteer"/>
+            <column name="text"         value="Позвать волонтёра"/>
+            <column name="chapter"      value="shelter_info_menu"/>
+        </insert>
+
+        <insert tableName="buttons">
+            <column name="key"          value="/reset-shelter"/>
+            <column name="text"         value="Вернуться к выбору приюта"/>
+            <column name="chapter"      value="shelter_info_menu"/>
+        </insert>
+
+        <insert tableName="buttons">
+            <column name="key"          value="/cancel"/>
+            <column name="text"         value="Снять заявку на диалог с волонтёром"/>
+            <column name="chapter"      value="shelter_info_menu"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-into-buttons--adoption-info-menu" author="S">
         <insert tableName="buttons">
             <column name="key"          value="cynologist_advice_info"/>
             <column name="shelter_id"   valueNumeric="2"/>
@@ -60,20 +74,6 @@
         <insert tableName="buttons">
             <column name="key"          value="contact_info"/>
             <column name="text"         value="Оставить контактные данные"/>
-            <column name="chapter"      value="shelter_menu"/>
-        </insert>
-
-        <insert tableName="buttons">
-            <column name="key"          value="safety_info"/>
-            <column name="shelter_id"   valueNumeric="1"/>
-            <column name="text"         value="Рекомендации по безопасности"/>
-            <column name="chapter"      value="shelter_menu"/>
-        </insert>
-
-        <insert tableName="buttons">
-            <column name="key"          value="safety_info"/>
-            <column name="shelter_id"   valueNumeric="2"/>
-            <column name="text"         value="Рекомендации по безопасности"/>
             <column name="chapter"      value="shelter_menu"/>
         </insert>
 
@@ -131,19 +131,6 @@
         </insert>
 
         <insert tableName="buttons">
-            <column name="key"          value="/call_volunteer"/>
-            <column name="text"         value="Позвать волонтёра"/>
-            <column name="chapter"      value="shelter_menu"/>
-        </insert>
-
-        <insert tableName="buttons">
-            <column name="key"          value="/call_volunteer"/>
-            <column name="text"         value="Позвать волонтёра"/>
-            <column name="chapter"      value="adoption_info_menu"/>
-        </insert>
-
-
-        <insert tableName="buttons">
             <column name="key"          value="requirements_info"/>
             <column name="text"         value="Требования к потенциальным владельцам"/>
             <column name="chapter"      value="adoption_info_menu"/>
@@ -163,33 +150,43 @@
         </insert>
 
         <insert tableName="buttons">
-            <column name="key"          value="/reset-shelter"/>
-            <column name="text"         value="Вернуться к выбору приюта"/>
-            <column name="chapter"      value="shelter_info_menu"/>
+            <column name="key"          value="/call_volunteer"/>
+            <column name="text"         value="Позвать волонтёра"/>
+            <column name="chapter"      value="adoption_info_menu"/>
+        </insert>
+
+        <insert tableName="buttons">
+            <column name="key"          value="/cancel"/>
+            <column name="text"         value="Снять заявку на диалог с волонтёром"/>
+            <column name="chapter"      value="adoption_info_menu"/>
+        </insert>
+
+        <insert tableName="buttons">
+            <column name="key"          value="shelter_info_menu"/>
+            <column name="chapter"      value="adoption_info_menu"/>
+            <column name="text"         value="Вернуться в главное меню приюта"/>
         </insert>
 
     </changeSet>
 
-    <changeSet id="insert-into-buttons-dialog_buttons" author="S">
+    <changeSet id="insert-into-buttons--dialog-is-on" author="S">
         <insert tableName="buttons">
-            <column name="key"          value="cancel_call"/>
-            <column name="chapter"      value="volunteer_is_called"/>
-            <column name="text"         value="Снять заявку на связь с волонтёром"/>
-        </insert>
-
-        <insert tableName="buttons">
-            <column name="key"          value="terminate_dialog"/>
-            <column name="chapter"      value="dialog_is_on"/>
+            <column name="key"          value="/close"/>
+            <column name="chapter"      value="DIALOG"/>
             <column name="text"         value="Завершить диалог"/>
         </insert>
+
+        <insert tableName="buttons">
+            <column name="key"          value="/close"/>
+            <column name="chapter"      value="DIALOG_VOLUNTEER_PART"/>
+            <column name="text"         value="Завершить диалог"/>
+        </insert>
+        <insert tableName="buttons">
+            <column name="key"          value="/join"/>
+            <column name="chapter"      value="/join"/>
+            <column name="text"         value="Присоединиться к чату"/>
+        </insert>
     </changeSet>
 
-    <changeSet id="insert-into-buttons-dialog_buttons-back-to-shelter-info-menu" author="S">
-    <insert tableName="buttons">
-        <column name="key"          value="shelter_info_menu"/>
-        <column name="chapter"      value="adoption_info_menu"/>
-        <column name="text"         value="Вернуться в главное меню приюта"/>
-    </insert>
-    </changeSet>
 
 </databaseChangeLog>
