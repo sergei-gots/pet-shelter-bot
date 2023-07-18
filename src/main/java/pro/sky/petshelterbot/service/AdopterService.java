@@ -61,4 +61,8 @@ public class AdopterService {
         petRepository.save(pet);
         return pet;
     }
+
+    public Adopter getAdopter(Long adopterId) {
+        return adopterRepository.findByChatId(adopterId).get();
+    }
 }
