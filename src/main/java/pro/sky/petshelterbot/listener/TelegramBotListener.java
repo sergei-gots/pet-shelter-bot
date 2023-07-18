@@ -26,23 +26,26 @@ public class TelegramBotListener
     final private Handler[] handlers;
 
     /**
-     * @param volunteerHandler to developer inside the constructor:
+     * @param volunteerDialogHandler to developer inside the constructor:
      *                         volunteerHandler must be placed at first place within
      *                         list of handlers: first of all we check
      *                         if the update we have to handle is sent by volunteer.
      */
     public TelegramBotListener(TelegramBot telegramBot,
-                               ShelterInfoHandler shelterInfoHandler,
-                               VolunteerDialogHandler volunteerHandler,
-                               AdopterDialogHandler adopterDialogHandler
+                               VolunteerDialogHandler volunteerDialogHandler,
+                               AdopterInputHandler adopterInputHandler,
+                               AdopterDialogHandler adopterDialogHandler,
+                               ShelterInfoHandler shelterInfoHandler
                                ) {
         this.telegramBot = telegramBot;
 
         handlers = new Handler[]{
                 //Important: volunteerHandler MUST BE at first place
-                volunteerHandler,
+                volunteerDialogHandler,
                 //then - adopter dialog handler
                 adopterDialogHandler,
+                //then - adopterInputHandler,
+                adopterInputHandler,
                 //the last one should be shelterInfoHandler
                 shelterInfoHandler
         };

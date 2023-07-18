@@ -20,6 +20,9 @@ public abstract class AbstractPerson implements Person {
     @ManyToOne
     private Shelter shelter;
 
+    /** indicates state of chat for the user **/
+    private ChatState chatState;
+
     /** Telegram message id for the message containing last depicted menu in the chat **/
     private Integer chatMenuMessageId;
 
@@ -71,11 +74,20 @@ public abstract class AbstractPerson implements Person {
         this.chatMenuMessageId = chatMenuMessageId;
     }
 
+    public ChatState getChatState() {
+        return chatState;
+    }
+
+    public void setChatState(ChatState chatState) {
+        this.chatState = chatState;
+    }
+
     @Override
     public String toString() {
         return  "chatId=" + chatId +
                 ", firstName='" + firstName + "'," +
                 ", chatShelter =" + shelter + "'," +
+                ", chatState =" + chatState + "'," +
                 ", chatMenuMessageId=" + chatMenuMessageId;
     }
 }

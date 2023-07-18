@@ -188,6 +188,9 @@ public abstract class AbstractHandler implements Handler{
         return messageId;
     }
 
+    /**
+     *  Do not forget to update person in db after call this method
+     */
     protected void deletePreviousMenu(Person person) {
         Integer chatMenuMessageId = person.getChatMenuMessageId();
         if(chatMenuMessageId==null) {

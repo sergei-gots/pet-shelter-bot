@@ -47,4 +47,13 @@
 
     </changeSet>
 
+    <changeSet id="alter-table-adopters-add-column-chat-state" author="S">
+        <!-- contains current state of telegram bot for the adopter -->
+        <addColumn tableName="adopters">
+            <column name="chat_state" type="INT" defaultValue="0">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

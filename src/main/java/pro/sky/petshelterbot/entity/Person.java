@@ -1,6 +1,8 @@
 package pro.sky.petshelterbot.entity;
 
-public interface Person {
+import pro.sky.petshelterbot.constants.TelegramChatStates;
+
+public interface Person extends TelegramChatStates {
     /**
      * Person will be identified by its chat_id which is persistent within
      * Telegram

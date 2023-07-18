@@ -46,4 +46,13 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="alter-table-volunteers-add-column-chat-state" author="S">
+        <!-- contains current state of telegram bot for the volunteer -->
+        <addColumn tableName="volunteers">
+            <column name="chat_state" type="INT" defaultValue="0">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
