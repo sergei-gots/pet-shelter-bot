@@ -42,10 +42,10 @@ public class TelegramBotListener
         handlers = new Handler[]{
                 //Important: volunteerHandler MUST BE at first place
                 volunteerDialogHandler,
-                //then - adopter dialog handler
-                adopterDialogHandler,
                 //then - adopterInputHandler,
                 adopterInputHandler,
+                //then - adopter dialog handler
+                adopterDialogHandler,
                 //the last one should be shelterInfoHandler
                 shelterInfoHandler
         };

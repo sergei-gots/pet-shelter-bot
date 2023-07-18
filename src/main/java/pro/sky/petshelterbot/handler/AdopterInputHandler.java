@@ -72,7 +72,7 @@ public class AdopterInputHandler extends AbstractHandler {
         Message message = callbackQuery.message();
         Adopter adopter = getAdopter(message);
         Adopter.ChatState chatState = adopter.getChatState();
-        if(!adopter.isAdopterInputState(chatState)) {
+        if(adopter.isAdopterInputState(chatState)) {
             return false;
         }
         logger.debug("handle(CallbackQuery): adopter.firstName=\"{}\", .chatState=\"{}\".",
@@ -85,7 +85,7 @@ public class AdopterInputHandler extends AbstractHandler {
                 processEnterReport(message);
                 return true;
             default: logger.warn("handle(CallbackQuery): there is no processing provided for key=\"{}\".", key);
-            return true;
+            return false;
         }
     }
 
