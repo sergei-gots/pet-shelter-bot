@@ -6,7 +6,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public abstract class AbstractPerson {
+public abstract class AbstractPerson implements Person {
     /**
      * Person will be identified by its chat_id which is persistent within
      * Telegram

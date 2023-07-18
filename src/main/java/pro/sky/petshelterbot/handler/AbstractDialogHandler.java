@@ -2,7 +2,6 @@ package pro.sky.petshelterbot.handler;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.entity.*;
@@ -54,7 +53,7 @@ public abstract class AbstractDialogHandler extends AbstractHandler  {
                 dialog.getAdopter().getFirstName() + "> " + text);
     }
 
-    public void sendPersonalizedMessage(AbstractPerson person, String text) {
+    public void sendPersonalizedMessage(Person person, String text) {
         sendMessage(person.getChatId(), person.getFirstName() + ", " + text);
     }
 
@@ -113,8 +112,6 @@ public abstract class AbstractDialogHandler extends AbstractHandler  {
                         ". Нажмите кнопку 'Присоединиться к чату' для начала общения.");
         sendMenu(volunteer, JOIN_DIALOG);
 
-        deletePreviousMenu(adopter);
-
         sendMenu(adopter, CLOSE_DIALOG);
         sendMessage(adopterChatId, "Волонтёру отослано уведомление. Волонтёр свяжется с вами " +
                 "насколько это возможно скоро. Основное меню на время диалога будет скрыто ", new ReplyKeyboardRemove());
@@ -122,16 +119,20 @@ public abstract class AbstractDialogHandler extends AbstractHandler  {
 
 
     protected void sendMenu(Volunteer volunteer, String chapter) {
-        sendMenuAbstractPerson(volunteer, chapter);
-        volunteerRepository.save(volunteer);
-    }
 
-    protected void sendMenu(Volunteer volunteer, String header, InlineKeyboardMarkup markup) {
-        sendMenuAbstractPerson(volunteer, header, markup);
-        volunteerRepository.save(volunteer);
-    }
-    protected void deletePreviousMenu(Volunteer volunteer) {
-        deletePreviousMenuAbstractPerson(volunteer);
+        long chatId = volunteer.getChatId();
+        Shelter shelter = volunteer.getShelter();
+
+        deletePreviousMenu(volunteer);
+
+        volunteer.setChatMenuMessageId(
+                sendMenu(
+                        chatId,
+                        getUserMessage(chapter, shelter),
+                        createMenu(chatId, chapter, shelter)
+                )
+        );
+
         volunteerRepository.save(volunteer);
     }
 
