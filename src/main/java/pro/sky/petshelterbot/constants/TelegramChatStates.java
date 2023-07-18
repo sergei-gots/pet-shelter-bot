@@ -2,6 +2,7 @@ package pro.sky.petshelterbot.constants;
 
 public interface TelegramChatStates {
     enum ChatState {
+        INITIAL_STATE,
         MENU_NAVIGATION,
         /** Not a state, just a mask for chatState.name().startsWith(ADOPTER_INPUTS.name()) **/
         ADOPTER_INPUTS,

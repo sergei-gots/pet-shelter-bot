@@ -21,7 +21,7 @@ public abstract class AbstractPerson implements Person {
     private Shelter shelter;
 
     /** indicates state of chat for the user **/
-    private ChatState chatState;
+    private ChatState chatState = ChatState.MENU_NAVIGATION;
 
     /** Telegram message id for the message containing last depicted menu in the chat **/
     private Integer chatMenuMessageId;
