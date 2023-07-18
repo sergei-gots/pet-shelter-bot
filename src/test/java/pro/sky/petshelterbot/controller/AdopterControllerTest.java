@@ -88,6 +88,8 @@ public class AdopterControllerTest {
     public void setAdopterTest() {
         Shelter shelter = addShelter(generateShelter());
         Pet pet = addPet(generatePet(shelter));
+        System.out.println(shelter);
+        System.out.println(pet);
         ResponseEntity<Pet> getForEntityResponse = testRestTemplate.getForEntity(
                 "http://localhost:" + port + "/pets/" + pet.getId(),
                 Pet.class
