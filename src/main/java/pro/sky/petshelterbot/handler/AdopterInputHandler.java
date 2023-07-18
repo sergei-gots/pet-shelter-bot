@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import org.springframework.stereotype.Component;
+import pro.sky.petshelterbot.constants.TelegramChatStates;
 import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.repository.*;
 
@@ -48,6 +49,9 @@ public class AdopterInputHandler extends AbstractHandler {
 
     private void processInputContacts(Message message) {
         logger.debug("processInputContacts(message={})", message);
+        Adopter adopter = getAdopter(message);
+        adopter.setChatState(ChatState.ADOPTER_INPUTS_CONTACTS);
+        sendMessage(adopter.getChatId(), "Пожалуйста, введите номер телефона для связи с вами или нажмите /backtomenu для возврата в меню");
     }
 
     private void processInputReportDiet(Message message) {

@@ -56,4 +56,16 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="alter-table-adopters-add-column-phone-number-id" author="S">
+        <!-- contains only digits of phone number; formatted output is on the UI-side -->
+        <addColumn tableName="adopters">
+            <column name="phone_number" type="VARCHAR">
+                <constraints
+                        nullable="true"
+                        unique="true"
+                />
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

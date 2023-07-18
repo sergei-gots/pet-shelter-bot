@@ -13,6 +13,10 @@ public interface Person extends TelegramChatStates {
 
     String getFirstName();
 
+    String getPhoneNumber();
+
+    void setPhoneNumber(String phoneNumber);
+
     Shelter getShelter();
 
     Integer getChatMenuMessageId();

@@ -15,6 +15,8 @@ public abstract class AbstractPerson implements Person {
     private long chatId;
     private String firstName;
 
+    private String phoneNumber;
+
     /** Currently chosen shelter within telegram bot chat **/
     @JoinColumn(name = "shelter_id")
     @ManyToOne
@@ -53,6 +55,16 @@ public abstract class AbstractPerson implements Person {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+    }
+
+    @Override
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    @Override
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public Shelter getShelter() {
