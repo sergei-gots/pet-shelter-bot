@@ -23,6 +23,11 @@ public class AdopterController {
         this.petService = petService;
     }
 
+    @GetMapping("/{adopterId}")
+    public ResponseEntity<Adopter> getAdopter(@RequestParam Long adopterId) {
+        return ResponseEntity.ok(adopterService.getAdopter(adopterId));
+    }
+
     /* PUT /pet/setAdopter */
     @PutMapping("/setAdopter/{petId}")
     public ResponseEntity<Pet> setAdopter(@PathVariable Long petId, @RequestBody Adopter adopter) {
