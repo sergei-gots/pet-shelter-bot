@@ -195,7 +195,7 @@ public class ShelterInfoHandler extends AbstractHandler {
                             .callbackData(SHELTER_CHOICE + shelter.getId().toString())
             );
         }
-        sendMenu(adopter, "Выберите приют:", markup);
+        sendMenu(adopter.getChatId(), "Выберите приют:", markup);
     }
 
 }
