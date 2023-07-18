@@ -26,6 +26,6 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     @Query("from Report r where r.checked = null or r.checked = false and r.pet.shelter.id = :shelterId")
     Page<Report> findAllUncheckedReports(Long shelterId, Pageable pageable);
 
-    @Query("select p from Pet p, Report r where p.adoptionDate is not null and p.adoptionDate >= current_timestamp and p = r.pet and p.shelter.id = :shelterId and not exists (select r from Report r where r.sent >= current_date - 1) group by p")
+    @Query("select p from Pet p left join Report r on p = r.pet where p.shelter.id = :shelterId and not exists(select r from Report r where r.sent >= current_date - 1) and p.adoptionDate is not null group by p")
     List<Pet> findOverdueReports(Long shelterId);
 }
