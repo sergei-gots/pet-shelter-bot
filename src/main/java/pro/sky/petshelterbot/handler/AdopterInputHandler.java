@@ -27,11 +27,13 @@ public class AdopterInputHandler extends AbstractHandler {
 
     @Override
     public boolean handle(CallbackQuery callbackQuery) {
+
         String key = callbackQuery.data();
         Message message = callbackQuery.message();
         Adopter adopter = getAdopter(message);
         Adopter.ChatState chatState = adopter.getChatState();
-        if(adopter.isAdopterInputState(chatState)) {
+
+        if(adopter.isAdopterInInputState(chatState)) {
             return false;
         }
         logger.debug("handle(CallbackQuery): adopter.firstName=\"{}\", .chatState=\"{}\".",
@@ -51,12 +53,12 @@ public class AdopterInputHandler extends AbstractHandler {
     @Override
     public boolean handle(Message message) {
 
-        if(super.handle(message)) {
-            return true;
-        }
-
         Adopter adopter = getAdopter(message);
         Adopter.ChatState  chatState = adopter.getChatState();
+
+        if(!adopter.isAdopterInInputState(chatState)) {
+            return false;
+        }
 
         logger.debug("handle(Message): adopter.firstName=\"{}\", .chatState=\"{}\".",
                 adopter.getFirstName(), chatState);

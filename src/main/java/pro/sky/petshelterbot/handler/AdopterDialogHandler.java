@@ -1,7 +1,6 @@
 package pro.sky.petshelterbot.handler;
 
 import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.entity.Adopter;
@@ -32,7 +31,6 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
 
     @Override
     public boolean handle(Message message) {
-        super.handle(message);
 
         if(handle(message, message.text())) {
             return true;
@@ -56,24 +54,11 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
 
 
     }
-
-    @Override
-    public boolean handle(CallbackQuery callbackQuery) {
-
-        return handle(callbackQuery.message(), callbackQuery.data());
-    }
-
     @Override
     public boolean handle(Message message, String key) {
 
         if(super.handle(message, key)) {
             return true;
-        }
-
-        Adopter adopter = getAdopter(message);
-
-        if(adopter.getShelter() == null) {
-            return false;
         }
 
         switch(key) {

@@ -16,7 +16,7 @@ import java.util.Collection;
  **/
 
 @Component
-public abstract class AbstractDialogHandler extends AbstractHandler  {
+public abstract class AbstractDialogHandler extends AbstractHandler {
 
     public AbstractDialogHandler(TelegramBot telegramBot,
                                  AdopterRepository adopterRepository,
@@ -39,7 +39,6 @@ public abstract class AbstractDialogHandler extends AbstractHandler  {
     }
 
 
-
     public void sendPersonalizedMessage(Person person, String text) {
         sendMessage(person.getChatId(), person.getFirstName() + ", " + text);
     }
@@ -47,20 +46,26 @@ public abstract class AbstractDialogHandler extends AbstractHandler  {
     @Override
     public boolean handle(Message message, String key) {
 
-        switch(key) {
+        Adopter adopter = getAdopter(message);
+        if (isShelterToBeAssigned(adopter, key)) {
+            return true;
+        }
+
+        switch (key) {
             case CANCEL_VOLUNTEER_CALL:
             case CANCEL_VOLUNTEER_CALL_ADOPTION_INFO_MENU:
             case CANCEL_VOLUNTEER_CALL_SHELTER_INFO_MENU:
             case CLOSE_DIALOG:
             case CLOSE_DIALOG_RU:
-                handleCancelVolunteerCall(getAdopter(message), key);
+                handleCancelVolunteerCall(adopter, key);
                 return true;
 
-            default: return false;
+            default:
+                return false;
         }
     }
 
-    public void sendHandshakes(Dialog dialog){
+    public void sendHandshakes(Dialog dialog) {
         Volunteer volunteer = dialog.getVolunteer();
         Adopter adopter = dialog.getAdopter();
 

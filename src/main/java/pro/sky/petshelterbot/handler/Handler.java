@@ -16,9 +16,15 @@ public interface Handler extends ChapterNames, Commands, TelegramChatStates {
      *      * if the command is not in scope of handled commands
      *      * and message won't be handled then returns false
      */
-    default boolean handle(Update update)                 { return false; }
-    default boolean handle(CallbackQuery callbackQuery)   { return false; }
-    default boolean handle(Message message)  { return false; }
+    default boolean handle(Update update)                 {
+        return (update.message() != null) ?
+            handle(update.message()) :
+            handle(update.callbackQuery());
+        }
+    default boolean handle(CallbackQuery callbackQuery)   {
+        return handle(callbackQuery.message(), callbackQuery.data());
+    }
+    default boolean handle(Message message)  { return handle(message, message.text()); }
 
     default boolean handle(Message message, String key) { return false; }
 
