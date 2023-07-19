@@ -47,4 +47,25 @@
 
     </changeSet>
 
+    <changeSet id="alter-table-adopters-add-column-chat-state" author="S">
+        <!-- contains current state of telegram bot for the adopter -->
+        <addColumn tableName="adopters">
+            <column name="chat_state" type="INT" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="alter-table-adopters-add-column-phone-number-id" author="S">
+        <!-- contains only digits of phone number; formatted output is on the UI-side -->
+        <addColumn tableName="adopters">
+            <column name="phone_number" type="VARCHAR">
+                <constraints
+                        nullable="true"
+                        unique="true"
+                />
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

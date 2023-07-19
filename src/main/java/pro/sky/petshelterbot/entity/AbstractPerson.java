@@ -15,10 +15,15 @@ public abstract class AbstractPerson implements Person {
     private long chatId;
     private String firstName;
 
+    private String phoneNumber;
+
     /** Currently chosen shelter within telegram bot chat **/
     @JoinColumn(name = "shelter_id")
     @ManyToOne
     private Shelter shelter;
+
+    /** indicates state of chat for the user **/
+    private ChatState chatState = ChatState.MENU_NAVIGATION;
 
     /** Telegram message id for the message containing last depicted menu in the chat **/
     private Integer chatMenuMessageId;
@@ -52,6 +57,16 @@ public abstract class AbstractPerson implements Person {
         this.firstName = firstName;
     }
 
+    @Override
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    @Override
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     public Shelter getShelter() {
         return shelter;
     }
@@ -71,11 +86,20 @@ public abstract class AbstractPerson implements Person {
         this.chatMenuMessageId = chatMenuMessageId;
     }
 
+    public ChatState getChatState() {
+        return chatState;
+    }
+
+    public void setChatState(ChatState chatState) {
+        this.chatState = chatState;
+    }
+
     @Override
     public String toString() {
         return  "chatId=" + chatId +
                 ", firstName='" + firstName + "'," +
                 ", chatShelter =" + shelter + "'," +
+                ", chatState =" + chatState + "'," +
                 ", chatMenuMessageId=" + chatMenuMessageId;
     }
 }

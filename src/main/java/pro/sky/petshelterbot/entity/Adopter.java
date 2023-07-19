@@ -22,6 +22,15 @@ public class Adopter extends AbstractPerson {
         super(chatId, firstName);
     }
 
+    @Override
+    public void setShelter(Shelter shelter) {
+        super.setShelter(shelter);
+        setChatState((shelter!=null)?
+                ChatState.MENU_NAVIGATION :
+                ChatState.INITIAL_STATE
+        );
+
+    }
 
     @Override
     public String toString() {

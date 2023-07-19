@@ -6,6 +6,7 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Component;
+import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Dialog;
 import pro.sky.petshelterbot.entity.Volunteer;
 import pro.sky.petshelterbot.repository.*;
@@ -25,7 +26,7 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
                                   UserMessageRepository userMessageRepository,
                                   ButtonRepository buttonRepository,
                                   VolunteerRepository volunteerRepository, DialogRepository dialogRepository) {
-        super(telegramBot, adopterRepository, shelterRepository, userMessageRepository, buttonRepository, volunteerRepository, dialogRepository);
+        super(telegramBot, adopterRepository, volunteerRepository, shelterRepository, userMessageRepository, buttonRepository, dialogRepository);
     }
 
     @Override
@@ -102,11 +103,12 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
             logger.warn("processCloseDialog() - volunteer.avaliable=\"{}\"", volunteer.isAvailable());
             return;
         }
+        Adopter adopter = dialog.getAdopter();
         logger.debug("processCloseDialog() - Dialog between " +
                         "adopter.getFirstName()=\"{}\" and  volunteer.getFirstName()=\"{}\" will be closed.",
-                dialog.getAdopter().getFirstName(), volunteer.getFirstName());
+                adopter.getFirstName(), volunteer.getFirstName());
         sendPersonalizedMessage(volunteer,"консультация закрыта. ваш чат переведён в режим ожидания новых запросов от пользователей.");
-        showShelterInfoMenu(dialog.getAdopter());
+        sendMenu(adopter, SHELTER_INFO_MENU);
         sendPersonalizedMessage(dialog.getAdopter(),"диалог с волонтёром шелтера завершён. Если у вас возникнут новые вопросы, " +
                 "обращайтесь к нам ещё. Всего вам доброго-)");
         dialogRepository.delete(dialog);

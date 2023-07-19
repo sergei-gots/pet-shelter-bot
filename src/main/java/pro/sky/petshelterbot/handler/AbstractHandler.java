@@ -10,10 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pro.sky.petshelterbot.entity.*;
-import pro.sky.petshelterbot.repository.AdopterRepository;
-import pro.sky.petshelterbot.repository.ButtonRepository;
-import pro.sky.petshelterbot.repository.ShelterRepository;
-import pro.sky.petshelterbot.repository.UserMessageRepository;
+import pro.sky.petshelterbot.repository.*;
 
 import java.util.Collection;
 import java.util.NoSuchElementException;
@@ -23,20 +20,28 @@ public abstract class AbstractHandler implements Handler{
     final protected Logger logger = LoggerFactory.getLogger(getClass());
     final protected TelegramBot telegramBot;
     final protected AdopterRepository adopterRepository;
+
+    final protected VolunteerRepository volunteerRepository;
     final protected ShelterRepository shelterRepository;
     final protected ButtonRepository buttonsRepository;
     final protected UserMessageRepository userMessageRepository;
+    final protected DialogRepository dialogRepository;
 
     protected AbstractHandler(TelegramBot telegramBot,
                               AdopterRepository adopterRepository,
+                              VolunteerRepository volunteerRepository,
                               ShelterRepository shelterRepository,
                               UserMessageRepository userMessageRepository,
-                              ButtonRepository buttonsRepository) {
+                              ButtonRepository buttonsRepository,
+                              DialogRepository dialogRepository) {
         this.telegramBot = telegramBot;
         this.adopterRepository = adopterRepository;
+        this.volunteerRepository = volunteerRepository;
         this.shelterRepository = shelterRepository;
         this.userMessageRepository = userMessageRepository;
         this.buttonsRepository = buttonsRepository;
+        this.dialogRepository = dialogRepository;
+
     }
 
     @NotNull
@@ -95,10 +100,7 @@ public abstract class AbstractHandler implements Handler{
 
     protected void sendMessage(Long chatId, String text) {
         logger.trace("sendMessage(chatId={}, text=\"{}\")", chatId, text);
-        if(text == null) {
-            return;
-        }
-        telegramBot.execute(new SendMessage(chatId, text).parseMode(ParseMode.HTML));
+        telegramBot.execute(new SendMessage(chatId, text).parseMode(ParseMode.HTML)).message().messageId();
     }
 
     /** Retrieves message by (key, shelter_id) from the table containing user_messages and send
@@ -114,11 +116,11 @@ public abstract class AbstractHandler implements Handler{
         try {
             userMessage = getUserMessage(key, shelter);
         } catch(NoSuchElementException e) {
-            userMessage = "Раздел не создан. Разработчики скоро сформируют этот раздел";
+            userMessage = "Раздел не создан. Разработчики скоро сформируют этот раздел. ";
             logger.error("sendUserMessage-method: user_message {shelter.id={}, key=\"{}\" is not listed in the db.",
                     key, shelter.getId());
         }
-        telegramBot.execute(new SendMessage(chatId, userMessage).parseMode(ParseMode.HTML));
+        telegramBot.execute(new SendMessage(chatId, userMessage + ("\n" + MENU)).parseMode(ParseMode.HTML));
     }
 
     protected void sendUserMessage(Person person, String key) {
@@ -126,22 +128,52 @@ public abstract class AbstractHandler implements Handler{
     }
 
 
-    protected void sendMenu(Adopter adopter, String chapter) {
+    protected void sendMenu(Person person, String chapter) {
 
-        long chatId = adopter.getChatId();
-        Shelter shelter = adopter.getShelter();
-
-        deletePreviousMenu(adopter);
-
-        adopter.setChatMenuMessageId(
-                sendMenu(
-                        chatId,
+        Shelter shelter = person.getShelter();
+               sendMenu(
+                        person,
                         getUserMessage(chapter, shelter),
-                        createMenu(chatId, chapter, shelter)
-                )
+                        createMenu(person.getChatId(), chapter, shelter)
         );
+    }
 
-        adopterRepository.save(adopter);
+    protected void sendMenu(Person person, String header, InlineKeyboardMarkup markup) {
+
+        long chatId = person.getChatId();
+        logger.trace("sendMenu(): chatId={}, header=\"{}\"", chatId, header);
+
+        deletePreviousMenu(person);
+        SendResponse response =  telegramBot
+                .execute(new SendMessage(chatId, header)
+                        .replyMarkup(markup));
+        int messageId = response.message().messageId();
+        logger.trace("sendMenu(): menu-message-Id()={}", messageId);
+        person.setChatMenuMessageId(messageId);
+        if (person instanceof Adopter) {
+            adopterRepository.save((Adopter) person);
+        }
+        else if(person instanceof Volunteer) {
+            volunteerRepository.save((Volunteer) person);
+        }
+        else {
+            logger.error("sendMenu(): person with firstName={} is instance of unsupported class ",
+                    person.getClass());
+        }
+    }
+
+    /**
+     *  Do not forget to update person in db after call this method
+     */
+    protected void deletePreviousMenu(Person person) {
+        Integer chatMenuMessageId = person.getChatMenuMessageId();
+        if(chatMenuMessageId==null) {
+            logger.debug("deletePreviousMenu(Person={}) => menu for adopter was not defined", person);
+            return;
+        }
+        telegramBot.execute(new DeleteMessage(person.getChatId(), chatMenuMessageId));
+        logger.trace("deletePreviousMenu(Adopter={})", person);
+        person.resetChatMenuMessageId();
     }
     protected InlineKeyboardMarkup createMenu(long chatId, String chapter, Shelter shelter) {
 
@@ -176,34 +208,112 @@ public abstract class AbstractHandler implements Handler{
 
         return markup;
     }
-
-     protected int sendMenu(long chatId, String header, InlineKeyboardMarkup markup) {
-        logger.trace("sendMenu(): chatId={}, header=\"{}\"", chatId, header);
-
-        SendResponse response =  telegramBot
-                .execute(new SendMessage(chatId, header)
-                .replyMarkup(markup));
-        int messageId = response.message().messageId();
-        logger.trace("sendMenu(): response.message().messageId()={}", messageId);
-        return messageId;
-    }
-
-    protected void deletePreviousMenu(Person person) {
-        Integer chatMenuMessageId = person.getChatMenuMessageId();
-        if(chatMenuMessageId==null) {
-            logger.debug("deletePreviousMenu(Person={}) => menu for adopter was not defined", person);
-            return;
-        }
-        telegramBot.execute(new DeleteMessage(person.getChatId(), chatMenuMessageId));
-        logger.trace("deletePreviousMenu(Adopter={})", person);
-        person.resetChatMenuMessageId();
-    }
-
     protected Dialog getDialogIfRequested(Long adopterChatId) {
         return adopterRepository.findDialogByAdopterChatId(adopterChatId).orElse(null);
     }
 
-    public void showShelterInfoMenu(Adopter adopter) {
+    protected void resetChat(Adopter adopter) {
+        handleCancelVolunteerCall(adopter, "-");
+        adopter.setShelter(null);
+        showShelterChoiceMenu(adopter);
+        adopter.setChatState(ChatState.ADOPTER_CHOICES_SHELTER);
+        adopterRepository.save(adopter);
+    }
+
+    public void showShelterChoiceMenu(Adopter adopter) {
+
+        //If menu has been already sent
+        if(adopter.getChatState().equals(ChatState.ADOPTER_CHOICES_SHELTER)) {
+            return;
+        }
+
+        Collection<Shelter> shelters = shelterRepository.findAll();
+        // Create buttons to choose shelter
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        for (Shelter shelter : shelters) {
+            markup.addRow(
+                    new InlineKeyboardButton(shelter.getName())
+                            .callbackData(SHELTER_CHOICE + shelter.getId().toString())
+            );
+        }
+        sendMenu(adopter, "Выберите приют:", markup);
+    }
+
+    @Override
+    public boolean handle(Message message) {
+        String key = message.text();
+        Adopter adopter = getAdopter(message);
+
+        switch(key) {
+            case RESET:
+                resetChat(adopter);
+                return true;
+            case MENU:
+            case MENU_RU:
+                showCurrentMenu(adopter);
+                return true;
+        }
+        return false;
+    }
+
+    private void showCurrentMenu(Adopter adopter) {
+        if(adopter.getChatState().equals(ChatState.ADOPTER_IN_ADOPTION_INFO_MENU)){
+            showAdoptionInfoMenu(adopter);
+        }
+        else {
+            showShelterInfoMenu(adopter);
+        }
+    }
+
+    protected void showShelterInfoMenu(Adopter adopter) {
         sendMenu(adopter, SHELTER_INFO_MENU);
+        adopter.setChatState(ChatState.ADOPTER_IN_SHELTER_INFO_MENU);
+        adopterRepository.save(adopter);
+    }
+
+    protected void showAdoptionInfoMenu(Adopter adopter) {
+        sendMenu(adopter, ADOPTION_INFO_MENU);
+        adopter.setChatState(ChatState.ADOPTER_IN_ADOPTION_INFO_MENU);
+        adopterRepository.save(adopter);
+    }
+    public void handleCancelVolunteerCall(Adopter adopter, String key) {
+        long chatId = adopter.getChatId();
+        logger.debug("handleCancelVolunteerCall(adopter.chat_id={})", chatId);
+        Dialog dialog = getDialogIfRequested(chatId);
+        if (dialog == null) {
+            logger.debug("Dialog for chatId=" + chatId + " is not listed in db. It could be ok.");
+            return;
+        }
+        Volunteer volunteer = dialog.getVolunteer();
+        dialogRepository.delete(dialog);
+        if(CANCEL_VOLUNTEER_CALL_ADOPTION_INFO_MENU.equals(key)) {
+            showAdoptionInfoMenu(adopter);
+        } else if(CANCEL_VOLUNTEER_CALL_SHELTER_INFO_MENU.equals(key)) {
+            sendMenu(adopter, SHELTER_INFO_MENU);
+        }
+
+        if(volunteer != null) {
+            deletePreviousMenu(volunteer);
+            sendMenu(adopter, SHELTER_INFO_MENU);
+            sendDialogMessageToAdopter(dialog, "Всего вам наилучшего:) Если у вас возникнут вопросы, обращайтесь ещё!");
+            sendMessage(volunteer.getChatId(), "Диалог c "
+                    + adopter.getFirstName() + " завершён. Спасибо:)");
+            volunteer.setAvailable(true);
+            volunteerRepository.save(volunteer);
+        } else {
+            sendMessage(chatId, "Заявка на диалог с волонтёром снята");
+        }
+    }
+
+    protected void sendDialogMessageToAdopter(Dialog dialog, String text) {
+        logger.trace("sendDialogMessageToAdopter()-method.  adopter.getFirstName()=\"{}\"", dialog.getAdopter().getFirstName());
+        sendMessage(dialog.getAdopter().getChatId(),
+                dialog.getVolunteer().getFirstName() + "> " + text);
+    }
+
+    protected void sendDialogMessageToVolunteer(Dialog dialog, String text) {
+        logger.trace("sendDialogMessageToVolunteer()-method.  volutnteer.getFirstName()=\"{}\"", dialog.getVolunteer().getFirstName());
+        sendMessage(dialog.getVolunteer().getChatId(),
+                dialog.getAdopter().getFirstName() + "> " + text);
     }
 }

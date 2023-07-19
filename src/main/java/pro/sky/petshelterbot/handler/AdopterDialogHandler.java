@@ -26,12 +26,14 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
                                 DialogRepository dialogRepository,
                                 VolunteerRepository volunteerRepository
     ) {
-        super(telegramBot, adopterRepository, shelterRepository, userMessageRepository, buttonRepository, volunteerRepository, dialogRepository);
+        super(telegramBot, adopterRepository, volunteerRepository, shelterRepository, userMessageRepository, buttonRepository, dialogRepository);
     }
 
 
     @Override
     public boolean handle(Message message) {
+        super.handle(message);
+
         if(handle(message, message.text())) {
             return true;
         }
@@ -64,16 +66,23 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
     @Override
     public boolean handle(Message message, String key) {
 
-        if(getAdopter(message).getShelter() == null) {
+        if(super.handle(message, key)) {
+            return true;
+        }
+
+        Adopter adopter = getAdopter(message);
+
+        if(adopter.getShelter() == null) {
             return false;
         }
+
         switch(key) {
             case CALL_VOLUNTEER:
             case CALL_VOLUNTEER_ADOPTION_INFO_MENU:
             case CALL_VOLUNTEER_SHELTER_INFO_MENU:
                 handleVolunteerCall(message, key);
                 return true;
-            default: return super.handle(message, key);
+            default: return false;
         }
     }
 
@@ -98,7 +107,7 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
         if(CALL_VOLUNTEER_ADOPTION_INFO_MENU.equals(key)) {
             sendMenu(dialog.getAdopter(), ADOPTION_INFO_MENU);
         } else {
-            showShelterInfoMenu(dialog.getAdopter());
+            sendMenu(dialog.getAdopter(), SHELTER_INFO_MENU);
         }
 
         //Get List of Available Volunteers
