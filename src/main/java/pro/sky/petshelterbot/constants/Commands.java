@@ -16,6 +16,7 @@ public interface Commands {
     String MENU = "/menu";
     String MENU_RU = "/меню";
     String OPENING_HOURS_AND_ADDRESS_INFO = "opening_hours_and_address_info";
+    String RESET = "/reset";
     String SECURITY_INFO = "security_info";
     String SHELTER_CHOICE = "/shelter-";
     String START="/start";

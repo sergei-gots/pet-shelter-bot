@@ -11,10 +11,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Shelter;
-import pro.sky.petshelterbot.repository.AdopterRepository;
-import pro.sky.petshelterbot.repository.ButtonRepository;
-import pro.sky.petshelterbot.repository.ShelterRepository;
-import pro.sky.petshelterbot.repository.UserMessageRepository;
+import pro.sky.petshelterbot.repository.*;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,6 +24,9 @@ public class ShelterInfoHandlerTest {
     private TelegramBot telegramBot;
     @Mock
     private AdopterRepository adopterRepository;
+
+    @Mock
+    VolunteerRepository volunteerRepository;
     @Mock
     private ButtonRepository buttonsRepository;
     @Mock
@@ -35,7 +35,7 @@ public class ShelterInfoHandlerTest {
     private ShelterRepository shelterRepository;
 
     @Mock
-    private AdopterDialogHandler adopterDialogHandler;
+    private DialogRepository dialogRepository;
 
     @Mock
     private Message message;
@@ -43,8 +43,12 @@ public class ShelterInfoHandlerTest {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        shelterInfoHandler = new ShelterInfoHandler(telegramBot, adopterRepository, shelterRepository,
-                userMessageRepository, buttonsRepository, adopterDialogHandler);
+        shelterInfoHandler = new ShelterInfoHandler(telegramBot, adopterRepository,
+                volunteerRepository,
+                shelterRepository,
+                userMessageRepository,
+                buttonsRepository,
+                dialogRepository);
     }
 
     @Test
@@ -74,7 +78,7 @@ public class ShelterInfoHandlerTest {
         shelter.setTel("1234567890");
         shelter.setEmail("shelter@example.com");
         Adopter adopter = new Adopter();
-        adopter.setChatShelter(shelter);
+        adopter.setShelter(shelter);
 
         when(shelterRepository.findById(shelterId)).thenReturn(java.util.Optional.of(shelter));
 

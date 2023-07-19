@@ -3,18 +3,12 @@ package pro.sky.petshelterbot.handler;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
-import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Shelter;
 import pro.sky.petshelterbot.exceptions.ShelterException;
-import pro.sky.petshelterbot.repository.AdopterRepository;
-import pro.sky.petshelterbot.repository.ButtonRepository;
-import pro.sky.petshelterbot.repository.ShelterRepository;
-import pro.sky.petshelterbot.repository.UserMessageRepository;
+import pro.sky.petshelterbot.repository.*;
 
-import java.util.Collection;
 
 /**
  * Handles user's pressing a button and sends a suitable menu to the user
@@ -22,20 +16,20 @@ import java.util.Collection;
 @Component
 public class ShelterInfoHandler extends AbstractHandler {
 
-    private final AdopterDialogHandler adopterDialogHandler;
     public ShelterInfoHandler(TelegramBot telegramBot,
 
                               AdopterRepository adopterRepository,
+                              VolunteerRepository volunteerRepository,
                               ShelterRepository shelterRepository,
                               UserMessageRepository userMessageRepository,
                               ButtonRepository buttonsRepository,
-
-                              AdopterDialogHandler adopterDialogHandler
+                              DialogRepository dialogRepository
 
                               ) {
-        super(telegramBot, adopterRepository, shelterRepository, userMessageRepository, buttonsRepository);
+        super(telegramBot, adopterRepository, volunteerRepository,
+                shelterRepository, userMessageRepository, buttonsRepository,
+                dialogRepository);
 
-        this.adopterDialogHandler = adopterDialogHandler;
     }
 
     @Override
@@ -58,7 +52,8 @@ public class ShelterInfoHandler extends AbstractHandler {
         switch(key) {
             case RESET_SHELTER:
             case RESET_SHELTER_RU:
-                processResetShelter(adopter);
+                resetChat(adopter);
+                return true;
             case START:
                 processStart(adopter);
                 return true;
@@ -116,12 +111,6 @@ public class ShelterInfoHandler extends AbstractHandler {
         showShelterInfoMenu(adopter);
     }
 
-    private void processResetShelter(Adopter adopter) {
-        adopterDialogHandler.handleCancelVolunteerCall(adopter, "");
-        adopter.setShelter(null);
-        adopterRepository.save(adopter);
-    }
-
     public boolean processCommands(Adopter adopter, String key) {
         logger.trace("processCommands(adopter.chatId={}, key=\"{}\")",
                 adopter.getChatId(), key);
@@ -137,10 +126,10 @@ public class ShelterInfoHandler extends AbstractHandler {
             case SHELTER_INFO_MENU:
             case MENU:
             case MENU_RU:
-                sendMenu(adopter, SHELTER_INFO_MENU);
+                showShelterInfoMenu(adopter);
                 return true;
             case ADOPTION_INFO_MENU:
-                sendMenu(adopter, ADOPTION_INFO_MENU);
+                showAdoptionInfoMenu(adopter);
                 return true;
             case ABOUT_SHELTER_INFO:
                 sendUserMessage(adopter, key);
@@ -177,6 +166,9 @@ public class ShelterInfoHandler extends AbstractHandler {
     }
 
     public void processStart(Adopter adopter) {
+        if (adopter.getChatState() != ChatState.INITIAL_STATE) {
+            return;
+        }
         sendMessage(adopter.getChatId(), "Здравствуйте, " + adopter.getFirstName());
         if(adopter.getShelter() == null) {
             showShelterChoiceMenu(adopter);
@@ -185,17 +177,7 @@ public class ShelterInfoHandler extends AbstractHandler {
             showShelterInfoMenu(adopter);
         }
     }
-    public void showShelterChoiceMenu(Adopter adopter) {
-        Collection<Shelter> shelters = shelterRepository.findAll();
-        // Create buttons to choose shelter
-        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
-        for (Shelter shelter : shelters) {
-            markup.addRow(
-                    new InlineKeyboardButton(shelter.getName())
-                            .callbackData(SHELTER_CHOICE + shelter.getId().toString())
-            );
-        }
-        sendMenu(adopter.getChatId(), "Выберите приют:", markup);
-    }
+
+
 
 }
