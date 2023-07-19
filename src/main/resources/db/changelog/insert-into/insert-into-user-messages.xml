@@ -177,7 +177,7 @@
     <changeSet id="insert-into-user-messages--join" author="S">
         <insert tableName="user_messages">
             <column name="key"          value="WAIT_FOR_VOLUNTEER_BOT_RESTRICTIONS"/>
-            <column name="message"      value="\nНа этапе ожидания подключения волонтёра часть функциональности, связанной с вводом данных будет закрыта. Всё в порядке)"/>
+            <column name="message"      value="На этапе ожидания подключения волонтёра часть функциональности, связанной с вводом данных будет закрыта. Всё в порядке)"/>
         </insert>
 
 

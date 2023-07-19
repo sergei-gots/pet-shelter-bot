@@ -1,12 +1,10 @@
 package pro.sky.petshelterbot.handler;
 
 import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Shelter;
-import pro.sky.petshelterbot.exceptions.ShelterException;
 import pro.sky.petshelterbot.repository.*;
 
 
@@ -33,100 +31,31 @@ public class ShelterInfoHandler extends AbstractHandler {
     }
 
     @Override
-    public boolean handle(Message message) {
-        if (handleStartOrReset(message, message.text())) {
-            return true;
-        }
-        return processCommands(getAdopter(message), message.text());
+    public boolean handle(Message message, String key) {
+        logger.debug("handle(): chatId={}, key={}", message.chat().id(), key);
 
-    }
-
-    private boolean handleStartOrReset(Message message, String key) {
         Adopter adopter = getAdopter(message);
 
-        if(adopter.getShelter() == null) {
-            processStart(adopter);
+        if (adopter.getChatState() == ChatState.ADOPTER_CHOICES_SHELTER) {
+            processShelterChoice(adopter, key);
             return true;
         }
 
-        switch(key) {
+        switch (key) {
             case RESET_SHELTER:
             case RESET_SHELTER_RU:
+            case RESET:
                 resetChat(adopter);
                 return true;
             case START:
                 processStart(adopter);
                 return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean handle(CallbackQuery callbackQuery) {
-
-            logger.debug("handle(CallbackQuery)-method");
-            Message message = callbackQuery.message();
-            String key = callbackQuery.data();
-            Adopter adopter = getAdopter(message);
-
-            logger.debug("handle(CallbackQuery): callbackQuery{key=\"{}\"", key);
-
-            if (key.startsWith(SHELTER_CHOICE)) {
-                processShelterChoice(adopter, key);
-                return true;
-            }
-            if (handleStartOrReset(message, key)) {
-                return true;
-            }
-
-            return processCommands(adopter, key);
-        }
-
-
-
-
-    private void processShelterChoice(Adopter adopter, String key) {
-
-        logger.debug("processShelterChoice(adopter={}, key=\"{}\")", adopter, key);
-        long shelterId;
-        try {
-            shelterId = Long.parseLong(key.substring(SHELTER_CHOICE.length()));
-        }
-        catch(NumberFormatException e) {
-            logger.error("processShelterChoice(): invalid key=\"{}\" to parse as shelter_id",
-                    key, e);
-            return;
-        }
-
-        Shelter shelter = shelterRepository
-                .findById(shelterId)
-                .orElseThrow(() -> new ShelterException("There is no shelter with id=" + shelterId + " in db.))"));
-
-        adopter.setShelter(shelter);
-        adopterRepository.save(adopter);
-
-        sendMessage(adopter.getChatId(), "Вы выбрали шелтер \"<b>"
-                + shelter.getName() + "</b>\"");
-
-        showShelterInfoMenu(adopter);
-    }
-
-    public boolean processCommands(Adopter adopter, String key) {
-        logger.trace("processCommands(adopter.chatId={}, key=\"{}\")",
-                adopter.getChatId(), key);
-
-        switch(key) {
-            case RESET_SHELTER:
-            case RESET_SHELTER_RU:
-                adopter.setShelter(null);
-                adopterRepository.save(adopter);
-            case START:
-                processStart(adopter);
-                return true;
             case SHELTER_INFO_MENU:
+                showShelterInfoMenu(adopter);
+                return true;
             case MENU:
             case MENU_RU:
-                showShelterInfoMenu(adopter);
+                showCurrentMenu(adopter);
                 return true;
             case ADOPTION_INFO_MENU:
                 showAdoptionInfoMenu(adopter);
@@ -140,10 +69,16 @@ public class ShelterInfoHandler extends AbstractHandler {
             case SECURITY_INFO:
                 sendSecurityInfo(adopter);
                 return true;
-        }
-        sendUserMessage(adopter, key);
-        return true;
+            case SHELTER_CHOICE:
+                processShelterChoice(adopter, key);
+                return true;
+            }
+        return sendUserMessage(adopter, key);
     }
+
+
+
+
 
     /** Sends information about shelter's opening hours
      */
@@ -166,12 +101,11 @@ public class ShelterInfoHandler extends AbstractHandler {
     }
 
     public void processStart(Adopter adopter) {
-        if (adopter.getChatState() != ChatState.INITIAL_STATE) {
-            return;
+        if (adopter.getChatState() == ChatState.INITIAL_STATE) {
+            sendMessage(adopter.getChatId(), "Здравствуйте, " + adopter.getFirstName());
         }
-        sendMessage(adopter.getChatId(), "Здравствуйте, " + adopter.getFirstName());
         if(adopter.getShelter() == null) {
-            showShelterChoiceMenu(adopter);
+            resetChat(adopter);
         }
         else {
             showShelterInfoMenu(adopter);

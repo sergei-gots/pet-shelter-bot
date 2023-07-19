@@ -2,7 +2,6 @@ package pro.sky.petshelterbot.listener;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
-import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
@@ -44,10 +43,12 @@ public class TelegramBotListener
                 volunteerDialogHandler,
                 //then - adopterInputHandler,
                 adopterInputHandler,
+                //the last one should be shelterInfoHandler
+                shelterInfoHandler,
                 //then - adopter dialog handler
                 adopterDialogHandler,
-                //the last one should be shelterInfoHandler
-                shelterInfoHandler
+                //and if an update is still unhandled, then use the last try here in the listener
+                this
         };
     }
 
@@ -60,32 +61,18 @@ public class TelegramBotListener
     public int process(List<Update> updates) {
         try {
             for (Update update : updates) {
-                logger.debug("process(updates)-method: processing update: {}", update);
-
-                if (!handle(update.message())) {
-                    handle(update.callbackQuery());
+                logger.debug("process(updates): processing update: {}", update);
+                for (Handler handler: handlers) {
+                    if(handler.handle(update)) {
+                        break;
+                    }
                 }
             }
         } catch (Exception e) {
-            logger.error("process(updates)-method: exception` e={} was caught", e, e);
+            logger.error("process(updates): exception` e={} was caught", e, e);
             e.printStackTrace();
         }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
-    }
-
-    @Override
-    public boolean handle(CallbackQuery callbackQuery) {
-        if (callbackQuery.data() == null) {
-            logger.debug("handle(CallbackQuery=null)");
-            return false;
-        }
-
-        for (Handler handler : handlers) {
-            if (handler.handle(callbackQuery)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /** @return false if and only if the message is null
@@ -96,20 +83,10 @@ public class TelegramBotListener
      */
     @Override
     public boolean handle(Message message) {
-        if(message == null) {
-            return false;
-        }
-        logger.debug("processMessage(Message message={})-method.", message);
-        if (message.text() == null) {
-            throw new IllegalArgumentException("Message.text() is null");
-        }
-        for (Handler handler : handlers) {
-            if (handler.handle(message)) {
-                return true;
-            }
-        }
         telegramBot.execute(new SendMessage(message.chat().id(), "Воспользуйтесь пунктами меню или напишите " +
-                "и отправьте команду '/меню' или '/menu', если меню далеко вверху."));
+                "и отправьте команду '/меню' или '/menu', если меню далеко вверху." +
+                "Если вы получили это сообщение при выборе пункта меню, то приносим" +
+                "свои извинения: это значит, что раздел не создан. Разработчики скоро сформируют этот раздел. \";"));
         logger.trace("processMessage: there is no suitable handler for text=\"{}\" received from user={} with chat_id={}",
                 message.text(), message.chat().firstName(), message.chat().id());
         return true;

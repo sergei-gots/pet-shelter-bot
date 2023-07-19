@@ -20,7 +20,7 @@ public interface TelegramChatStates {
         ADOPTER_INPUTS_REPORT_IMAGE
     }
 
-    default boolean isAdopterInputState(ChatState chatState) {
+    default boolean isAdopterInInputState(ChatState chatState) {
         return chatState.name().startsWith(ChatState.ADOPTER_INPUTS.name());
     }
 }

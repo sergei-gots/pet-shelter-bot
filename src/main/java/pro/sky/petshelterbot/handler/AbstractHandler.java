@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pro.sky.petshelterbot.entity.*;
+import pro.sky.petshelterbot.exceptions.ShelterException;
 import pro.sky.petshelterbot.repository.*;
 
 import java.util.Collection;
@@ -20,7 +21,6 @@ public abstract class AbstractHandler implements Handler{
     final protected Logger logger = LoggerFactory.getLogger(getClass());
     final protected TelegramBot telegramBot;
     final protected AdopterRepository adopterRepository;
-
     final protected VolunteerRepository volunteerRepository;
     final protected ShelterRepository shelterRepository;
     final protected ButtonRepository buttonsRepository;
@@ -64,6 +64,44 @@ public abstract class AbstractHandler implements Handler{
                         "The shelter with id=" + shelterId + "is not listed in the db."));
     }
 
+    protected boolean isShelterToBeAssigned(Adopter adopter, String currentKey) {
+        if (adopter.getShelter() != null) {
+            return false;
+        }
+        if (adopter.getChatState() == ChatState.ADOPTER_CHOICES_SHELTER) {
+            processShelterChoice(adopter, currentKey);
+        } else {
+            resetChat(adopter);
+        }
+        return true;
+    }
+
+    protected void processShelterChoice(Adopter adopter, String key) {
+
+        logger.debug("processShelterChoice(adopter={}, key=\"{}\")", adopter, key);
+        long shelterId;
+        try {
+            shelterId = Long.parseLong(key.substring(SHELTER_CHOICE.length()));
+        } catch (NumberFormatException e) {
+            logger.error("processShelterChoice(): invalid key=\"{}\" to parse as shelter_id",
+                    key, e);
+            return;
+        }
+
+        Shelter shelter = shelterRepository
+                .findById(shelterId)
+                .orElseThrow(() -> new ShelterException("There is no shelter with id=" + shelterId + " in db.))"));
+
+        adopter.setShelter(shelter);
+        adopterRepository.save(adopter);
+
+        sendMessage(adopter.getChatId(), "Вы выбрали шелтер \"<b>"
+                + shelter.getName() + "</b>\"");
+
+        showShelterInfoMenu(adopter);
+    }
+
+
     protected String getUserMessage(MessageKey key) {
         return getUserMessage(key.name());
     }
@@ -74,9 +112,11 @@ public abstract class AbstractHandler implements Handler{
             .getMessage();
         }
         protected String getUserMessage(String key, Shelter shelter) {
-            logger.trace("getUserMessage(key={}, shelter.id={})", key, shelter.getId());
+            Long shelterId = (shelter!=null) ? shelter.getId() : null;
+            logger.trace("getUserMessage(key={}, shelter.id={})",
+                    key, shelterId);
             UserMessage userMessage =  userMessageRepository
-                    .findFirstByKeyAndShelterId(key, shelter.getId())
+                    .findFirstByKeyAndShelterId(key, shelterId)
                     .orElse(null);
             if(userMessage == null) {
                 logger.trace("getUserMessage: try to find by key={}, shelter.id=null", key);
@@ -108,23 +148,24 @@ public abstract class AbstractHandler implements Handler{
      * working on fixing it.
      * @param key - user_messages.key for message
      */
-    protected void sendUserMessage(long chatId, String key, Shelter shelter) {
-
+    protected boolean sendUserMessage(long chatId, String key, Shelter shelter) {
+        Long shelterId = (shelter!=null)? shelter.getId() : null;
         logger.trace("sendUserMessage(chatId={}, key=\"{}\", shelter.id={})",
-                chatId, key, shelter.getId());
+                chatId, key, shelterId);
         String userMessage;
         try {
             userMessage = getUserMessage(key, shelter);
         } catch(NoSuchElementException e) {
-            userMessage = "Раздел не создан. Разработчики скоро сформируют этот раздел. ";
             logger.error("sendUserMessage-method: user_message {shelter.id={}, key=\"{}\" is not listed in the db.",
-                    key, shelter.getId());
+                    key, shelterId);
+            return false;
         }
         telegramBot.execute(new SendMessage(chatId, userMessage + ("\n" + MENU)).parseMode(ParseMode.HTML));
+        return true;
     }
 
-    protected void sendUserMessage(Person person, String key) {
-        sendUserMessage(person.getChatId(), key, person.getShelter());
+    protected boolean sendUserMessage(Person person, String key) {
+        return sendUserMessage(person.getChatId(), key, person.getShelter());
     }
 
 
@@ -239,24 +280,7 @@ public abstract class AbstractHandler implements Handler{
         sendMenu(adopter, "Выберите приют:", markup);
     }
 
-    @Override
-    public boolean handle(Message message) {
-        String key = message.text();
-        Adopter adopter = getAdopter(message);
-
-        switch(key) {
-            case RESET:
-                resetChat(adopter);
-                return true;
-            case MENU:
-            case MENU_RU:
-                showCurrentMenu(adopter);
-                return true;
-        }
-        return false;
-    }
-
-    private void showCurrentMenu(Adopter adopter) {
+    protected void showCurrentMenu(Adopter adopter) {
         if(adopter.getChatState().equals(ChatState.ADOPTER_IN_ADOPTION_INFO_MENU)){
             showAdoptionInfoMenu(adopter);
         }
