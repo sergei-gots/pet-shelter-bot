@@ -182,5 +182,12 @@
         </insert>
     </changeSet>
 
+    <changeSet id="insert-into-buttons--got-it" author="S">
+        <insert tableName="buttons">
+            <column name="key" value="GOT_IT"/>
+            <column name="chapter" value="GOT_IT"/>
+            <column name="text" value="Понятно"/>
+        </insert>
+    </changeSet>
 
 </databaseChangeLog>

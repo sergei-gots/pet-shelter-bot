@@ -34,6 +34,11 @@ public class Report {
     public Report() {
     }
 
+    public Report(Pet pet) {
+        this.pet = pet;
+        this.sent = LocalDate.now();
+    }
+
     public Report(Pet pet,
                   LocalDate sent,
                   String diet, String wellBeing,

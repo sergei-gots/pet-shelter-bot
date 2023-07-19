@@ -20,18 +20,19 @@
                 <constraints nullable="false"/>
             </column>
             <column name="sent" type="DATE">
-                <constraints nullable="false"/>
+                <!-- if sent == null => report have been created and is being edited-->
+                <constraints nullable="true"/>
             </column>
             <column name="checked" type="BOOLEAN" defaultValue="false"/>
             <column name="approved" type="BOOLEAN" defaultValue="true"/>
             <column name="diet" type="VARCHAR">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
             <column name="well_being" type="VARCHAR">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
             <column name="behaviour" type="VARCHAR">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
             <column name="img_path" type="VARCHAR">
                 <constraints nullable="true"/>

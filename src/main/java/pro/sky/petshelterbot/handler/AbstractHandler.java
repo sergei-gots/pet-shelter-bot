@@ -44,6 +44,49 @@ public abstract class AbstractHandler implements Handler{
 
     }
 
+    @Override
+    public boolean handle(Message message, String key) {
+        logger.debug("handle(): chatId={}, key={}", message.chat().id(), key);
+
+        Adopter adopter = getAdopter(message);
+
+        if (adopter.getChatState() == ChatState.ADOPTER_CHOICES_SHELTER) {
+            processShelterChoice(adopter, key);
+            return true;
+        }
+
+        switch (key) {
+            case START:
+                greetUser(adopter);
+                processResumeChat(adopter);
+                return true;
+            case RESET:
+                greetUser(adopter);
+            case RESET_SHELTER:
+            case RESET_SHELTER_RU:
+                reselectShelter(adopter);
+                return true;
+            case SHELTER_INFO_MENU:
+                showShelterInfoMenu(adopter);
+                return true;
+            case MENU:
+            case MENU_RU:
+                showCurrentMenu(adopter);
+                return true;
+            case ADOPTION_INFO_MENU:
+                showAdoptionInfoMenu(adopter);
+                return true;
+            case ABOUT_SHELTER_INFO:
+                sendUserMessage(adopter, key);
+                return true;
+            case SHELTER_CHOICE:
+                processShelterChoice(adopter, key);
+                return true;
+        }
+        return false;
+    }
+
+
     @NotNull
     protected Adopter getAdopter(Message message) {
         Long chatId = message.chat().id();
@@ -76,6 +119,14 @@ public abstract class AbstractHandler implements Handler{
         return true;
     }
 
+    protected void processResumeChat(Adopter adopter) {
+        if(adopter.getShelter() == null) {
+            reselectShelter(adopter);
+        }
+        else {
+            showShelterInfoMenu(adopter);
+        }
+    }
     protected void processShelterChoice(Adopter adopter, String key) {
 
         logger.debug("processShelterChoice(adopter={}, key=\"{}\")", adopter, key);
@@ -125,7 +176,6 @@ public abstract class AbstractHandler implements Handler{
                                 "The user_message with key=\"" + key + "\"is not listed in the db.")
                         );
             }
-
             return userMessage.getMessage();
         }
 
@@ -168,17 +218,24 @@ public abstract class AbstractHandler implements Handler{
         return true;
     }
 
+    protected boolean sendUserMessage(Person person, MessageKey messageKey) {
+        return sendUserMessage(person, messageKey.name());
+    }
     protected boolean sendUserMessage(Person person, String key) {
         return sendUserMessage(person.getChatId(), key, person.getShelter());
     }
 
-
     protected void sendMenu(Person person, String chapter) {
+        sendMenu(person, chapter, "");
+    }
+
+    protected void sendMenu(Person person, String chapter, String title) {
 
         Shelter shelter = person.getShelter();
+        title = (title.isEmpty()) ? getUserMessage(chapter, shelter) : title;
                sendMenu(
                         person,
-                        getUserMessage(chapter, shelter),
+                        title,
                         createMenu(person.getChatId(), chapter, shelter)
         );
     }

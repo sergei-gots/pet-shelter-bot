@@ -4,10 +4,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Pet;
+import pro.sky.petshelterbot.entity.Shelter;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Optional;
 
 public interface PetRepository extends JpaRepository<Pet,Long> {
 
@@ -15,4 +16,6 @@ public interface PetRepository extends JpaRepository<Pet,Long> {
 
     Page<Pet> findAllByShelterId(Long shelterId, Pageable pageable);
 
+    @Query("from Pet p where p.adopter = :adopter and p.shelter = :shelter and p.adoptionDate is not null and p.adoptionDate >= current_date")
+    Optional<Pet> findFirstByAdopterAndShelter(Adopter adopter, Shelter shelter);
 }
