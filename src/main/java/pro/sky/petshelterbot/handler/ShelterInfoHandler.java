@@ -34,6 +34,10 @@ public class ShelterInfoHandler extends AbstractHandler {
     public boolean handle(Message message, String key) {
         logger.debug("handle(): chatId={}, key={}", message.chat().id(), key);
 
+        if(super.handle(message,key)) {
+            return true;
+        }
+
         Adopter adopter = getAdopter(message);
 
         if (adopter.getChatState() == ChatState.ADOPTER_CHOICES_SHELTER) {
@@ -42,35 +46,11 @@ public class ShelterInfoHandler extends AbstractHandler {
         }
 
         switch (key) {
-            case RESET_SHELTER:
-            case RESET_SHELTER_RU:
-            case RESET:
-                resetChat(adopter);
-                return true;
-            case START:
-                processStart(adopter);
-                return true;
-            case SHELTER_INFO_MENU:
-                showShelterInfoMenu(adopter);
-                return true;
-            case MENU:
-            case MENU_RU:
-                showCurrentMenu(adopter);
-                return true;
-            case ADOPTION_INFO_MENU:
-                showAdoptionInfoMenu(adopter);
-                return true;
-            case ABOUT_SHELTER_INFO:
-                sendUserMessage(adopter, key);
-                return true;
             case OPENING_HOURS_AND_ADDRESS_INFO:
                 sendOpeningHours(adopter);
                 return true;
             case SECURITY_INFO:
                 sendSecurityInfo(adopter);
-                return true;
-            case SHELTER_CHOICE:
-                processShelterChoice(adopter, key);
                 return true;
             }
         return sendUserMessage(adopter, key);
@@ -99,19 +79,6 @@ public class ShelterInfoHandler extends AbstractHandler {
                 "Телефон: " + shelter.getTel() + "\n" +
                 "Email: " + shelter.getEmail());
     }
-
-    public void processStart(Adopter adopter) {
-        if (adopter.getChatState() == ChatState.INITIAL_STATE) {
-            sendMessage(adopter.getChatId(), "Здравствуйте, " + adopter.getFirstName());
-        }
-        if(adopter.getShelter() == null) {
-            resetChat(adopter);
-        }
-        else {
-            showShelterInfoMenu(adopter);
-        }
-    }
-
 
 
 }

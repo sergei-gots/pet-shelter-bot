@@ -141,36 +141,16 @@
             <column name="shelter_id"   valueNumeric="2"/>
             <column name="message"      valueClobFile="../../../initial-data/dog/best_cynologists_info.txt"/>
         </insert>
-
-
     </changeSet>
 
-    <changeSet id="update-user_messages-where-key-refusal-info" author="S">
-        <update tableName="user_messages">
-            <column name="message" valueClobFile="../../../initial-data/refusal_info.txt"/> />
-            <where>key = 'refusal_info'</where>
-        </update>
-    </changeSet>
-
-    <changeSet id="insert-into-user-messages-improve-report-advice" author="S">
-        <insert tableName="user_messages">
-            <column name="key"          value="improve_report_advice"/>
-            <column name="shelter_id"   valueNumeric="1"/>
-            <column name="message"      valueClobFile="../../../initial-data/improve_report_advice.txt"/>
-        </insert>
-
-        <insert tableName="user_messages">
-            <column name="key"          value="improve_report_advice"/>
-            <column name="shelter_id"   valueNumeric="2"/>
-            <column name="message"      valueClobFile="../../../initial-data/improve_report_advice.txt"/>
-        </insert>
-
-    </changeSet>
-
-    <changeSet id="insert-into-user-messages--dialog" author="S">
+    <changeSet id="insert-into-user-messages--command-descriptions" author="S">
         <insert tableName="user_messages">
             <column name="key"          value="DIALOG"/>
             <column name="message"      value="Для завершения диалога нажмите эту клавишу или введите команду /завершить или /close"/>
+        </insert>
+        <insert tableName="user_messages">
+            <column name="key"          value="PRESS_OK_TO_CONTINUE"/>
+            <column name="message"      value="Нажмите для /ok продолжения"/>
         </insert>
     </changeSet>
 
@@ -196,6 +176,45 @@
         </insert>
     </changeSet>
 
+    <changeSet id="insert-into-user-messages--you-dont-have-animal-on-trial" author="S">
+        <insert tableName="user_messages">
+            <column name="key"          value="WAIT_FOR_VOLUNTEER_BOT_RESTRICTIONS"/>
+            <column name="message"      value="На этапе ожидания подключения волонтёра часть функциональности, связанной с вводом данных будет закрыта. Всё в порядке)"/>
+        </insert>
 
+
+        <insert tableName="user_messages">
+            <column name="key"          value="YOU_DONT_HAVE_ANIMAL_ON_TRIAL"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="message"      value="В настоящее время у вас нет животного  на испытательном периоде из шелтера для кошек. "/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="YOU_DONT_HAVE_ANIMAL_ON_TRIAL"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="message"      value="В настоящее время у вас нет животного  на испытательном периоде из шелтера для собак."/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="ADVICE_TO_IMPROVE_REPORTS"/>
+            <column name="message"      valueClobFile="../../../initial-data/advice_to_improve_reports.txt"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-into-user-messages--not-implemented-yet" author="S">
+        <insert tableName="user_messages">
+            <column name="key" value="NOT_IMPLEMENTED_YET"/>
+            <column name="message"
+                    value="Раздел находится на этапе разработки. Наши программисты работают над этим разделом. "/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-into-user-messages--got-it" author="S">
+        <insert tableName="user_messages">
+            <column name="key" value="GOT_IT"/>
+            <column name="message"
+                    value="После ознакомления нажмите клавишу:"/>
+        </insert>
+    </changeSet>
 
 </databaseChangeLog>
