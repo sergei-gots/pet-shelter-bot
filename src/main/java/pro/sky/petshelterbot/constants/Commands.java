@@ -13,6 +13,7 @@ public interface Commands {
     String ENTER_CONTACTS="/enter_contacts";
     String ENTER_REPORT="/enter_report";
     String JOIN_DIALOG="/join";
+    String OK_BUTTON ="/ok";
     String MENU = "/menu";
     String MENU_RU = "/меню";
     String OPENING_HOURS_AND_ADDRESS_INFO = "opening_hours_and_address_info";
