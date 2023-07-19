@@ -71,7 +71,7 @@ public abstract class AbstractHandler implements Handler{
         if (adopter.getChatState() == ChatState.ADOPTER_CHOICES_SHELTER) {
             processShelterChoice(adopter, currentKey);
         } else {
-            resetChat(adopter);
+            reselectShelter(adopter);
         }
         return true;
     }
@@ -128,6 +128,10 @@ public abstract class AbstractHandler implements Handler{
 
             return userMessage.getMessage();
         }
+
+    protected void greetUser(Person person) {
+        sendMessage(person.getChatId(), "Здравствуйте, " + person.getFirstName());
+    }
 
     protected void sendMessage(Long chatId, String text, Keyboard keyboard) {
         logger.trace("sendMessage(chatId={}, text=\"{}\") with kbMarkUp", chatId, text);
@@ -253,7 +257,7 @@ public abstract class AbstractHandler implements Handler{
         return adopterRepository.findDialogByAdopterChatId(adopterChatId).orElse(null);
     }
 
-    protected void resetChat(Adopter adopter) {
+    protected void reselectShelter(Adopter adopter) {
         handleCancelVolunteerCall(adopter, "-");
         adopter.setShelter(null);
         showShelterChoiceMenu(adopter);
