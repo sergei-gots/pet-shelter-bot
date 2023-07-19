@@ -3,7 +3,6 @@ package pro.sky.petshelterbot.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Pet;
 import pro.sky.petshelterbot.entity.Report;
 

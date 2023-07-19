@@ -8,9 +8,6 @@ import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Pet;
 import pro.sky.petshelterbot.entity.Shelter;
 
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 public interface PetRepository extends JpaRepository<Pet,Long> {
