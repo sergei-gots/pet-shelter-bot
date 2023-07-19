@@ -42,13 +42,15 @@ public class ShelterInfoHandler extends AbstractHandler {
         }
 
         switch (key) {
+            case START:
+                greetUser(adopter);
+                processResumeChat(adopter);
+                return true;
+            case RESET:
+                greetUser(adopter);
             case RESET_SHELTER:
             case RESET_SHELTER_RU:
-            case RESET:
-                resetChat(adopter);
-                return true;
-            case START:
-                processStart(adopter);
+                reselectShelter(adopter);
                 return true;
             case SHELTER_INFO_MENU:
                 showShelterInfoMenu(adopter);
@@ -100,18 +102,12 @@ public class ShelterInfoHandler extends AbstractHandler {
                 "Email: " + shelter.getEmail());
     }
 
-    public void processStart(Adopter adopter) {
-        if (adopter.getChatState() == ChatState.INITIAL_STATE) {
-            sendMessage(adopter.getChatId(), "Здравствуйте, " + adopter.getFirstName());
-        }
+    public void processResumeChat(Adopter adopter) {
         if(adopter.getShelter() == null) {
-            resetChat(adopter);
+            reselectShelter(adopter);
         }
         else {
             showShelterInfoMenu(adopter);
         }
     }
-
-
-
 }
