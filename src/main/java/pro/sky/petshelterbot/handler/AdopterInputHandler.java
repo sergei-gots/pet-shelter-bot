@@ -41,18 +41,16 @@ public class AdopterInputHandler extends AbstractHandler {
         String key = callbackQuery.data();
         Message message = callbackQuery.message();
         Adopter adopter = getAdopter(message);
-        Adopter.ChatState chatState = adopter.getChatState();
 
-        if (adopter.isAdopterInInputState(chatState)) {
-            return false;
-        }
         logger.debug("handle(CallbackQuery): adopter.firstName=\"{}\", .chatState=\"{}\".",
-                adopter.getFirstName(), chatState);
+                adopter.getFirstName(), adopter.getChatState());
         switch (key) {
             case ENTER_CONTACTS:
                 processEnterContacts(message);
                 return true;
             case ENTER_REPORT:
+            case GOT_IT:
+                deletePreviousMenu(adopter);
                 processEnterReport(message);
                 return true;
             default:
@@ -103,9 +101,10 @@ public class AdopterInputHandler extends AbstractHandler {
     }
 
     private void processEnterContacts(Message message) {
-        logger.debug("processEnterContacts(message={})", message);
-
         Adopter adopter = getAdopter(message);
+
+        logger.debug("processEnterContacts(adopter={}, text=\"{}\")", adopter.getFirstName(), message.text());
+
         adopter.setChatState(ChatState.ADOPTER_INPUTS_PHONE_NUMBER);
         deletePreviousMenu(adopter);
         adopterRepository.save(adopter);
@@ -116,7 +115,9 @@ public class AdopterInputHandler extends AbstractHandler {
     }
 
     private void processInputPhoneNumber(Message message) {
-        logger.debug("processInputPhoneNumber(message.text={})", message.text());
+        Adopter adopter = getAdopter(message);
+
+        logger.debug("processInputPhoneNumber(adopter={}, text=\"{}\")", adopter.getFirstName(), message.text());
         String phoneNumber = message.text().replaceAll("\\D+", "");
 
         int length = phoneNumber.length();
@@ -127,7 +128,6 @@ public class AdopterInputHandler extends AbstractHandler {
                     "Мы не смогли распознать телефонный номер. Пожалуйста, введите номер " +
                             "в формате 7-7XX-XXX-XX-XX:");
         } else {
-            Adopter adopter = getAdopter(message);
             adopter.setPhoneNumber(phoneNumber);
             adopter.setChatState(ChatState.ADOPTER_IN_ADOPTION_INFO_MENU);
             adopterRepository.save(adopter);
@@ -143,25 +143,53 @@ public class AdopterInputHandler extends AbstractHandler {
 
 
     private void processInputReportDiet(Message message) {
-
-        logger.debug("processInputDiet(message={})", message);
-
         Adopter adopter = getAdopter(message);
-        Pet pet = getPet(adopter);
-        Report report = reportRepository.findByPetAndSentIsNull(pet);
 
+        logger.debug("processInputDiet(adopter={}, text=\"{}\")", adopter.getFirstName(), message.text());
+
+        Pet pet = getPet(adopter);
+        Report report = getEditedReport(pet);
+        report.setDiet(message.text());
+        reportRepository.save(report);
+
+        sendMessage(adopter.getChatId(), "Теперь опишите самочувствие питомца:");
+        adopter.setChatState(ChatState.ADOPTER_INPUTS_REPORT_WELL_BEING);
+        adopterRepository.save(adopter);
     }
 
     private void processInputReportWellBeing(Message message) {
-        logger.debug("processInputContacts(message={})", message);
+        Adopter adopter = getAdopter(message);
+        logger.debug("processInputWellBeing(adopter={}, text=\"{}\")", adopter.getFirstName(), message.text());
+
+        Pet pet = getPet(adopter);
+        Report report = getEditedReport(pet);
+        report.setWellBeing(message.text());
+        reportRepository.save(report);
+
+        sendMessage(adopter.getChatId(), "Расскажите, что изменилось в поведении животного за последний день:");
+        adopter.setChatState(ChatState.ADOPTER_INPUTS_REPORT_BEHAVIOUR);
+        adopterRepository.save(adopter);
     }
 
     private void processInputReportBehaviour(Message message) {
-        logger.debug("processInputContacts(message={})", message);
+        Adopter adopter = getAdopter(message);
+
+        logger.debug("processInputReportBehaviour(adopter={}, text=\"{}\")", adopter.getFirstName(), message.text());
+
+        Pet pet = getPet(adopter);
+        Report report = getEditedReport(pet);
+        report.setBehaviour(message.text());
+        reportRepository.save(report);
+
+        sendMessage(adopter.getChatId(), "В завершение, пришлите нам, пожалуйста, сегодняшнюю фотографию питомца:");
+        adopter.setChatState(ChatState.ADOPTER_INPUTS_REPORT_IMAGE);
+        adopterRepository.save(adopter);
     }
 
     private void processInputReportImage(Message message) {
-        logger.debug("processInputContacts(message={})", message);
+        Adopter adopter = getAdopter(message);
+
+        logger.debug("processInputContacts(adopter={}, text=\"{}\")", adopter.getFirstName(), message.text());
     }
 
 
@@ -172,26 +200,37 @@ public class AdopterInputHandler extends AbstractHandler {
                 .orElse(null);
     }
 
-    private void processEnterReport(Message message) {
-        logger.debug("processEnterReport(message={})", message);
+    private Report getEditedReport(Pet pet) {
+        return reportRepository
+                .findFirstByPetAndSentIsNull(pet)
+                .orElse(new Report(pet));
+    }
 
+    private void processEnterReport(Message message) {
         Adopter adopter = getAdopter(message);
+
+        logger.debug("processEnterReport(adopter={}, text=\"{}\")", adopter.getFirstName(), message.text());
 
         Pet pet = getPet(adopter);
 
         if (pet == null) {
+            logger.trace("processEnterReport(pet=null)");
+
             sendUserMessage(adopter, YOU_DONT_HAVE_ANIMAL_ON_TRIAL);
             adopter.setChatState(ChatState.ADOPTER_IN_ADOPTION_INFO_MENU);
-        } else if (isNotAdviceToImproveReports(adopter, pet)) {
+
+        } else if (!checkForAdviceToRead(adopter, pet)) {
+            logger.trace("processEnterReport(pet.name={})", pet.getName());
+
             sendMessage(adopter.getChatId(), "Пожалуйста, опишите рацион питания вашего питомца за последний день:");
             adopter.setChatState(ChatState.ADOPTER_INPUTS_REPORT_DIET);
-            Report report = new Report(pet);
+            Report report = getEditedReport(pet);
             reportRepository.save(report);
         }
         adopterRepository.save(adopter);
     }
 
-    private boolean isNotAdviceToImproveReports(Adopter adopter, Pet pet) {
+    private boolean checkForAdviceToRead(Adopter adopter, Pet pet) {
         if (adopter.getChatState() == ChatState.ADOPTER_INPUTS_AND_READING_ADVICE_TO_IMPROVE_REPORTS) {
             return false;
         }
@@ -199,16 +238,17 @@ public class AdopterInputHandler extends AbstractHandler {
                 .findLastByPetAndCheckedIsTrueAndSentIsNotNullOrderBySentAsc(pet)
                 .orElse(null);
         if (lastReport == null) {
-            return true;
-        }
-        sendMessage(adopter.getChatId(),
-                adopter.getFirstName() +
-                        getUserMessage(ADVICE_TO_IMPROVE_REPORTS) +
-                        getUserMessage(PRESS_OK_TO_CONTINUE)
-        );
-        adopter.setChatState(ChatState.ADOPTER_INPUTS_AND_READING_ADVICE_TO_IMPROVE_REPORTS);
+            logger.trace("checkIfThereIsAdviceToRead(): last report is OK if it exists");
 
-        return false;
+            return false;
+        }
+        logger.trace("checkIfThereIsAdviceToRead(): last report was NOT PERFECT");
+        sendMessage(adopter.getChatId(), adopter.getFirstName() +
+                getUserMessage(ADVICE_TO_IMPROVE_REPORTS));
+        adopter.setChatState(ChatState.ADOPTER_INPUTS_AND_READING_ADVICE_TO_IMPROVE_REPORTS);
+        sendMenu(adopter, GOT_IT);
+
+        return true;
     }
 
 }

@@ -7,6 +7,8 @@ public interface ChapterNames {
     String DIALOG = "DIALOG";
     String DIALOG_VOLUNTEER_PART = "DIALOG_VOLUNTEER_PART";
 
+    String GOT_IT = "GOT_IT";
+
     public enum MessageKey  {
         ADVICE_TO_IMPROVE_REPORTS,
         DIALOG_INIT_CLARIFICATION_FOR_VOLUNTEER,

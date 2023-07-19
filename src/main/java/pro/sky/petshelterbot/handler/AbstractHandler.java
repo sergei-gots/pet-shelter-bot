@@ -176,7 +176,6 @@ public abstract class AbstractHandler implements Handler{
                                 "The user_message with key=\"" + key + "\"is not listed in the db.")
                         );
             }
-
             return userMessage.getMessage();
         }
 
@@ -226,13 +225,17 @@ public abstract class AbstractHandler implements Handler{
         return sendUserMessage(person.getChatId(), key, person.getShelter());
     }
 
-
     protected void sendMenu(Person person, String chapter) {
+        sendMenu(person, chapter, "");
+    }
+
+    protected void sendMenu(Person person, String chapter, String title) {
 
         Shelter shelter = person.getShelter();
+        title = (title.isEmpty()) ? getUserMessage(chapter, shelter) : title;
                sendMenu(
                         person,
-                        getUserMessage(chapter, shelter),
+                        title,
                         createMenu(person.getChatId(), chapter, shelter)
         );
     }

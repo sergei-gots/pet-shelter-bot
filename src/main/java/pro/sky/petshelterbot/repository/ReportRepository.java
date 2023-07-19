@@ -35,5 +35,5 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     @Query("select p from Pet p, Report r where p.adoptionDate is not null and p.adoptionDate >= current_timestamp and p = r.pet and p.shelter.id = :shelterId and not exists (select r from Report r where r.sent >= current_date - 1) group by p")
     List<Pet> findOverdueReports(Long shelterId);
 
-    Report findByPetAndSentIsNull(Pet pet);
+    Optional<Report> findFirstByPetAndSentIsNull(Pet pet);
 }

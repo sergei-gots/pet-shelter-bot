@@ -209,4 +209,12 @@
         </insert>
     </changeSet>
 
+    <changeSet id="insert-into-user-messages--got-it" author="S">
+        <insert tableName="user_messages">
+            <column name="key" value="GOT_IT"/>
+            <column name="message"
+                    value="После ознакомления нажмите клавишу:"/>
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>
