@@ -21,7 +21,7 @@ public interface Handler extends ChapterNames, Commands, TelegramChatStates {
         if (message == null) {
             return handle(update.callbackQuery());
         }
-        if (handlePhoto(message)) {
+        if (handlePhoto(update)) {
               return true;
         }
         if (message.text() == null) {
@@ -39,7 +39,7 @@ public interface Handler extends ChapterNames, Commands, TelegramChatStates {
 
     default boolean handle(Message message, String key) { return false; }
 
-    default boolean handlePhoto(Message message) { return false; }
+    default boolean handlePhoto(Update update) { return false; }
 
     /**
      *  Prints warning-message

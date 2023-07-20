@@ -1,19 +1,24 @@
 package pro.sky.petshelterbot.handler;
 
 import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.model.CallbackQuery;
-import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.model.PhotoSize;
+import com.pengrad.telegrambot.model.*;
+import com.pengrad.telegrambot.request.GetFile;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Pet;
 import pro.sky.petshelterbot.entity.Report;
 import pro.sky.petshelterbot.repository.*;
+import pro.sky.petshelterbot.util.FileManager;
 
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Arrays;
 
+import static org.springframework.util.ResourceUtils.getFile;
 import static pro.sky.petshelterbot.constants.ChapterNames.MessageKey.*;
 
 /**
@@ -25,6 +30,8 @@ public class AdopterInputHandler extends AbstractHandler {
     private final ReportRepository reportRepository;
     private final PetRepository petRepository;
 
+    private final FileManager fileManager;
+
     public AdopterInputHandler(TelegramBot telegramBot,
                                AdopterRepository adopterRepository,
                                VolunteerRepository volunteerRepository,
@@ -32,18 +39,62 @@ public class AdopterInputHandler extends AbstractHandler {
                                UserMessageRepository userMessageRepository,
                                ButtonRepository buttonRepository,
                                DialogRepository dialogRepository,
-                               ReportRepository reportRepository, PetRepository petRepository) {
+                               ReportRepository reportRepository, PetRepository petRepository, FileManager fileManager) {
         super(telegramBot, adopterRepository, volunteerRepository, shelterRepository, userMessageRepository, buttonRepository, dialogRepository);
         this.reportRepository = reportRepository;
         this.petRepository = petRepository;
+        this.fileManager = fileManager;
     }
 
     @Override
-    public boolean handlePhoto(Message message) {
-        PhotoSize[] photoSize = message.photo();
-        logger.debug("handlePhoto(): chatId={}, key={}", message.chat().id(), Arrays.toString(photoSize));
+    public boolean handlePhoto(Update update) {
+        Message message = update.message();
+        PhotoSize[] photos = update.message().photo();
+        Document document = message.document();
+        logger.debug("handlePhoto(): chatId={}, photo={}, document={}",
+                message.chat().id(),
+                Arrays.toString(photos),
+                document);
+        if (photos == null) {
+            logger.trace("handlePhoto(): no photo found in message={}", message);
 
-        return false;
+            return false;
+        }
+
+        Adopter adopter = getAdopter(message);
+        if (adopter.getChatState() != ChatState.ADOPTER_INPUTS_REPORT_IMAGE) {
+            logger.trace("handlePhoto(): chat_state={} != {}",
+                    adopter.getChatState(), ChatState.ADOPTER_INPUTS_REPORT_IMAGE);
+
+        }
+
+        Pet pet = getPet(adopter);
+        if (pet == null) {
+            logger.trace("handlePhoto(): pet == null");
+            return false;
+        }
+
+        PhotoSize photo = photos[photos.length - 1];
+        String fileId = photo.fileId();
+
+        Path path;
+        try {
+            path = fileManager.getReportPhotosPath(pet);
+        } catch (IOException e) {
+            logger.error("handlePhoto(): IOException during execution of FileManager.getReportPhotosPath(pet.getId()={}) was thrown", pet.getId(), e);
+        }
+
+        GetFile getFile1 = new GetFile(fileId);
+
+        try {
+            File tgFile = getFile(photo.fileUniqueId());
+            logger.debug("handlePhoto(): got File with File.getAbsolutePath={}", tgFile.getAbsolutePath());
+        } catch (FileNotFoundException e) {
+            logger.error("handlePhoto() : FileNotFoundException during execution of FileManager.getReportPhotosPath(pet.getId()={}) was thrown", pet.getId());
+        }
+
+      // TODO: get photo and save file in filesystem and name in db
+        return true;
     }
 
     @Override
