@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.Arrays;
 
 import static org.springframework.util.ResourceUtils.getFile;
@@ -62,46 +63,56 @@ public class AdopterInputHandler extends AbstractHandler {
         PhotoSize[] photos = update.message().photo();
         Document document = message.document();
 
-        String imageFileExt = (document != null) ? document.mimeType() : ".png";
-
         logger.debug("handlePhoto(): chatId={}, photo={}, document={}",
                 message.chat().id(),
                 Arrays.toString(photos),
                 document);
-        if (photos == null) {
-            logger.trace("handlePhoto(): no photo found in message={}", message);
 
-            return false;
+        String extension = ".png";
+        PhotoSize photo = null;
+        if (photos != null) {
+            photo = photos[photos.length - 1];
+        } else if (document != null) {
+            //ToDo check if the document is not a picture
+            extension = "." + document.mimeType();
         }
 
-
+        if(photo == null) {
+            logger.trace("handlePhoto(): no photo found in message={}", message);
+            return false;
+        }
 
         Pet pet = getPet(adopter);
         if (pet == null) {
-            logger.trace("handlePhoto(): pet == null");
+            logger.warn("handlePhoto(): pet == null => No pet on trial found for the adopter = {} ", adopter.getChatId());
             return false;
         }
 
-        PhotoSize photo = photos[photos.length - 1];
-        String fileId = photo.fileId();
+        LocalDate sentDate = LocalDate.now();
+        String filename = "/" + pet.getId() + "-" + sentDate + extension;
 
-        Path path;
+        logger.trace("handlePhoto(): local filename={}", filename);
+
+        Report report = getEditedReport(pet);
         try {
-            path = fileManager.getReportPhotosPath(pet);
+            Path savePath = Path.of(fileManager.getReportPhotosPath(pet) + filename);
+            logger.trace("handlePhoto(): local save path={}", savePath);
+            fileManager.saveTelegramFile(photo.fileId(), savePath);
+            report.setImgPath(savePath.toString());
+            logger.trace("handlePhoto(): image saved");
+
         } catch (IOException e) {
-            logger.error("handlePhoto(): IOException during execution of FileManager.getReportPhotosPath(pet.getId()={}) was thrown", pet.getId(), e);
+            logger.error("handlePhoto(): IOException during execution of " +
+                    "FileManager.saveTelegramFile(file_id={})",
+                    pet.getId(), e);
         }
 
-        GetFile getFile1 = new GetFile(fileId);
-
-        try {
-            File tgFile = getFile(photo.fileUniqueId());
-            logger.debug("handlePhoto(): got File with File.getAbsolutePath={}", tgFile.getAbsolutePath());
-        } catch (FileNotFoundException e) {
-            logger.error("handlePhoto() : FileNotFoundException during execution of FileManager.getReportPhotosPath(pet.getId()={}) was thrown", pet.getId());
-        }
-
-      // TODO: get photo and save file in filesystem and name in db
+        report.setSent(sentDate);
+        reportRepository.save(report);
+        sendMessage(adopter.getChatId(), "Спасибо! Мы приняли ваш отчёт. Он будет проверен сотрудником шелтера. " +
+                "Вы можете прислать нам ещё отчёт, если посчитаете необходимым");
+        adopter.setChatState(ChatState.ADOPTER_IN_SHELTER_INFO_MENU);
+        logger.trace("handlePhoto(): report completed");
         return true;
     }
 
