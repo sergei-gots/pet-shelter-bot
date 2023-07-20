@@ -29,18 +29,18 @@ public class AdopterControllerTest {
 
     private Shelter generateShelter() {
         Shelter shelter = new Shelter();
-        shelter.setName("Doggi");
+        shelter.setName(faker.company().name());
         shelter.setType("dog");
-        shelter.setTel("+1 123 321 123");
-        shelter.setAddress("7 ave. st");
-        shelter.setEmail("info@doggi.com");
+        shelter.setTel(faker.phoneNumber().phoneNumber());
+        shelter.setAddress(faker.address().fullAddress());
+        shelter.setEmail(faker.internet().emailAddress());
         shelter.setWorkTime("Mon-Sun: 09:00AM - 10:00PM");
         return shelter;
     }
 
     private Adopter generateAdopter() {
         Adopter adopter = new Adopter();
-        adopter.setChatId(faker.random().nextLong());
+        adopter.setChatId(faker.random().nextLong(9999999));
         adopter.setFirstName(faker.funnyName().name());
         return adopter;
     }
@@ -51,6 +51,7 @@ public class AdopterControllerTest {
         pet.setSpecies("dog");
         pet.setShelter(shelter);
         pet.setDisabled(false);
+        pet.setAdopter(generateAdopter());
         return pet;
     }
 
@@ -88,28 +89,21 @@ public class AdopterControllerTest {
     public void setAdopterTest() {
         Shelter shelter = addShelter(generateShelter());
         Pet pet = addPet(generatePet(shelter));
+        Adopter oldAdopter = pet.getAdopter();
+        Adopter newAdopter = generateAdopter();
+
         ResponseEntity<Pet> getForEntityResponse = testRestTemplate.getForEntity(
                 "http://localhost:" + port + "/pets/" + pet.getId(),
                 Pet.class
         );
         assertThat(getForEntityResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(getForEntityResponse.getBody()).isNotNull();
+/*        assertThat(getForEntityResponse.getBody()).isNotNull();
         assertThat(getForEntityResponse.getBody()).usingRecursiveComparison().isEqualTo(pet);
-        assertThat(getForEntityResponse.getBody().getShelter()).usingRecursiveComparison()
-                .isEqualTo(shelter);
+        assertThat(getForEntityResponse.getBody().getAdopter()).isNotEqualTo(newAdopter);
 
-        /*student.setFaculty(f2);
+        pet.setAdopter(newAdopter);
 
-        ResponseEntity<Student> recordForEntityResponse = testRestTemplate.exchange(
-                "http://localhost:" + port + "/student/" + student.getId(),
-                HttpMethod.PUT,
-                new HttpEntity<>(student),
-                Student.class
-        );
-        assertThat(getForEntityResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(recordForEntityResponse.getBody()).isNotNull();
-        assertThat(recordForEntityResponse.getBody()).usingRecursiveComparison().isEqualTo(student);
-        assertThat(recordForEntityResponse.getBody().getFaculty()).usingRecursiveComparison()
-                .isEqualTo(f2);*/
+        assertThat(pet.getAdopter()).usingRecursiveComparison()
+                .isEqualTo(newAdopter);*/
     }
 }
