@@ -3,6 +3,7 @@ package pro.sky.petshelterbot.handler;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.model.PhotoSize;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.entity.Adopter;
@@ -10,6 +11,8 @@ import pro.sky.petshelterbot.entity.Pet;
 import pro.sky.petshelterbot.entity.Report;
 import pro.sky.petshelterbot.repository.*;
 
+
+import java.util.Arrays;
 
 import static pro.sky.petshelterbot.constants.ChapterNames.MessageKey.*;
 
@@ -33,6 +36,14 @@ public class AdopterInputHandler extends AbstractHandler {
         super(telegramBot, adopterRepository, volunteerRepository, shelterRepository, userMessageRepository, buttonRepository, dialogRepository);
         this.reportRepository = reportRepository;
         this.petRepository = petRepository;
+    }
+
+    @Override
+    public boolean handlePhoto(Message message) {
+        PhotoSize[] photoSize = message.photo();
+        logger.debug("handlePhoto(): chatId={}, key={}", message.chat().id(), Arrays.toString(photoSize));
+
+        return false;
     }
 
     @Override

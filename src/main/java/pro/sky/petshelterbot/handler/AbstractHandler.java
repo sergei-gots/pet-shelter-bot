@@ -45,6 +45,11 @@ public abstract class AbstractHandler implements Handler{
     }
 
     @Override
+    public void warn(String warning) {
+        logger.trace(warning);
+    }
+
+    @Override
     public boolean handle(Message message, String key) {
         logger.debug("handle(): chatId={}, key={}", message.chat().id(), key);
 
