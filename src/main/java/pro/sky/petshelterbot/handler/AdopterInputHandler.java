@@ -6,12 +6,15 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.PhotoSize;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
+import pro.sky.petshelterbot.configuration.TelegramBotConfiguration;
 import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Pet;
 import pro.sky.petshelterbot.entity.Report;
 import pro.sky.petshelterbot.repository.*;
 
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 
 import static pro.sky.petshelterbot.constants.ChapterNames.MessageKey.*;
@@ -25,6 +28,8 @@ public class AdopterInputHandler extends AbstractHandler {
     private final ReportRepository reportRepository;
     private final PetRepository petRepository;
 
+    private final TelegramBotConfiguration telegramBotConfiguration;
+
     public AdopterInputHandler(TelegramBot telegramBot,
                                AdopterRepository adopterRepository,
                                VolunteerRepository volunteerRepository,
@@ -32,17 +37,80 @@ public class AdopterInputHandler extends AbstractHandler {
                                UserMessageRepository userMessageRepository,
                                ButtonRepository buttonRepository,
                                DialogRepository dialogRepository,
-                               ReportRepository reportRepository, PetRepository petRepository) {
+                               ReportRepository reportRepository, PetRepository petRepository, TelegramBotConfiguration telegramBotConfiguration) {
         super(telegramBot, adopterRepository, volunteerRepository, shelterRepository, userMessageRepository, buttonRepository, dialogRepository);
         this.reportRepository = reportRepository;
         this.petRepository = petRepository;
+        this.telegramBotConfiguration = telegramBotConfiguration;
     }
 
     @Override
     public boolean handlePhoto(Message message) {
-        PhotoSize[] photoSize = message.photo();
-        logger.debug("handlePhoto(): chatId={}, key={}", message.chat().id(), Arrays.toString(photoSize));
+        PhotoSize[] photos = message.photo();
+        logger.debug("handlePhoto(): chatId={}, key={}", message.chat().id(), Arrays.toString(photos));
+        if(photos == null) {
+            return false;
+        }
 
+        Adopter adopter = getAdopter(message);
+        if(adopter.getChatState() != ChatState.ADOPTER_INPUTS_REPORT_IMAGE) {
+            logger.trace("handlePhoto(): chat_state={} != {}",
+                    adopter.getChatState(), ChatState.ADOPTER_INPUTS_REPORT_IMAGE);
+
+        }
+
+        Pet pet = getPet(adopter);
+        if(pet == null) {
+            logger.trace("handlePhoto(): pet == null");
+            return false;
+        }
+
+        PhotoSize photo = photos[photos.length-1];
+        String id = photo.fileId();
+        try {
+            logger.trace("handlePhoto(): try to handle photo");
+            Path filePath = Path.of(telegramBotConfiguration.getPhotosDir());
+            if (!Files.isDirectory(filePath)) {
+                logger.error("handlePhoto(): db.photos.dir=\"{}\" does not exist", filePath);
+                sendUserMessage(adopter, NOT_IMPLEMENTED_YET);
+            }
+  /*          Path filePath = Path.of(avatarsDirPath,
+                    studentId + "." +
+                            StringUtils.getFilenameExtension(avatarFile.getOriginalFilename()));
+            try {
+                byte[] data = avatarFile.getBytes();
+                Files.write(filePath, data);
+
+                Avatar avatar = avatarRepository.findByStudentId(studentId).orElseGet(Avatar::new);
+                avatar.setStudent(student);
+                avatar.setFilePath(filePath.toString());
+                avatar.setMediaType(avatarFile.getContentType());
+                avatar.setFileSize(avatarFile.getSize());
+                avatar.setPreview(generateImagePreview(filePath));
+                avatarRepository.save(avatar);
+            } catch (IOException e) {
+                logger.error("IOException e with message=\"{}\" during avatar upload occurred ",
+                        e.getMessage()
+                );
+                throw new AvatarProcessingException();
+            }
+        /    GetFile getFile = new GetFile();
+            getFile.setFileId(id);
+            String filePath = getFile(getFile).getFileUrl(telegramBot.getToken());
+            // TODO: cache images?
+            logger.info("== DOWNLOADING IMAGE " + filePath);
+            URL url = new URL(filePath);
+            String caption = getPet(adClassifier.classify(url.openStream());
+            logger.info("Caption for image " + filePath + ":\n" + caption);
+            sendPhotoMessage(chatId, id, caption);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }*/
+            return true;
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
