@@ -13,16 +13,16 @@ import java.util.Optional;
 public interface ReportRepository extends JpaRepository<Report, Long> {
     /** all the reports by Pet-Id **/
     List<Report> findByPetId(Long PetId);
+    
     /** all unchecked reports **/
     List<Report> findByCheckedIsFalse();
-    /** all checked reports for which the advice to improve should be sent
+    
+    /** all checked reports for which the advice to improve should be sent **/
     List<Report> findByCheckedIsTrueAndApprovedIsFalse();
 
-    /**
-     * @return the latest checked report for the pet
-     */
+    /** @return the latest checked report for the pet */
     Optional<Report> findLastByPetAndCheckedIsTrueAndSentIsNotNullOrderBySentAsc(Pet pet);
-
+    
     Page<Report> findAllByPetId(Long petId, Pageable pageable);
 
     @Query("from Report r where r.pet.shelter.id = :shelterId")
@@ -34,8 +34,8 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     @Query("select p from Pet p left join Report r on p = r.pet where p.shelter.id = :shelterId and not exists(select r from Report r where r.sent >= current_date - 1) and p.adoptionDate is not null and r.sent is not null group by p")
     List<Pet> findOverdueReports(Long shelterId);
 
-     @Query("select p from Pet p left join Report r on p = r.pet where not exists(select r from Report r where r.sent >= current_date - 1) and p.adoptionDate is not null and r.sent is not null group by p")
-     List<Pet> findAllOverdueReports();
+    @Query("select p from Pet p left join Report r on p = r.pet where not exists(select r from Report r where r.sent >= current_date - 1) and p.adoptionDate is not null and r.sent is not null group by p")
+    List<Pet> findAllOverdueReports();
 
-     Optional<Report> findFirstByPetAndSentIsNull(Pet pet);
+    Optional<Report> findFirstByPetAndSentIsNull(Pet pet);
 }
