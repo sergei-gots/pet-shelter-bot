@@ -1,13 +1,13 @@
 package pro.sky.petshelterbot.handler;
 
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import org.springframework.stereotype.Component;
-import pro.sky.petshelterbot.constants.DialogCommandNames;
-import pro.sky.petshelterbot.entity.AbstractPerson;
-import pro.sky.petshelterbot.entity.Adopter;
-import pro.sky.petshelterbot.entity.Dialog;
-import pro.sky.petshelterbot.entity.Volunteer;
+import pro.sky.petshelterbot.entity.*;
 import pro.sky.petshelterbot.repository.*;
+
+import java.util.Collection;
 
 /**
  * Handles commands receiving from user supposed
@@ -16,8 +16,7 @@ import pro.sky.petshelterbot.repository.*;
  **/
 
 @Component
-public abstract class AbstractDialogHandler extends AbstractHandler
-        implements DialogCommandNames {
+public abstract class AbstractDialogHandler extends AbstractHandler  {
     final protected VolunteerRepository volunteerRepository;
     final protected DialogRepository dialogRepository;
 
@@ -32,6 +31,16 @@ public abstract class AbstractDialogHandler extends AbstractHandler
         this.dialogRepository = dialogRepository;
     }
 
+    protected Dialog nextDialogInWaiting(Shelter shelter) {
+        Collection<Dialog> dialogsInWaiting
+                = dialogRepository.findWaitingDialogsByVolunteerShelterOrderByIdAsc(shelter);
+        if (dialogsInWaiting.isEmpty()) {
+            return null;
+        } else {
+            return dialogsInWaiting.iterator().next();
+        }
+    }
+
     protected void sendDialogMessageToAdopter(Dialog dialog, String text) {
         logger.trace("sendDialogMessageToAdopter()-method.  adopter.getFirstName()=\"{}\"", dialog.getAdopter().getFirstName());
         sendMessage(dialog.getAdopter().getChatId(),
@@ -44,21 +53,87 @@ public abstract class AbstractDialogHandler extends AbstractHandler
                 dialog.getAdopter().getFirstName() + "> " + text);
     }
 
-    public void sendPersonalizedMessage(AbstractPerson person, String text) {
+    public void sendPersonalizedMessage(Person person, String text) {
         sendMessage(person.getChatId(), person.getFirstName() + ", " + text);
     }
 
+    @Override
+    public boolean handle(Message message, String key) {
+        switch(key) {
+            case CANCEL_VOLUNTEER_CALL:
+            case CANCEL_VOLUNTEER_CALL_ADOPTION_INFO_MENU:
+            case CANCEL_VOLUNTEER_CALL_SHELTER_INFO_MENU:
+            case CLOSE_DIALOG:
+            case CLOSE_DIALOG_RU:
+                handleCancelVolunteerCall(getAdopter(message), key);
+                return true;
+            default: return false;
+        }
+    }
 
-    public void sendJoinInvitationsToVolunteersAndNotifyAdopter(Dialog dialog){
+
+    public void handleCancelVolunteerCall(Adopter adopter, String key) {
+        long chatId = adopter.getChatId();
+        logger.debug("handleCancelVolunteerCall(adopter.chat_id={})", chatId);
+        Dialog dialog = getDialogIfRequested(chatId);
+        if (dialog == null) {
+            logger.debug("Dialog for chatId=" + chatId + " is not listed in db. It could be ok.");
+            return;
+        }
+        Volunteer volunteer = dialog.getVolunteer();
+        dialogRepository.delete(dialog);
+        if(CANCEL_VOLUNTEER_CALL_ADOPTION_INFO_MENU.equals(key)) {
+            sendMenu(adopter, ADOPTION_INFO_MENU);
+        } else {
+            showShelterInfoMenu(adopter);
+        }
+
+        if(volunteer != null) {
+            deletePreviousMenu(volunteer);
+            showShelterInfoMenu(adopter);
+            sendDialogMessageToAdopter(dialog, "Всего вам наилучшего:) Если у вас возникнут вопросы, обращайтесь ещё!");
+            sendMessage(volunteer.getChatId(), "Диалог c "
+                    + adopter.getFirstName() + " завершён. Спасибо:)");
+            volunteer.setAvailable(true);
+            volunteerRepository.save(volunteer);
+        } else {
+            sendMessage(chatId, "Заявка на диалог с волонтёром снята");
+        }
+    }
+    public void sendHandshakes(Dialog dialog){
         Volunteer volunteer = dialog.getVolunteer();
         Adopter adopter = dialog.getAdopter();
-        sendMessage(volunteer.getChatId(),
+
+        long volunteerChatId = volunteer.getChatId();
+        long adopterChatId = adopter.getChatId();
+
+        sendMessage(volunteerChatId,
                 volunteer.getFirstName() + "! C вами хотел бы связаться " + adopter.getFirstName() +
-                        ". Нажмите кнопку 'Присоединиться к чату' для начала общения.",
-                "Присоединиться к чату",
-                JOIN_DIALOG
-        );
-        sendMessage(dialog.getAdopter().getChatId(), "Волонтёру отослано уведомление. Волонтёр свяжется с вами " +
-                "насколько это возможно скоро. ");
+                        ". Нажмите кнопку 'Присоединиться к чату' для начала общения.");
+        sendMenu(volunteer, JOIN_DIALOG);
+
+        sendMenu(adopter, CLOSE_DIALOG);
+        sendMessage(adopterChatId, "Волонтёру отослано уведомление. Волонтёр свяжется с вами " +
+                "насколько это возможно скоро. Основное меню на время диалога будет скрыто ", new ReplyKeyboardRemove());
     }
+
+
+    protected void sendMenu(Volunteer volunteer, String chapter) {
+
+        long chatId = volunteer.getChatId();
+        Shelter shelter = volunteer.getShelter();
+
+        deletePreviousMenu(volunteer);
+
+        volunteer.setChatMenuMessageId(
+                sendMenu(
+                        chatId,
+                        getUserMessage(chapter, shelter),
+                        createMenu(chatId, chapter, shelter)
+                )
+        );
+
+        volunteerRepository.save(volunteer);
+    }
+
 }

@@ -7,7 +7,6 @@ import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.entity.Dialog;
-import pro.sky.petshelterbot.entity.Shelter;
 import pro.sky.petshelterbot.entity.Volunteer;
 import pro.sky.petshelterbot.repository.*;
 
@@ -66,8 +65,6 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
             case CLOSE_DIALOG:
             case CLOSE_DIALOG_RU:
                                 processCloseDialog(volunteer);      return true;
-            case HAVE_A_BREAK:  processHaveABreak(volunteer);       return true;
-            case RESUME_SERVICE:processResumeService(volunteer);    return true;
         }
         return false;
     }
@@ -102,37 +99,27 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
         if(dialog == null) {
             logger.warn("processCloseDialog() - Dialog for " +
                     "volunteer.getFirstName()=\"{}\" does not exist.", volunteer.getFirstName());
-            logger.warn("processCloseDialog() - volunteer.isAvaliable()=\"{}\"", volunteer.isAvailable());
+            logger.warn("processCloseDialog() - volunteer.avaliable=\"{}\"", volunteer.isAvailable());
             return;
         }
         logger.debug("processCloseDialog() - Dialog between " +
                         "adopter.getFirstName()=\"{}\" and  volunteer.getFirstName()=\"{}\" will be closed.",
                 dialog.getAdopter().getFirstName(), volunteer.getFirstName());
         sendPersonalizedMessage(volunteer,"консультация закрыта. ваш чат переведён в режим ожидания новых запросов от пользователей.");
+        showShelterInfoMenu(dialog.getAdopter());
         sendPersonalizedMessage(dialog.getAdopter(),"диалог с волонтёром шелтера завершён. Если у вас возникнут новые вопросы, " +
                 "обращайтесь к нам ещё. Всего вам доброго-)");
-
-
         dialogRepository.delete(dialog);
 
-        Dialog dialogInWaiting =   dialogRepository.findFirstByVolunteerIsNullAndShelterOrderByIdAsc(volunteer.getShelter()).orElse(null);
-        if(dialogInWaiting == null) {
+        Dialog nextDialog = nextDialogInWaiting(volunteer.getShelter());
+        if(nextDialog == null) {
             volunteer.setAvailable(true);
             volunteerRepository.save(volunteer);
-
         } else {
-            dialogInWaiting.setVolunteer(volunteer);
-            dialogRepository.save(dialogInWaiting);
-            sendJoinInvitationsToVolunteersAndNotifyAdopter(dialog);
+            nextDialog.setVolunteer(volunteer);
+            dialogRepository.save(nextDialog);
+            sendHandshakes(dialog);
         }
-    }
-
-    private void processHaveABreak(Volunteer volunteer) {
-
-    }
-
-    private void processResumeService(Volunteer volunteer) {
-
     }
 
     private void processJoinDialog(Volunteer volunteer) {
@@ -140,7 +127,7 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
         logger.debug("processJoinDialog()-method. Volunteer.first_name=\"{}\"",
             volunteer.getFirstName());
 
-        Dialog dialogToJoin = getFirstWaitingDialog(volunteer.getShelter());
+        Dialog dialogToJoin = nextDialogInWaiting(volunteer.getShelter());
 
         if(dialogToJoin == null) {
             logger.debug("processJoinDialog()-method. dialogToJoin == null is true");
@@ -162,14 +149,13 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
         dialogRepository.save(dialogToJoin);
         volunteerRepository.save(volunteer);
 
+        sendMenu(dialogToJoin.getAdopter(), DIALOG);
         sendDialogMessageToAdopter(dialogToJoin,
                 dialogToJoin.getAdopter().getFirstName() + ", здравствуйте! Расскажите, какой у вас вопрос?");
-        sendMessage(volunteer.getChatId(),
-                "Отлично, вы в чате. Пользователю направлено приветствие и предложение сформировать интересующий вопрос.\n" +
-                "Для завершения диалога используйте команды: \n\t" + CLOSE_DIALOG_RU + " или " + CLOSE_DIALOG);
+        sendMenu(volunteer, DIALOG_VOLUNTEER_PART);
+        sendUserMessage(volunteer, MessageKey.DIALOG_INIT_CLARIFICATION_FOR_VOLUNTEER.name());
 
-        Dialog nextDialog = getFirstWaitingDialog(volunteer.getShelter());
-
+        Dialog nextDialog = nextDialogInWaiting(volunteer.getShelter());
         if(nextDialog == null) {
             logger.debug("processJoinDialog()-method. nextToJoin == null is true");
 
@@ -181,15 +167,12 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
                         new SendMessage(availableVolunteer.getChatId(), "Все запросы на консультацию были подхвачены, спасибо!" +
                         "Мы известим вас о новых запросах на консультацию:)")
                         .replyMarkup(clearKeyboardMarkup)
-                                .replyMarkup(clearKeyboardMarkup)
                 );
             }
         }
     }
 
-    private Dialog getFirstWaitingDialog(Shelter shelter) {
-        return dialogRepository.findFirstByVolunteerIsNullAndShelterOrderByIdAsc(shelter).orElse(null);
-    }
+
 
 
 }

@@ -37,4 +37,13 @@
                                  referencedTableName="shelters"/>
     </changeSet>
 
+    <changeSet id="alter-table-volunteers-add-column-chat-menu-message-id" author="S">
+        <!-- contains message.id for the message in chat containing the last depicted menu -->
+        <addColumn tableName="volunteers">
+            <column name="chat_menu_message_id" type="INT">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

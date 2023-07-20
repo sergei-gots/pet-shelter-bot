@@ -16,7 +16,6 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     /** all unchecked reports **/
     List<Report> findByCheckedIsFalse();
     /** all checked reports for which the advice to improve should be sent
-     * TODO think about how to manage or change this note**/
     List<Report> findByCheckedIsTrueAndApprovedIsFalse();
 
     /**
@@ -35,7 +34,8 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     @Query("select p from Pet p left join Report r on p = r.pet where p.shelter.id = :shelterId and not exists(select r from Report r where r.sent >= current_date - 1) and p.adoptionDate is not null and r.sent is not null group by p")
     List<Pet> findOverdueReports(Long shelterId);
 
-    @Query("select p from Pet p left join Report r on p = r.pet where not exists(select r from Report r where r.sent >= current_date - 1) and p.adoptionDate is not null and r.sent is not null group by p")
-    List<Pet> findAllOverdueReports();
-    Optional<Report> findFirstByPetAndSentIsNull(Pet pet);
+     @Query("select p from Pet p left join Report r on p = r.pet where not exists(select r from Report r where r.sent >= current_date - 1) and p.adoptionDate is not null and r.sent is not null group by p")
+     List<Pet> findAllOverdueReports();
+
+     Optional<Report> findFirstByPetAndSentIsNull(Pet pet);
 }

@@ -8,8 +8,11 @@
     <changeSet id="insert-into-user_messages" author="S">
 
         <insert tableName="user_messages">
-            <column name="key"          value="choose_info"/>
-            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="key"          value="shelter_info_menu"/>
+            <column name="message"      value="Меню информации о шелтере (используйте также команду /menu или /меню для отображения данного меню, если оно будет где-то далеко наверху потока чата)"/>
+        </insert>
+        <insert tableName="user_messages">
+            <column name="key"          value="adoption_info_menu"/>
             <column name="message"      value="Выберите интересующую вас информацию:"/>
         </insert>
 
@@ -17,6 +20,18 @@
             <column name="key"          value="choose_info"/>
             <column name="shelter_id"   valueNumeric="2"/>
             <column name="message"      value="Выберите интересующую вас информацию:"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="about_shelter_info"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="message"      valueClobFile="../../../initial-data/about_shelter_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="about_shelter_info"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="message"      valueClobFile="../../../initial-data/about_shelter_info.txt"/>
         </insert>
 
         <insert tableName="user_messages">
@@ -31,31 +46,14 @@
             <column name="message"      valueClobFile="../../../initial-data/documents_info.txt"/>
         </insert>
 
-
         <insert tableName="user_messages">
             <column name="key"          value="requirements_info"/>
-            <column name="shelter_id"   valueNumeric="1"/>
-            <column name="message"      valueClobFile="../../../initial-data/requirements_info.txt"/>
-        </insert>
-
-        <insert tableName="user_messages">
-            <column name="key"          value="requirements_info"/>
-            <column name="shelter_id"   valueNumeric="2"/>
             <column name="message"      valueClobFile="../../../initial-data/requirements_info.txt"/>
         </insert>
 
         <insert tableName="user_messages">
             <column name="key"          value="refusal_info"/>
-            <column name="shelter_id"   valueNumeric="1"/>
-            <column name="message"      value="Возможные причины отказа:
-        - Так себе человек."/>
-        </insert>
-
-        <insert tableName="user_messages">
-            <column name="key"          value="refusal_info"/>
-            <column name="shelter_id"   valueNumeric="2"/>
-            <column name="message"      value="Возможные причины отказа:
-        - Так себе человек."/>
+            <column name="message"      valueClobFile="../../../initial-data/refusal_info.txt"/>
         </insert>
 
         <insert tableName="user_messages">
@@ -168,6 +166,36 @@
         </insert>
 
     </changeSet>
+
+    <changeSet id="insert-into-user-messages--dialog" author="S">
+        <insert tableName="user_messages">
+            <column name="key"          value="DIALOG"/>
+            <column name="message"      value="Для завершения диалога нажмите эту клавишу или введите команду /завершить или /close"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-into-user-messages--join" author="S">
+        <insert tableName="user_messages">
+            <column name="key"          value="WAIT_FOR_VOLUNTEER_BOT_RESTRICTIONS"/>
+            <column name="message"      value="На этапе ожидания подключения волонтёра часть функциональности, связанной с вводом данных будет закрыта. Всё в порядке)"/>
+        </insert>
+
+
+        <insert tableName="user_messages">
+            <column name="key"          value="/join"/>
+            <column name="message"      value="Нажмите кнопку 'Присоединиться к чату' для начала общения:"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="DIALOG_INIT_CLARIFICATION_FOR_VOLUNTEER_1"/>
+            <column name="message"      value="Отлично, вы в чате. Для завершения диалога кнопку ниже или используйте команды: /close и /завершить"/>
+        </insert>
+        <insert tableName="user_messages">
+            <column name="key"          value="DIALOG_INIT_CLARIFICATION_FOR_VOLUNTEER_2"/>
+            <column name="message"      value="Пользователю направлено приветствие и предложение сформировать интересующий его вопрос."/>
+        </insert>
+    </changeSet>
+
 
 
 </databaseChangeLog>

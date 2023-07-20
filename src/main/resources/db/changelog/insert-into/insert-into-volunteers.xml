@@ -15,12 +15,14 @@
             <column name="chat_id"      valueNumeric="0"/>
             <column name="first_name"   value="👨‍🦱 Volunteer-A"/>
             <column name="shelter_id"   valueNumeric="1"/>
+            <column name="available"   value="false"/>
         </insert>
         <insert tableName="volunteers">
             <!-- to play with dialogs at the dev-stage  you should change value for "chat_id" below to some real one -->
             <column name="chat_id"      valueNumeric="1"/>
             <column name="first_name"   value="👨‍🦱 Volunteer-B"/>
             <column name="shelter_id"   valueNumeric="2"/>
+            <column name="available"   value="false"/>
         </insert>
     </changeSet>
 
