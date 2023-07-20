@@ -342,6 +342,9 @@ public abstract class AbstractHandler implements Handler{
     }
 
     protected void showCurrentMenu(Adopter adopter) {
+        logger.debug("showCurrentMenu(adopter={}): chat_state={}",
+                adopter.getChatId(), adopter.getChatState());
+
         if(adopter.getChatState().equals(ChatState.ADOPTER_IN_ADOPTION_INFO_MENU)){
             showAdoptionInfoMenu(adopter);
         }

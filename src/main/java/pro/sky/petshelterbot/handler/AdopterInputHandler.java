@@ -217,7 +217,7 @@ public class AdopterInputHandler extends AbstractHandler {
             logger.trace("processEnterReport(pet=null)");
 
             sendUserMessage(adopter, YOU_DONT_HAVE_ANIMAL_ON_TRIAL);
-            adopter.setChatState(ChatState.ADOPTER_IN_ADOPTION_INFO_MENU);
+            adopter.setChatState(ChatState.ADOPTER_IN_SHELTER_INFO_MENU);
 
         } else if (!checkForAdviceToRead(adopter, pet)) {
             logger.trace("processEnterReport(pet.name={})", pet.getName());
