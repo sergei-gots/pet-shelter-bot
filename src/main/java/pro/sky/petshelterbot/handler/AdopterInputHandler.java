@@ -48,9 +48,22 @@ public class AdopterInputHandler extends AbstractHandler {
 
     @Override
     public boolean handlePhoto(Update update) {
+
         Message message = update.message();
+        Adopter adopter = getAdopter(message);
+        if (adopter.getChatState() != ChatState.ADOPTER_INPUTS_REPORT_IMAGE) {
+            logger.trace("handlePhoto(): chat_state={} != {}",
+                    adopter.getChatState(), ChatState.ADOPTER_INPUTS_REPORT_IMAGE);
+            //ToDo uncomment the next line for prod:
+            //return false;
+        }
+
+
         PhotoSize[] photos = update.message().photo();
         Document document = message.document();
+
+        String imageFileExt = (document != null) ? document.mimeType() : ".png";
+
         logger.debug("handlePhoto(): chatId={}, photo={}, document={}",
                 message.chat().id(),
                 Arrays.toString(photos),
@@ -61,12 +74,7 @@ public class AdopterInputHandler extends AbstractHandler {
             return false;
         }
 
-        Adopter adopter = getAdopter(message);
-        if (adopter.getChatState() != ChatState.ADOPTER_INPUTS_REPORT_IMAGE) {
-            logger.trace("handlePhoto(): chat_state={} != {}",
-                    adopter.getChatState(), ChatState.ADOPTER_INPUTS_REPORT_IMAGE);
 
-        }
 
         Pet pet = getPet(adopter);
         if (pet == null) {
