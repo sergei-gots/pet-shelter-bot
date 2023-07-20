@@ -8,6 +8,7 @@ import pro.sky.petshelterbot.entity.Report;
 
 import org.springframework.data.domain.Pageable;
 import java.util.List;
+import java.util.Optional;
 
 public interface ReportRepository extends JpaRepository<Report, Long> {
     /** all the reports by Pet-Id **/
@@ -18,6 +19,11 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
      * TODO think about how to manage or change this note**/
     List<Report> findByCheckedIsTrueAndApprovedIsFalse();
 
+    /**
+     * @return the latest checked report for the pet
+     */
+    Optional<Report> findLastByPetAndCheckedIsTrueAndSentIsNotNullOrderBySentAsc(Pet pet);
+
     Page<Report> findAllByPetId(Long petId, Pageable pageable);
 
     @Query("from Report r where r.pet.shelter.id = :shelterId")
@@ -26,6 +32,10 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     @Query("from Report r where r.checked = null or r.checked = false and r.pet.shelter.id = :shelterId")
     Page<Report> findAllUncheckedReports(Long shelterId, Pageable pageable);
 
-    @Query("select p from Pet p left join Report r on p = r.pet where p.shelter.id = :shelterId and not exists(select r from Report r where r.sent >= current_date - 1) and p.adoptionDate is not null group by p")
+    @Query("select p from Pet p left join Report r on p = r.pet where p.shelter.id = :shelterId and not exists(select r from Report r where r.sent >= current_date - 1) and p.adoptionDate is not null and r.sent is not null group by p")
     List<Pet> findOverdueReports(Long shelterId);
+
+    @Query("select p from Pet p left join Report r on p = r.pet where not exists(select r from Report r where r.sent >= current_date - 1) and p.adoptionDate is not null and r.sent is not null group by p")
+    List<Pet> findAllOverdueReports();
+    Optional<Report> findFirstByPetAndSentIsNull(Pet pet);
 }
