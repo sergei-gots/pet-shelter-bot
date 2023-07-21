@@ -1,7 +1,6 @@
 package pro.sky.petshelterbot.handler;
 
 import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
@@ -30,7 +29,7 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
     }
 
     @Override
-    public boolean handle(Message message) {
+    public boolean handleMessage(Message message) {
 
         Long chatId = message.chat().id();
         Volunteer volunteer = volunteerRepository
@@ -65,7 +64,7 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
             case JOIN_DIALOG:   processJoinDialog(volunteer);       return true;
             case CLOSE_DIALOG:
             case CLOSE_DIALOG_RU:
-                                processCloseDialog(volunteer);      return true;
+                processCloseDialog(volunteer);      return true;
         }
         return false;
     }
@@ -80,14 +79,14 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
 
 
     @Override
-    public boolean handle(CallbackQuery callbackQuery) {
-        Volunteer volunteer = volunteerRepository.findByChatId(callbackQuery.message().chat().id()).orElse(null);
+     public boolean handleCallbackQuery(Message message, String key) {
+        Volunteer volunteer = volunteerRepository.findByChatId(message.chat().id()).orElse(null);
         if (volunteer == null) {
             return false;
         }
 
-        logger.info("handle(callbackQuery)-method.  callbackQuery.data={}", callbackQuery.data());
-        return processCommand(volunteer, callbackQuery.data());
+        logger.info("handle(callbackQuery)-method.  callbackQuery.data={}", key);
+        return processCommand(volunteer, key);
     }
 
     private Dialog getDialog(Volunteer volunteer) {
@@ -127,7 +126,7 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
     private void processJoinDialog(Volunteer volunteer) {
 
         logger.debug("processJoinDialog()-method. Volunteer.first_name=\"{}\"",
-            volunteer.getFirstName());
+                volunteer.getFirstName());
 
         Dialog dialogToJoin = nextDialogInWaiting(volunteer.getShelter());
 
@@ -167,8 +166,8 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
                         availableVolunteer.getFirstName());
                 telegramBot.execute(
                         new SendMessage(availableVolunteer.getChatId(), "Все запросы на консультацию были подхвачены, спасибо!" +
-                        "Мы известим вас о новых запросах на консультацию:)")
-                        .replyMarkup(clearKeyboardMarkup)
+                                "Мы известим вас о новых запросах на консультацию:)")
+                                .replyMarkup(clearKeyboardMarkup)
                 );
             }
         }

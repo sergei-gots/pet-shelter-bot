@@ -12,8 +12,8 @@ public class TelegramBotConfiguration {
     @Value("${telegram.bot.token}")
     private String token;
 
-    @Value("${db.photos.dir}")
-    private String photosDir;
+    @Value("${db.img.path}")
+    private String imgPath;
 
     @Bean
     public TelegramBot telegramBot() {
@@ -22,8 +22,8 @@ public class TelegramBotConfiguration {
         return bot;
     }
 
-    public String getPhotosDir() {
-        return photosDir;
+    public String getImgPath() {
+        return imgPath;
     }
 
 }

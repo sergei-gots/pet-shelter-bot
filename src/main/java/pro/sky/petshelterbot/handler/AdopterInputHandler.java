@@ -2,23 +2,23 @@ package pro.sky.petshelterbot.handler;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.*;
-import com.pengrad.telegrambot.request.GetFile;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Pet;
 import pro.sky.petshelterbot.entity.Report;
+import pro.sky.petshelterbot.exceptions.HandlerException;
 import pro.sky.petshelterbot.repository.*;
 import pro.sky.petshelterbot.util.FileManager;
 
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
-import static org.springframework.util.ResourceUtils.getFile;
 import static pro.sky.petshelterbot.constants.ChapterNames.MessageKey.*;
 
 /**
@@ -47,12 +47,12 @@ public class AdopterInputHandler extends AbstractHandler {
     }
 
     @Override
-    public boolean handlePhoto(Update update) {
+    public boolean handleImg(Update update) {
 
         Message message = update.message();
         Adopter adopter = getAdopter(message);
         if (adopter.getChatState() != ChatState.ADOPTER_INPUTS_REPORT_IMAGE) {
-            logger.trace("handlePhoto(): chat_state={} != {}",
+            logger.trace("handleImg(): chat_state={} != {}",
                     adopter.getChatState(), ChatState.ADOPTER_INPUTS_REPORT_IMAGE);
             //ToDo uncomment the next line for prod:
             //return false;
@@ -62,90 +62,107 @@ public class AdopterInputHandler extends AbstractHandler {
         PhotoSize[] photos = update.message().photo();
         Document document = message.document();
 
-        String imageFileExt = (document != null) ? document.mimeType() : ".png";
-
         logger.debug("handlePhoto(): chatId={}, photo={}, document={}",
                 message.chat().id(),
                 Arrays.toString(photos),
                 document);
-        if (photos == null) {
-            logger.trace("handlePhoto(): no photo found in message={}", message);
 
-            return false;
+        String extension = ".png";
+        PhotoSize photo = null;
+        if (photos != null) {
+            photo = photos[photos.length - 1];
+        } else if (document != null) {
+            //ToDo check if the document is not a picture
+            extension = "." + document.mimeType();
         }
 
-
+        if (photo == null) {
+            logger.trace("handlePhoto(): no photo found in message={}", message);
+            return false;
+        }
 
         Pet pet = getPet(adopter);
         if (pet == null) {
-            logger.trace("handlePhoto(): pet == null");
+            logger.warn("handlePhoto(): pet == null => No pet on trial found for the adopter = {} ", adopter.getChatId());
             return false;
         }
 
-        PhotoSize photo = photos[photos.length - 1];
-        String fileId = photo.fileId();
+        DateTimeFormatter dateTimeFormatter  = DateTimeFormatter.ofPattern("yyyy-MM-dd-HHmmss");
+        LocalDateTime sentTime = LocalDateTime.now();
+        LocalDate sent = sentTime.toLocalDate();
+        String filename = "/" + pet.getId() + "-" + dateTimeFormatter.format(sentTime) + extension;
 
-        Path path;
+        logger.trace("handlePhoto(): local filename={}", filename);
+
+        Report report = getEditedReport(pet);
         try {
-            path = fileManager.getReportPhotosPath(pet);
+            Path savePath = Path.of(fileManager.getReportImgPath(pet) + filename);
+            logger.trace("handlePhoto(): local save path={}", savePath);
+            fileManager.saveTelegramFile(photo.fileId(), savePath);
+            report.setImgPath(savePath.toString());
+            logger.trace("handlePhoto(): image saved");
+
         } catch (IOException e) {
-            logger.error("handlePhoto(): IOException during execution of FileManager.getReportPhotosPath(pet.getId()={}) was thrown", pet.getId(), e);
+            logger.error("handlePhoto(): IOException during execution of " +
+                            "FileManager.saveTelegramFile(file_id={})",
+                    pet.getId(), e);
+            throw new HandlerException(getClass() + ".handleImage: IOException was thrown.", e);
         }
 
-        GetFile getFile1 = new GetFile(fileId);
-
-        try {
-            File tgFile = getFile(photo.fileUniqueId());
-            logger.debug("handlePhoto(): got File with File.getAbsolutePath={}", tgFile.getAbsolutePath());
-        } catch (FileNotFoundException e) {
-            logger.error("handlePhoto() : FileNotFoundException during execution of FileManager.getReportPhotosPath(pet.getId()={}) was thrown", pet.getId());
-        }
-
-      // TODO: get photo and save file in filesystem and name in db
+        report.setSent(sent);
+        reportRepository.save(report);
+        sendMessage(adopter.getChatId(), "Спасибо! Мы приняли ваш отчёт. Он будет проверен сотрудником шелтера. " +
+                "Вы можете прислать нам ещё отчёт, если посчитаете необходимым.\n" + MENU);
+        adopter.setChatState(ChatState.ADOPTER_IN_SHELTER_INFO_MENU);
+        logger.trace("handlePhoto(): report completed");
         return true;
     }
 
     @Override
-    public boolean handle(CallbackQuery callbackQuery) {
+    public boolean handleCallbackQuery(Message message, String key) {
 
-        String key = callbackQuery.data();
-        Message message = callbackQuery.message();
-        Adopter adopter = getAdopter(message);
-
-        logger.debug("handle(CallbackQuery): adopter.firstName=\"{}\", .chatState=\"{}\".",
-                adopter.getFirstName(), adopter.getChatState());
-        switch (key) {
-            case ENTER_CONTACTS:
-                processEnterContacts(message);
-                return true;
-            case ENTER_REPORT:
-            case GOT_IT:
-                deletePreviousMenu(adopter);
-                processEnterReport(message);
-                return true;
-            default:
-                logger.warn("handle(CallbackQuery): there is no processing provided for key=\"{}\".", key);
-                return false;
-        }
-    }
-
-    @Override
-    public boolean handle(Message message, String key) {
-
-        logger.debug("handle(): chatId={}, key={}", message.chat().id(), key);
-
-        if (super.handle(message, key)) {
+        if (super.handleCallbackQuery(message, key)) {
             return true;
         }
         Adopter adopter = getAdopter(message);
         Adopter.ChatState chatState = adopter.getChatState();
 
+        logger.debug("handleCallBackQuery(): adopter.firstName={}, key={}, chatState={}",
+                adopter.getFirstName(), key, chatState);
+
+        if (chatState == ChatState.ADOPTER_IN_SHELTER_INFO_MENU &&
+                ENTER_REPORT.equals(key)) {
+            processEnterReport(message);
+            return true;
+        }
+
+        if (chatState == ChatState.ADOPTER_IN_ADOPTION_INFO_MENU &&
+                ENTER_CONTACTS.equals(key)) {
+            processEnterContacts(message);
+            return true;
+        }
+
+        if (chatState == ChatState.ADOPTER_INPUTS_AND_READING_ADVICE_TO_IMPROVE_REPORTS &&
+                GOT_IT.equals(key)) {
+            deletePreviousMenu(adopter);
+            processEnterReport(message);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean handleMessage(Message message) {
+
+        Adopter adopter = getAdopter(message);
+        Adopter.ChatState chatState = adopter.getChatState();
+
+        logger.debug("handleMessage(): adopter.firstName={}, .chatState={}",
+                adopter.getFirstName(), chatState);
+
         if (!adopter.isAdopterInInputState(chatState)) {
             return false;
         }
-
-        logger.debug("handle(Message): adopter.firstName=\"{}\", .chatState=\"{}\".",
-                adopter.getFirstName(), chatState);
 
         switch (chatState) {
             case ADOPTER_INPUTS_PHONE_NUMBER:
@@ -210,7 +227,6 @@ public class AdopterInputHandler extends AbstractHandler {
 
         }
     }
-
 
     private void processInputReportDiet(Message message) {
         Adopter adopter = getAdopter(message);

@@ -44,7 +44,7 @@ public abstract class AbstractDialogHandler extends AbstractHandler {
     }
 
     @Override
-    public boolean handle(Message message, String key) {
+    public boolean handleCallbackQuery(Message message, String key) {
 
 
         Adopter adopter = getAdopter(message);

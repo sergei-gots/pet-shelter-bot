@@ -50,13 +50,23 @@ public abstract class AbstractHandler implements Handler{
     }
 
     @Override
-    public boolean handle(Message message, String key) {
+    public boolean handleCallbackQuery(Message message, String key) {
         logger.debug("handle(): chatId={}, key={}", message.chat().id(), key);
 
         Adopter adopter = getAdopter(message);
+        ChatState chatState = adopter.getChatState();
+        logger.debug("handle(): adopter.chatState={}", chatState);
 
-        if (adopter.getChatState() == ChatState.ADOPTER_CHOICES_SHELTER) {
+        if(chatState == ChatState.ADOPTER_CHOICES_SHELTER) {
             processShelterChoice(adopter, key);
+            return true;
+        }
+
+        if (adopter.getShelter() == null) {
+            greetUser(adopter);
+            sendMessage(adopter.getChatId(), "По каким-то причинам мы не можем вспомнить, " +
+                    "с каким из приютов вы взаимодействовали в последний раз.");
+            reselectShelter(adopter);
             return true;
         }
 
