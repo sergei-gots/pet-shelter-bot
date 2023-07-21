@@ -29,12 +29,7 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
     }
 
 
-    @Override
-    public boolean handle(Message message) {
-
-        if(handle(message, message.text())) {
-            return true;
-        }
+    public boolean handleDefault(Message message) {
 
         Long chatId = message.chat().id();
         Dialog dialog = getDialogIfRequested(message.chat().id());
@@ -55,9 +50,9 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
 
     }
     @Override
-    public boolean handle(Message message, String key) {
+    public boolean handleCallbackQuery(Message message, String key) {
 
-        if(super.handle(message, key)) {
+        if(super.handleCallbackQuery(message, key)) {
             return true;
         }
 
@@ -67,7 +62,7 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
             case CALL_VOLUNTEER_SHELTER_INFO_MENU:
                 handleVolunteerCall(message, key);
                 return true;
-            default: return false;
+            default: return handleDefault(message);
         }
     }
 

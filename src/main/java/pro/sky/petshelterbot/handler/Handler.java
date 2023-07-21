@@ -19,28 +19,25 @@ public interface Handler extends ChapterNames, Commands, TelegramChatStates {
     default boolean handle(Update update)                 {
         Message message = update.message();
         if (message == null) {
-            return handle(update.callbackQuery());
+            CallbackQuery callbackQuery = update.callbackQuery();
+            return handleCallbackQuery(callbackQuery.message(), callbackQuery.data());
         }
-        if (handlePhoto(update)) {
+        if (handleImg(update)) {
               return true;
         }
         if (message.text() == null) {
             warn("handle: current Update cannot be handled within this class");
             return false;
         }
-        return handle(message, message.text());
-    }
-    default  boolean handle(CallbackQuery callbackQuery)   {
-        return handle(callbackQuery.message(), callbackQuery.data());
-    }
-    default boolean handle(Message message)  {
-        return handle(message, message.text());
+        if (message.text().startsWith("/")) {
+            return handleCallbackQuery(message, message.text());
+        }
+        return handleMessage(message);
     }
 
-    default boolean handle(Message message, String key) { return false; }
-
-    default boolean handlePhoto(Update update) { return false; }
-
+    default boolean handleMessage(Message message) { return false; }
+    default boolean handleCallbackQuery(Message message, String key) { return false; }
+    default boolean handleImg(Update update) { return false; }
     /**
      *  Prints warning-message
      *

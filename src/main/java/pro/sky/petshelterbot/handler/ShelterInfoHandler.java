@@ -31,10 +31,10 @@ public class ShelterInfoHandler extends AbstractHandler {
     }
 
     @Override
-    public boolean handle(Message message, String key) {
+    public boolean handleCallbackQuery(Message message, String key) {
         logger.debug("handle(): chatId={}, key={}", message.chat().id(), key);
 
-        if(super.handle(message,key)) {
+        if(super.handleCallbackQuery(message,key)) {
             return true;
         }
 

@@ -205,7 +205,7 @@
         <insert tableName="user_messages">
             <column name="key" value="NOT_IMPLEMENTED_YET"/>
             <column name="message"
-                    value="Раздел находится на этапе разработки. Наши программисты работают над этим разделом. "/>
+                    value="Раздел находится на этапе разработки. Наши программисты работают над этим разделом. Приносим свои извинения."/>
         </insert>
     </changeSet>
 

@@ -18,24 +18,33 @@ import java.nio.file.StandardCopyOption;
 
 @Component
 public class FileManager {
+    public static String REPORT_IMG_DIR = "reports";
     private final TelegramBotConfiguration telegramBotConfiguration;
 
     final protected Logger logger = LoggerFactory.getLogger(getClass());
 
-    public FileManager(TelegramBotConfiguration telegramBotConfigureation) {
-        this.telegramBotConfiguration = telegramBotConfigureation;
+    public FileManager(TelegramBotConfiguration telegramBotConfiguration) {
+        this.telegramBotConfiguration = telegramBotConfiguration;
     }
 
-    public Path getReportPhotosPath(Pet pet) throws IOException {
-        Path path = Path.of(telegramBotConfiguration.getPhotosDir());
-        if (!Files.isDirectory(path)) {
-            logger.error("getReportPhostosDir(): db.photos.dir=\"{}\" does not exist", path, new IOException());
-            throw (new IOException("db.photos.dir does not exist"));
-        }
+    public Path getReportImgPath(Pet pet) throws IOException {
+        Long petId = pet.getId();
+        logger.trace("getReportImgPath(pet.Id={}", petId);
+
+        Path path = validatePath(Path.of(telegramBotConfiguration.getImgPath()) );
 
         path = getPath(path, pet.getShelter().getId());
-        path = getPath(path, pet.getId());
+        path = getPath(path, REPORT_IMG_DIR);
+        path = getPath(path, petId);
         return path;
+    }
+
+    private Path validatePath(Path path) throws IOException {
+
+        if(Files.isDirectory(path)) {
+            return path;
+        }
+        return Files.createDirectories(path);
     }
 
     @NotNull
@@ -59,12 +68,14 @@ public class FileManager {
         path = Path.of(path + "/" + dir);
 
         if (!Files.exists(path)) {
-            return Files.createDirectory(path);
+            Files.createDirectory(path);
         }
 
         if (!Files.isDirectory(path)) {
-            logger.error("getPath(): filepath=\"{}\" is not a directory", path, new IOException());
+            logger.error("getPath(): filepath=\"{}\" is not a directory",
+                    path, new IOException());
         }
+
         return path;
     }
 
