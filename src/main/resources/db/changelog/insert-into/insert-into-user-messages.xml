@@ -167,14 +167,15 @@
         </insert>
 
         <insert tableName="user_messages">
-            <column name="key"          value="DIALOG_INIT_CLARIFICATION_FOR_VOLUNTEER_1"/>
-            <column name="message"      value="Отлично, вы в чате. Для завершения диалога кнопку ниже или используйте команды: /close и /завершить"/>
-        </insert>
-        <insert tableName="user_messages">
-            <column name="key"          value="DIALOG_INIT_CLARIFICATION_FOR_VOLUNTEER_2"/>
+            <column name="key"          value="DIALOG_INIT_CLARIFICATION_FOR_VOLUNTEER"/>
             <column name="message"      value="Пользователю направлено приветствие и предложение сформировать интересующий его вопрос."/>
         </insert>
-    </changeSet>
+
+        <insert tableName="user_messages">
+            <column name="key"          value="DIALOG_VOLUNTEER_PART"/>
+            <column name="message"      value="Отлично, вы в чате. Для завершения диалога кнопку ниже или используйте команды: /close и /завершить"/>
+        </insert>
+     </changeSet>
 
     <changeSet id="insert-into-user-messages--you-dont-have-animal-on-trial" author="S">
         <insert tableName="user_messages">
@@ -214,6 +215,22 @@
             <column name="key" value="GOT_IT"/>
             <column name="message"
                     value="После ознакомления нажмите клавишу:"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-into-user-messages--continue" author="S">
+        <insert tableName="user_messages">
+            <column name="key" value="CONTINUE"/>
+            <column name="message"
+                    value="Для продолжения нажмите:"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-into-user-messages--not-supported-image-format" author="S">
+        <insert tableName="user_messages">
+            <column name="key" value="NOT_SUPPORTED_IMAGE_FORMAT"/>
+            <column name="message"
+                    value="Формат изображения не распознан. Фото принимаются в форматах .png и .jpg. Кроме того предпочтительнее, чтобы вы выбрали опцию 'сжать изображение' в телеграм при отправке фотографии. Пожалуйста, повторите отправку  фотографии."/>
         </insert>
     </changeSet>
 

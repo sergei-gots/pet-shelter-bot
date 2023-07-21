@@ -10,6 +10,10 @@ import pro.sky.petshelterbot.entity.Dialog;
 import pro.sky.petshelterbot.entity.Volunteer;
 import pro.sky.petshelterbot.repository.*;
 
+import static pro.sky.petshelterbot.constants.PetShelterBotConstants.MessageKey.DIALOG_INIT_CLARIFICATION_FOR_VOLUNTEER;
+import static pro.sky.petshelterbot.constants.TelegramChatStates.ChatState.ADOPTER_IN_DIALOG;
+import static pro.sky.petshelterbot.constants.TelegramChatStates.ChatState.INITIAL_STATE;
+
 /**
  * Handles commands receiving from user supposed
  * to be a volunteer.
@@ -54,7 +58,7 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
             return true;
         }
 
-        sendDialogMessageToAdopter(getDialog(volunteer), text);
+        forwardDialogMessage(volunteer, dialog.getAdopter(), text);
         return true;
     }
 
@@ -93,36 +97,6 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
         return dialogRepository.findByVolunteer(volunteer)
                 .orElse(null);
     }
-    private void processCloseDialog(Volunteer volunteer) {
-
-        Dialog dialog = getDialog(volunteer);
-        if(dialog == null) {
-            logger.warn("processCloseDialog() - Dialog for " +
-                    "volunteer.getFirstName()=\"{}\" does not exist.", volunteer.getFirstName());
-            logger.warn("processCloseDialog() - volunteer.avaliable=\"{}\"", volunteer.isAvailable());
-            return;
-        }
-        Adopter adopter = dialog.getAdopter();
-        logger.debug("processCloseDialog() - Dialog between " +
-                        "adopter.getFirstName()=\"{}\" and  volunteer.getFirstName()=\"{}\" will be closed.",
-                adopter.getFirstName(), volunteer.getFirstName());
-        sendPersonalizedMessage(volunteer,"консультация закрыта. ваш чат переведён в режим ожидания новых запросов от пользователей.");
-        sendMenu(adopter, SHELTER_INFO_MENU);
-        sendPersonalizedMessage(dialog.getAdopter(),"диалог с волонтёром шелтера завершён. Если у вас возникнут новые вопросы, " +
-                "обращайтесь к нам ещё. Всего вам доброго-)");
-        dialogRepository.delete(dialog);
-
-        Dialog nextDialog = nextDialogInWaiting(volunteer.getShelter());
-        if(nextDialog == null) {
-            volunteer.setAvailable(true);
-            volunteerRepository.save(volunteer);
-        } else {
-            nextDialog.setVolunteer(volunteer);
-            dialogRepository.save(nextDialog);
-            sendHandshakes(dialog);
-        }
-    }
-
     private void processJoinDialog(Volunteer volunteer) {
 
         logger.debug("processJoinDialog()-method. Volunteer.first_name=\"{}\"",
@@ -150,11 +124,16 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
         dialogRepository.save(dialogToJoin);
         volunteerRepository.save(volunteer);
 
-        sendMenu(dialogToJoin.getAdopter(), DIALOG);
-        sendDialogMessageToAdopter(dialogToJoin,
-                dialogToJoin.getAdopter().getFirstName() + ", здравствуйте! Расскажите, какой у вас вопрос?");
+
+        Adopter adopter = dialogToJoin.getAdopter();
+        adopter.setChatState(ADOPTER_IN_DIALOG);
+        sendMenu(adopter, DIALOG);
+        forwardDialogMessage(volunteer, adopter,
+                adopter.getFirstName() + ", здравствуйте! Расскажите, какой у вас вопрос?");
+
+        volunteer.setChatState(ADOPTER_IN_DIALOG);
         sendMenu(volunteer, DIALOG_VOLUNTEER_PART);
-        sendUserMessage(volunteer, MessageKey.DIALOG_INIT_CLARIFICATION_FOR_VOLUNTEER.name());
+        sendUserMessage(volunteer, DIALOG_INIT_CLARIFICATION_FOR_VOLUNTEER);
 
         Dialog nextDialog = nextDialogInWaiting(volunteer.getShelter());
         if(nextDialog == null) {
@@ -170,6 +149,37 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
                                 .replyMarkup(clearKeyboardMarkup)
                 );
             }
+        }
+    }
+
+    private void processCloseDialog(Volunteer volunteer) {
+
+        Dialog dialog = getDialog(volunteer);
+        if(dialog == null) {
+            logger.warn("processCloseDialog() - Dialog for " +
+                    "volunteer.getFirstName()=\"{}\" does not exist.", volunteer.getFirstName());
+            logger.warn("processCloseDialog() - volunteer.avaliable=\"{}\"", volunteer.isAvailable());
+            return;
+        }
+        Adopter adopter = dialog.getAdopter();
+        logger.debug("processCloseDialog() - Dialog between " +
+                        "adopter.getFirstName()=\"{}\" and  volunteer.getFirstName()=\"{}\" will be closed.",
+                adopter.getFirstName(), volunteer.getFirstName());
+        sendPersonalizedMessage(volunteer,"консультация закрыта. ваш чат переведён в режим ожидания новых запросов от пользователей.");
+        showShelterInfoMenu(adopter);
+        sendPersonalizedMessage(dialog.getAdopter(),"диалог с волонтёром шелтера завершён. Если у вас возникнут новые вопросы, " +
+                "обращайтесь к нам ещё. Всего вам доброго-)");
+        dialogRepository.delete(dialog);
+
+        Dialog nextDialog = nextDialogInWaiting(volunteer.getShelter());
+        if(nextDialog == null) {
+            volunteer.setChatState(INITIAL_STATE);
+            volunteer.setAvailable(true);
+            volunteerRepository.save(volunteer);
+        } else {
+            nextDialog.setVolunteer(volunteer);
+            dialogRepository.save(nextDialog);
+            sendHandshakes(dialog);
         }
     }
 

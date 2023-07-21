@@ -46,7 +46,6 @@ public abstract class AbstractDialogHandler extends AbstractHandler {
     @Override
     public boolean handleCallbackQuery(Message message, String key) {
 
-
         Adopter adopter = getAdopter(message);
         if (isShelterToBeAssigned(adopter, key)) {
             return true;

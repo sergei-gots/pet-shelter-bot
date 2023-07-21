@@ -7,7 +7,7 @@ public interface TelegramChatStates {
         ADOPTER_IN_SHELTER_INFO_MENU,
         ADOPTER_IN_ADOPTION_INFO_MENU,
         MENU_NAVIGATION,
-        ADOPTER_DIALOG,
+        ADOPTER_IN_DIALOG,
         /** Not a state, just a mask for chatState.name().startsWith(ADOPTER_INPUTS.name()) **/
         ADOPTER_INPUTS,
         ADOPTER_INPUTS_CONTACTS,
