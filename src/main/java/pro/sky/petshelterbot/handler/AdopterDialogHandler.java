@@ -32,23 +32,52 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
     public boolean handleDefault(Message message) {
 
         Long chatId = message.chat().id();
-        Dialog dialog = getDialogIfRequested(message.chat().id());
+        Adopter adopter = getAdopter(message);
+        Dialog dialog = getDialogIfRequested(adopter);
         if (dialog == null) {
             return false;
         }
 
-        if (dialog.getVolunteer() == null) {
+        Volunteer volunteer = dialog.getVolunteer();
+        if (volunteer == null) {
             sendMessage(chatId, "Подождите, волонтёр скоро свяжется с вами. Приношу извинения за ваше ожидание! " +
                     " Вы также можете снять заявку на диалог с волонтёром комадой " +
                     CANCEL_VOLUNTEER_CALL +  ". Спасибо)");
             return true;
         }
 
-        sendDialogMessageToVolunteer(dialog, message.text());
+        forwardDialogMessage(adopter, volunteer, message.text());
         return true;
-
-
     }
+
+    @Override
+    public boolean handleMessage(Message message) {
+
+        Adopter adopter = getAdopter(message);
+
+        if(adopter.getChatState() != ChatState.ADOPTER_IN_DIALOG) {
+            return false;
+        }
+
+        Dialog dialog = getDialogIfRequested(adopter);
+
+        if (dialog == null) {
+            logger.warn("handle(message)- dialog for adopter.Id={}, chatState={} is NULL",
+                    adopter.getChatId(), adopter.getChatState());
+            sendMessage(adopter.getChatId(), "Диалог с волонтёром закончился внештатно. Но всё в порядке. ");
+            adopter.setChatState(ChatState.ADOPTER_IN_SHELTER_INFO_MENU);
+            sendMenu(adopter, CONTINUE);
+
+            return true;
+        }
+
+        Volunteer volunteer = dialog.getVolunteer();
+        logger.debug("handle(message) forward message from adopter={} to volunteer={}",
+                adopter.getFirstName(), volunteer.getFirstName());
+        forwardDialogMessage(adopter, volunteer, message.text());
+        return true;
+    }
+
     @Override
     public boolean handleCallbackQuery(Message message, String key) {
 
@@ -70,7 +99,7 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
         logger.debug("handleVolunteerCall(message={})", message);
         Adopter adopter = getAdopter(message);
         long chatId = adopter.getChatId();
-        if (getDialogIfRequested(chatId) != null) {
+        if (getDialogIfRequested(adopter) != null) {
             throw new IllegalStateException("Dialog for chatId=" + chatId + " is already requested");
         }
         createDialogRequest(adopter, key);

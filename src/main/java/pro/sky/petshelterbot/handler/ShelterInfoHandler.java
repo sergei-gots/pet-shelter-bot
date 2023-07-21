@@ -34,10 +34,6 @@ public class ShelterInfoHandler extends AbstractHandler {
     public boolean handleCallbackQuery(Message message, String key) {
         logger.debug("handle(): chatId={}, key={}", message.chat().id(), key);
 
-        if(super.handleCallbackQuery(message,key)) {
-            return true;
-        }
-
         Adopter adopter = getAdopter(message);
 
         if (adopter.getChatState() == ChatState.ADOPTER_CHOICES_SHELTER) {

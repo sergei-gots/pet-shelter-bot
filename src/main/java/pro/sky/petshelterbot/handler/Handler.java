@@ -3,11 +3,9 @@ package pro.sky.petshelterbot.handler;
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
-import pro.sky.petshelterbot.constants.ChapterNames;
-import pro.sky.petshelterbot.constants.Commands;
-import pro.sky.petshelterbot.constants.TelegramChatStates;
+import pro.sky.petshelterbot.constants.PetShelterBotConstants;
 
-public interface Handler extends ChapterNames, Commands, TelegramChatStates {
+public interface Handler extends PetShelterBotConstants {
     /**
      * Handles update.
      * @param update Telegram bot update

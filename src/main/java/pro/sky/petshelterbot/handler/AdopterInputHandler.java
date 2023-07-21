@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
-import static pro.sky.petshelterbot.constants.ChapterNames.MessageKey.*;
+import static pro.sky.petshelterbot.constants.PetShelterBotConstants.MessageKey.*;
 
 /**
  * Operates chat between Adopter and Volunteer on the Adopter's side
@@ -47,106 +47,35 @@ public class AdopterInputHandler extends AbstractHandler {
     }
 
     @Override
-    public boolean handleImg(Update update) {
-
-        Message message = update.message();
-        Adopter adopter = getAdopter(message);
-        if (adopter.getChatState() != ChatState.ADOPTER_INPUTS_REPORT_IMAGE) {
-            logger.trace("handleImg(): chat_state={} != {}",
-                    adopter.getChatState(), ChatState.ADOPTER_INPUTS_REPORT_IMAGE);
-            //ToDo uncomment the next line for prod:
-            //return false;
-        }
-
-
-        PhotoSize[] photos = update.message().photo();
-        Document document = message.document();
-
-        logger.debug("handlePhoto(): chatId={}, photo={}, document={}",
-                message.chat().id(),
-                Arrays.toString(photos),
-                document);
-
-        String extension = ".png";
-        PhotoSize photo = null;
-        if (photos != null) {
-            photo = photos[photos.length - 1];
-        } else if (document != null) {
-            //ToDo check if the document is not a picture
-            extension = "." + document.mimeType();
-        }
-
-        if (photo == null) {
-            logger.trace("handlePhoto(): no photo found in message={}", message);
-            return false;
-        }
-
-        Pet pet = getPet(adopter);
-        if (pet == null) {
-            logger.warn("handlePhoto(): pet == null => No pet on trial found for the adopter = {} ", adopter.getChatId());
-            return false;
-        }
-
-        DateTimeFormatter dateTimeFormatter  = DateTimeFormatter.ofPattern("yyyy-MM-dd-HHmmss");
-        LocalDateTime sentTime = LocalDateTime.now();
-        LocalDate sent = sentTime.toLocalDate();
-        String filename = "/" + pet.getId() + "-" + dateTimeFormatter.format(sentTime) + extension;
-
-        logger.trace("handlePhoto(): local filename={}", filename);
-
-        Report report = getEditedReport(pet);
-        try {
-            Path savePath = Path.of(fileManager.getReportImgPath(pet) + filename);
-            logger.trace("handlePhoto(): local save path={}", savePath);
-            fileManager.saveTelegramFile(photo.fileId(), savePath);
-            report.setImgPath(savePath.toString());
-            logger.trace("handlePhoto(): image saved");
-
-        } catch (IOException e) {
-            logger.error("handlePhoto(): IOException during execution of " +
-                            "FileManager.saveTelegramFile(file_id={})",
-                    pet.getId(), e);
-            throw new HandlerException(getClass() + ".handleImage: IOException was thrown.", e);
-        }
-
-        report.setSent(sent);
-        reportRepository.save(report);
-        sendMessage(adopter.getChatId(), "Спасибо! Мы приняли ваш отчёт. Он будет проверен сотрудником шелтера. " +
-                "Вы можете прислать нам ещё отчёт, если посчитаете необходимым.\n" + MENU);
-        adopter.setChatState(ChatState.ADOPTER_IN_SHELTER_INFO_MENU);
-        logger.trace("handlePhoto(): report completed");
-        return true;
-    }
-
-    @Override
     public boolean handleCallbackQuery(Message message, String key) {
 
-        if (super.handleCallbackQuery(message, key)) {
-            return true;
-        }
         Adopter adopter = getAdopter(message);
         Adopter.ChatState chatState = adopter.getChatState();
 
         logger.debug("handleCallBackQuery(): adopter.firstName={}, key={}, chatState={}",
                 adopter.getFirstName(), key, chatState);
 
-        if (chatState == ChatState.ADOPTER_IN_SHELTER_INFO_MENU &&
-                ENTER_REPORT.equals(key)) {
-            processEnterReport(message);
-            return true;
-        }
-
-        if (chatState == ChatState.ADOPTER_IN_ADOPTION_INFO_MENU &&
-                ENTER_CONTACTS.equals(key)) {
-            processEnterContacts(message);
-            return true;
-        }
-
-        if (chatState == ChatState.ADOPTER_INPUTS_AND_READING_ADVICE_TO_IMPROVE_REPORTS &&
-                GOT_IT.equals(key)) {
-            deletePreviousMenu(adopter);
-            processEnterReport(message);
-            return true;
+        switch(chatState) {
+            case ADOPTER_IN_SHELTER_INFO_MENU:
+                if(ENTER_REPORT.equals(key)) {
+                    processEnterReport(message);
+                    return true;
+                }
+                if(CONTINUE.equals(key)) {
+                    showCurrentMenu(adopter);
+                    return true;
+                }
+            case ADOPTER_IN_ADOPTION_INFO_MENU:
+                if(ENTER_CONTACTS.equals(key)) {
+                    processEnterContacts(message);
+                    return true;
+                }
+            case ADOPTER_INPUTS_AND_READING_ADVICE_TO_IMPROVE_REPORTS:
+                if(GOT_IT.equals(key)) {
+                    deletePreviousMenu(adopter);
+                    processEnterReport(message);
+                    return true;
+                }
         }
         return false;
     }
@@ -185,6 +114,92 @@ public class AdopterInputHandler extends AbstractHandler {
                 return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean handleImg(Update update) {
+
+        Message message = update.message();
+        Adopter adopter = getAdopter(message);
+        ChatState chatState = adopter.getChatState();
+        if (chatState != ChatState.ADOPTER_INPUTS_REPORT_IMAGE) {
+            logger.trace("handleImg(): chat_state={} != {}",
+                    chatState, ChatState.ADOPTER_INPUTS_REPORT_IMAGE);
+            return handleChatStateDefault(adopter);
+        }
+
+        Pet pet = getPet(adopter);
+        if (pet == null) {
+            logger.warn("handleImg(): pet == null => No pet on trial found for the adopter = {} ", adopter.getChatId());
+            return false;
+        }
+
+        PhotoSize[] photos = update.message().photo();
+        Document document = message.document();
+
+        logger.debug("handleImg(): chatId={}, photo={}, document={}",
+                message.chat().id(),
+                Arrays.toString(photos),
+                document);
+
+        String extension = ".png";
+        String imgFileId = null;
+        if (photos != null) {
+            imgFileId = photos[photos.length - 1].fileId();
+        } else if (document != null) {
+            imgFileId = document.fileId();
+            String mimeType = document.mimeType();
+            switch(mimeType) {
+                case "image/png":
+                    extension = ".png";
+                    break;
+                case "image/jpeg":
+                    extension = ".jpg";
+                    break;
+                default:
+                    logger.debug("handleImg(): not supported mimeType={}", mimeType);
+                    sendUserMessage(adopter, NOT_SUPPORTED_IMAGE_FORMAT);
+                    return true;
+            }
+        }
+
+        if (imgFileId == null) {
+            logger.trace("handleImg(): no image found in message={}", message);
+            sendMessage(adopter.getChatId(), "На этом этапе мы ожидаем получить фотографию питомца-)" );
+            return true;
+        }
+
+
+        DateTimeFormatter dateTimeFormatter  = DateTimeFormatter.ofPattern("yyyy-MM-dd-HHmmss");
+        LocalDateTime sentTime = LocalDateTime.now();
+        LocalDate sent = sentTime.toLocalDate();
+        String filename = "/" + pet.getId() + "-" + dateTimeFormatter.format(sentTime) + extension;
+
+        logger.trace("handleImg(): local filename={}", filename);
+
+        Report report = getEditedReport(pet);
+        try {
+            Path savePath = Path.of(fileManager.getReportImgPath(pet) + filename);
+            logger.trace("handleImg(): local save path={}", savePath);
+            fileManager.saveTelegramFile(imgFileId, savePath);
+            report.setImgPath(savePath.toString());
+            logger.trace("handleImg(): image saved");
+
+        } catch (IOException e) {
+            logger.error("handleImg(): IOException during execution of " +
+                            "FileManager.saveTelegramFile(file_id={})",
+                    pet.getId(), e);
+            throw new HandlerException(getClass() + ".handleImage: IOException was thrown.", e);
+        }
+
+        report.setSent(sent);
+        reportRepository.save(report);
+        sendMessage(adopter.getChatId(), "Спасибо! Мы приняли ваш отчёт. Он будет проверен сотрудником шелтера. " +
+                "Вы можете прислать нам ещё отчёт, если посчитаете необходимым.\n" + MENU);
+        adopter.setChatState(ChatState.ADOPTER_IN_SHELTER_INFO_MENU);
+        sendMenu(adopter, CONTINUE);
+        logger.trace("handleImg(): report completed");
+        return true;
     }
 
     private void processEnterContacts(Message message) {

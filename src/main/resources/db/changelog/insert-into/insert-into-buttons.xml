@@ -190,4 +190,12 @@
         </insert>
     </changeSet>
 
+    <changeSet id="insert-into-buttons--menu" author="S">
+        <insert tableName="buttons">
+            <column name="key" value="CONTINUE"/>
+            <column name="chapter" value="CONTINUE"/>
+            <column name="text" value="Продолжить"/>
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>

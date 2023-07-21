@@ -17,7 +17,7 @@ import pro.sky.petshelterbot.repository.UserMessageRepository;
 import javax.annotation.PostConstruct;
 import java.util.List;
 
-import static pro.sky.petshelterbot.constants.ChapterNames.MessageKey.NOT_IMPLEMENTED_YET;
+import static pro.sky.petshelterbot.constants.PetShelterBotConstants.MessageKey.NOT_IMPLEMENTED_YET;
 
 @Service
 public class TelegramBotListener
@@ -35,7 +35,9 @@ public class TelegramBotListener
      *                               if the update we have to handle is sent by volunteer.
      */
     public TelegramBotListener(TelegramBot telegramBot,
-                               UserMessageRepository userMessageRepository, VolunteerDialogHandler volunteerDialogHandler,
+                               UserMessageRepository userMessageRepository,
+                               VolunteerDialogHandler volunteerDialogHandler,
+                               BasicAdopterHandler basicAdopterHandler,
                                AdopterInputHandler adopterInputHandler,
                                AdopterDialogHandler adopterDialogHandler,
                                ShelterInfoHandler shelterInfoHandler
@@ -46,6 +48,7 @@ public class TelegramBotListener
         handlers = new Handler[]{
                 //Important: volunteerHandler MUST BE at first place
                 volunteerDialogHandler,
+                basicAdopterHandler,
                 //then - adopterInputHandler,
                 adopterInputHandler,
                 //the last one should be shelterInfoHandler
