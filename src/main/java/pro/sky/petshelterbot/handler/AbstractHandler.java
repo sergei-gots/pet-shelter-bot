@@ -238,8 +238,8 @@ public abstract class AbstractHandler implements Handler{
         return true;
     }
 
-    protected boolean sendUserMessage(Person person, MessageKey messageKey) {
-        return sendUserMessage(person, messageKey.name());
+    protected void sendUserMessage(Person person, MessageKey messageKey) {
+        sendUserMessage(person, messageKey.name());
     }
     protected boolean sendUserMessage(Person person, String key) {
         return sendUserMessage(person.getChatId(), key, person.getShelter());
@@ -361,6 +361,14 @@ public abstract class AbstractHandler implements Handler{
         adopter.setChatState(ChatState.ADOPTER_IN_ADOPTION_INFO_MENU);
         adopterRepository.save(adopter);
     }
+
+    protected void forwardDialogMessage(Person sender, Person receiver, String text) {
+        logger.trace("forwardMessageWithinDialog.  sender.firstName={}, receiver.firstName={}",
+                sender.getFirstName(), receiver.getFirstName());
+        sendMessage(receiver.getChatId(),
+                sender.getFirstName() + "> " + text);
+    }
+
     public void handleCancelVolunteerCall(Adopter adopter, String key) {
         long chatId = adopter.getChatId();
         logger.debug("handleCancelVolunteerCall(adopter.chat_id={})", chatId);
@@ -382,6 +390,8 @@ public abstract class AbstractHandler implements Handler{
             volunteer.setAvailable(true);
             volunteerRepository.save(volunteer);
             return;
+        } else {
+            notifyAllAvailableShelterVolunteersAboutNoRequest(adopter.getShelter());
         }
 
         sendMessage(chatId, "Заявка на диалог с волонтёром снята");
@@ -392,10 +402,15 @@ public abstract class AbstractHandler implements Handler{
         }
     }
 
-    protected void forwardDialogMessage(Person sender, Person receiver, String text) {
-        logger.trace("forwardMessageWithinDialog.  sender.firstName={}, receiver.firstName={}",
-                sender.getFirstName(), receiver.getFirstName());
-        sendMessage(receiver.getChatId(),
-                sender.getFirstName() + "> " + text);
+    protected void notifyAllAvailableShelterVolunteersAboutNoRequest(Shelter shelter) {
+        ReplyKeyboardRemove clearKeyboardMarkup = new ReplyKeyboardRemove();
+        for(Volunteer availableVolunteer : volunteerRepository.findByShelterAndAvailableIsTrue(shelter)) {
+            logger.trace("processJoinDialog()-method. volunteer.getFirstName()=\"{}\" will be notified that all the dialogs have been picked up",
+                    availableVolunteer.getFirstName());
+            deletePreviousMenu(availableVolunteer);
+            telegramBot.execute(
+                    new SendMessage(availableVolunteer.getChatId(), "Все запросы на консультацию были подхвачены, спасибо!" +
+                            "Мы известим вас о новых запросах на консультацию:)"));
+        }
     }
 }

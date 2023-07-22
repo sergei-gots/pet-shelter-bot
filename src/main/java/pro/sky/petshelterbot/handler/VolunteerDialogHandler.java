@@ -138,17 +138,7 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
         Dialog nextDialog = nextDialogInWaiting(volunteer.getShelter());
         if(nextDialog == null) {
             logger.debug("processJoinDialog()-method. nextToJoin == null is true");
-
-            ReplyKeyboardRemove clearKeyboardMarkup = new ReplyKeyboardRemove();
-            for(Volunteer availableVolunteer : volunteerRepository.findByShelterAndAvailableIsTrue(volunteer.getShelter())) {
-                logger.trace("processJoinDialog()-method. volunteer.getFirstName()=\"{}\" will be notified that all the dialogs have been picked up",
-                        availableVolunteer.getFirstName());
-                telegramBot.execute(
-                        new SendMessage(availableVolunteer.getChatId(), "Все запросы на консультацию были подхвачены, спасибо!" +
-                                "Мы известим вас о новых запросах на консультацию:)")
-                                .replyMarkup(clearKeyboardMarkup)
-                );
-            }
+            notifyAllAvailableShelterVolunteersAboutNoRequest(volunteer.getShelter());
         }
     }
 

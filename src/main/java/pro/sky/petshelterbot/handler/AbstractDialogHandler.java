@@ -2,12 +2,13 @@ package pro.sky.petshelterbot.handler;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.entity.*;
 import pro.sky.petshelterbot.repository.*;
 
 import java.util.Collection;
+
+import static pro.sky.petshelterbot.constants.PetShelterBotConstants.MessageKey.VOLUNTEER_IS_NOTIFIED;
 
 /**
  * Handles commands receiving from user supposed
@@ -69,17 +70,11 @@ public abstract class AbstractDialogHandler extends AbstractHandler {
         Volunteer volunteer = dialog.getVolunteer();
         Adopter adopter = dialog.getAdopter();
 
-        long volunteerChatId = volunteer.getChatId();
-        long adopterChatId = adopter.getChatId();
-
-        sendMessage(volunteerChatId,
+        sendMessage(volunteer.getChatId(),
                 volunteer.getFirstName() + "! C вами хотел бы связаться " + adopter.getFirstName() +
                         ". Нажмите кнопку 'Присоединиться к чату' для начала общения.");
         sendMenu(volunteer, JOIN_DIALOG);
-
-        sendMenu(adopter, CLOSE_DIALOG);
-        sendMessage(adopterChatId, "Волонтёру отослано уведомление. Волонтёр свяжется с вами " +
-                "насколько это возможно скоро. Основное меню на время диалога будет скрыто ", new ReplyKeyboardRemove());
+        sendUserMessage(adopter, VOLUNTEER_IS_NOTIFIED);
     }
 
 }
