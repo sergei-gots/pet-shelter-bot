@@ -28,6 +28,7 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     @Query("from Report r where r.pet.shelter.id = :shelterId")
     Page<Report> findAllByShelterId(Long shelterId, Pageable pageable);
 
+
     @Query("from Report r where r.checked = null or r.checked = false and r.pet.shelter.id = :shelterId")
     Page<Report> findAllUncheckedReports(Long shelterId, Pageable pageable);
 
@@ -39,3 +40,4 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
 
     Optional<Report> findFirstByPetAndSentIsNull(Pet pet);
 }
+

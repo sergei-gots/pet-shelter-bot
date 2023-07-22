@@ -10,6 +10,8 @@ import pro.sky.petshelterbot.repository.*;
 
 import java.util.List;
 
+import static pro.sky.petshelterbot.constants.PetShelterBotConstants.MessageKey.VOLUNTEER_IS_NOTIFIED;
+
 /**
  * Operates chat between Adopter and Volunteer on the Adopter's side
  */
@@ -113,11 +115,7 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
         Dialog dialog = new Dialog(adopter);
         dialogRepository.save(dialog);
 
-        if(CALL_VOLUNTEER_ADOPTION_INFO_MENU.equals(key)) {
-            sendMenu(dialog.getAdopter(), ADOPTION_INFO_MENU);
-        } else {
-            sendMenu(dialog.getAdopter(), SHELTER_INFO_MENU);
-        }
+        showCurrentMenu(adopter);
 
         //Get List of Available Volunteers
         List<Volunteer> availableVolunteers =
@@ -134,12 +132,10 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
 
         //Else notify all the available volunteers about new dialog request
         for (Volunteer volunteer : availableVolunteers) {
-            long chatId = volunteer.getChatId();
-            sendMessage(chatId,
+            sendMessage(volunteer.getChatId(),
                     volunteer.getFirstName() + "! C вами хотел бы связаться " + adopter.getFirstName());
             sendMenu(volunteer, JOIN_DIALOG);
         }
-        sendMessage(adopter.getChatId(), "Волонтёру отослано уведомление. Волонтёр свяжется с вами " +
-                "насколько это возможно скоро. ");
+        sendUserMessage (adopter, VOLUNTEER_IS_NOTIFIED);
     }
 }
