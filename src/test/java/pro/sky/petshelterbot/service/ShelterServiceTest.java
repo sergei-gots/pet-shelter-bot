@@ -1,7 +1,13 @@
 package pro.sky.petshelterbot.service;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+import pro.sky.petshelterbot.PetShelterBotApplication;
 import pro.sky.petshelterbot.entity.Shelter;
 import pro.sky.petshelterbot.repository.ShelterRepository;
 
@@ -10,10 +16,13 @@ import java.math.BigDecimal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes= PetShelterBotApplication.class)
 class ShelterServiceTest {
 
 
-    private ShelterService shelterService = new ShelterService(new ShelterRepository())
+    @Autowired
+    private ShelterService shelterService;
 
     @Test
     void findAll() {
