@@ -1,6 +1,5 @@
 package pro.sky.petshelterbot.controller;
 
-import com.github.javafaker.Faker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import pro.sky.petshelterbot.entity.Shelter;
 import pro.sky.petshelterbot.repository.ShelterRepository;
+import pro.sky.petshelterbot.util.DataGenerator;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ShelterControllerTest {
@@ -33,7 +32,7 @@ class ShelterControllerTest {
     @Autowired
     private ShelterRepository shelterRepository;
 
-    private final Faker faker = new Faker();
+
 
     @AfterEach
     public void afterEach() {
@@ -42,7 +41,7 @@ class ShelterControllerTest {
 
     @Test
     void add() {
-        Shelter shelter = generateShetlter();
+        Shelter shelter = DataGenerator.generateShelter();
         ResponseEntity<Shelter> addResponseEntity =
                 testRestTemplate.exchange(
                         sheltersUrl(),
@@ -71,13 +70,5 @@ class ShelterControllerTest {
     void update() {
     }
 
-    private Shelter generateShetlter() {
-        return new Shelter(
-                faker.harryPotter().house(),
-                faker.lorem().sentence(),
-                faker.address().streetAddress(),
-                faker.phoneNumber().phoneNumber(),
-                faker.company().url(),
-                faker.animal().name());
-    }
+
 }

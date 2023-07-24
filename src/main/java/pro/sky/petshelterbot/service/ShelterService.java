@@ -29,7 +29,7 @@ public class ShelterService {
     }
 
     public Shelter get(Long id) {
-        return shelterRepository.getSheltersById(id);
+        return shelterRepository.getShelterById(id);
     }
 
     public Shelter update(Shelter shelter) {
