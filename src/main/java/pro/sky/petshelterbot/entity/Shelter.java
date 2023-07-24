@@ -1,6 +1,7 @@
 package pro.sky.petshelterbot.entity;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "shelters")
@@ -97,5 +98,18 @@ public class Shelter {
                 ", email='" + email + '\'' +
                 ", type='" + type + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Shelter shelter = (Shelter) o;
+        return Objects.equals(name, shelter.name) && Objects.equals(workTime, shelter.workTime) && Objects.equals(address, shelter.address) && Objects.equals(tel, shelter.tel) && Objects.equals(email, shelter.email) && Objects.equals(type, shelter.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, type);
     }
 }
