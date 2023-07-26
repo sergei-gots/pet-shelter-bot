@@ -33,8 +33,6 @@ class ShelterControllerTest {
     private final ShelterService shelterService = Mockito.mock(ShelterService.class) ;
 
 
-    private final ShelterController shelterController = new ShelterController(shelterService);
-
     private final String url = "/shelter";
 
     @Autowired
