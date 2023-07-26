@@ -1,10 +1,7 @@
 package pro.sky.petshelterbot.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.junit.jupiter.api.Test;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @WebMvcTest(controllers =  ShelterController.class)
-@ExtendWith(MockitoExtension.class)
 class ShelterControllerTest {
 
 
@@ -30,10 +26,10 @@ class ShelterControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private final ShelterService shelterService = Mockito.mock(ShelterService.class) ;
+    private ShelterService shelterService;
 
 
-    private final String url = "/shelter";
+    private final String URL = "/shelters";
 
     @Autowired
     ObjectMapper objectMapper;
@@ -42,11 +38,11 @@ class ShelterControllerTest {
     void add() throws Exception {
 
         Shelter shelter = DataGenerator.generateShelter();
-        when(shelterService.add((shelter))).thenReturn(shelter);
+        when(shelterService.add(shelter)).thenReturn(shelter);
 
         mockMvc.perform(
                 MockMvcRequestBuilders
-                        .put(url)
+                        .post(URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(shelter)
                         )
