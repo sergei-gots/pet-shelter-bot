@@ -1,57 +1,66 @@
 package pro.sky.petshelterbot.controller;
 
-import org.junit.jupiter.api.AfterEach;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.junit.jupiter.api.Test;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.*;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pro.sky.petshelterbot.entity.Shelter;
-import pro.sky.petshelterbot.repository.ShelterRepository;
+import pro.sky.petshelterbot.service.ShelterService;
 import pro.sky.petshelterbot.util.DataGenerator;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.nio.charset.StandardCharsets;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
+@WebMvcTest(controllers =  ShelterController.class)
+@ExtendWith(MockitoExtension.class)
 class ShelterControllerTest {
 
-    @LocalServerPort
-    private int port;
-
-    private String sheltersUrl() {
-        return "http://localhost:" + port + "/shelters";
-    }
 
     @Autowired
-    private TestRestTemplate testRestTemplate;
+    private MockMvc mockMvc;
+
+    @MockBean
+    private ShelterService shelterService = Mockito.mock(ShelterService.class) ;
+
+    private final String url = "/shelter";
 
     @Autowired
-    private ShelterRepository shelterRepository;
-
-
-
-    @AfterEach
-    public void afterEach() {
-        shelterRepository.deleteAll();
-    }
+    ObjectMapper objectMapper;
 
     @Test
-    void add() {
+    void add() throws Exception {
+
         Shelter shelter = DataGenerator.generateShelter();
-        ResponseEntity<Shelter> addResponseEntity =
-                testRestTemplate.exchange(
-                        sheltersUrl(),
-                        HttpMethod.PUT,
-                        new HttpEntity<>(shelter),
-                        Shelter.class);
-        assertThat(addResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        Shelter putShelter = addResponseEntity.getBody();
-        assertThat(putShelter).isNotNull();
-        assertThat(putShelter).isEqualTo(shelter);
+        when(shelterService.add((shelter))).thenReturn(shelter);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders
+                        .put(url)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(shelter)
+                        )
+        ).andExpect(result -> {
+            MockHttpServletResponse mockHttpServletResponse =
+                    result.getResponse();
+            Shelter shelterResult = objectMapper.readValue(
+                    mockHttpServletResponse.getContentAsString(StandardCharsets.UTF_8),
+                    Shelter.class
+            );
+            assertThat(mockHttpServletResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
+            assertThat(shelterResult)
+                    .isNotNull()
+                    .isEqualTo(shelter);
+        });
     }
 
     @Test
