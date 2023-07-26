@@ -30,7 +30,10 @@ class ShelterControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ShelterService shelterService = Mockito.mock(ShelterService.class) ;
+    private final ShelterService shelterService = Mockito.mock(ShelterService.class) ;
+
+
+    private final ShelterController shelterController = new ShelterController(shelterService);
 
     private final String url = "/shelter";
 
