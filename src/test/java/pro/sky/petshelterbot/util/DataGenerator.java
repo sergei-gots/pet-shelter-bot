@@ -10,7 +10,7 @@ public class DataGenerator {
 
     public static Shelter generateShelter() {
         return new Shelter(
-                1L,
+                faker.random().nextLong(),
                 faker.harryPotter().house(),
                 faker.lorem().sentence(),
                 faker.address().streetAddress(),
