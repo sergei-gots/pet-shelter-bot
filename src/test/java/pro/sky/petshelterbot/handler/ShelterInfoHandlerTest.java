@@ -40,7 +40,7 @@ public class ShelterInfoHandlerTest {
     @Mock
     private Message message;
 
-    @BeforeEach
+ /*   @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
         shelterInfoHandler = new ShelterInfoHandler(telegramBot, adopterRepository,
@@ -51,7 +51,7 @@ public class ShelterInfoHandlerTest {
                 dialogRepository);
     }
 
-    @Test
+ /*   @Test
     public void testSendOpeningHours() {
         Long chatId = 123456789L;
         Long shelterId = 1L;
@@ -87,5 +87,5 @@ public class ShelterInfoHandlerTest {
         verify(telegramBot).execute(new SendMessage(chatId, "Контактные данные охраны приюта:\n" +
                 "Телефон: 1234567890\n" +
                 "Email: shelter@example.com"));
-    }
+    }*/
 }

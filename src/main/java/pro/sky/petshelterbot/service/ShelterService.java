@@ -23,13 +23,13 @@ public class ShelterService {
     }
 
     public Shelter delete(Long id) {
-        Shelter shelter = get(id);
+        Shelter shelter = shelterRepository.getShelterById(id);
         shelterRepository.delete(shelter);
         return shelter;
     }
 
     public Shelter get(Long id) {
-        return shelterRepository.getSheltersById(id);
+        return shelterRepository.getShelterById(id);
     }
 
     public Shelter update(Shelter shelter) {

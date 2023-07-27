@@ -1,4 +1,4 @@
-package pro.sky.petshelterbot.controllers;
+package pro.sky.petshelterbot.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;

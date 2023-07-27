@@ -8,8 +8,6 @@ import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import pro.sky.petshelterbot.entity.*;
 import pro.sky.petshelterbot.exceptions.ShelterException;
 import pro.sky.petshelterbot.repository.*;
@@ -17,9 +15,7 @@ import pro.sky.petshelterbot.repository.*;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 
-public abstract class AbstractHandler implements Handler{
-
-    final protected Logger logger = LoggerFactory.getLogger(getClass());
+public abstract class AbstractHandler extends AbstractUpdateHandler {
 
     final protected TelegramBot telegramBot;
     final protected AdopterRepository adopterRepository;
@@ -44,11 +40,6 @@ public abstract class AbstractHandler implements Handler{
         this.buttonsRepository = buttonsRepository;
         this.dialogRepository = dialogRepository;
 
-    }
-
-    @Override
-    public void warn(String warning) {
-        logger.trace(warning);
     }
 
     protected boolean handleChatStateDefault(Adopter adopter) {
@@ -403,7 +394,6 @@ public abstract class AbstractHandler implements Handler{
     }
 
     protected void notifyAllAvailableShelterVolunteersAboutNoRequest(Shelter shelter) {
-        ReplyKeyboardRemove clearKeyboardMarkup = new ReplyKeyboardRemove();
         for(Volunteer availableVolunteer : volunteerRepository.findByShelterAndAvailableIsTrue(shelter)) {
             logger.trace("processJoinDialog()-method. volunteer.getFirstName()=\"{}\" will be notified that all the dialogs have been picked up",
                     availableVolunteer.getFirstName());

@@ -2,30 +2,24 @@ package pro.sky.petshelterbot.listener;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
-import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import pro.sky.petshelterbot.entity.UserMessage;
 import pro.sky.petshelterbot.handler.*;
 import pro.sky.petshelterbot.handler.ShelterInfoHandler;
-import pro.sky.petshelterbot.repository.UserMessageRepository;
 
 
 import javax.annotation.PostConstruct;
 import java.util.List;
 
-import static pro.sky.petshelterbot.constants.PetShelterBotConstants.MessageKey.NOT_IMPLEMENTED_YET;
 
 @Service
 public class TelegramBotListener
-        implements UpdatesListener, Handler {
+        implements UpdatesListener {
 
     final private Logger logger = LoggerFactory.getLogger(TelegramBotListener.class);
     final private TelegramBot telegramBot;
-    final private UserMessageRepository userMessageRepository;
     final private Handler[] handlers;
 
     /**
@@ -35,15 +29,14 @@ public class TelegramBotListener
      *                               if the update we have to handle is sent by volunteer.
      */
     public TelegramBotListener(TelegramBot telegramBot,
-                               UserMessageRepository userMessageRepository,
                                VolunteerDialogHandler volunteerDialogHandler,
                                BasicAdopterHandler basicAdopterHandler,
                                AdopterInputHandler adopterInputHandler,
                                AdopterDialogHandler adopterDialogHandler,
-                               ShelterInfoHandler shelterInfoHandler
+                               ShelterInfoHandler shelterInfoHandler,
+                               DefaultHandler defaultHandler
                                ) {
         this.telegramBot = telegramBot;
-        this.userMessageRepository = userMessageRepository;
 
         handlers = new Handler[]{
                 //Important: volunteerHandler MUST BE at first place
@@ -56,7 +49,7 @@ public class TelegramBotListener
                 //then - adopter dialog handler
                 adopterDialogHandler,
                 //and if an update is still unhandled, then use the last try here in the listener
-                this
+                defaultHandler
         };
     }
 
@@ -78,37 +71,13 @@ public class TelegramBotListener
                     }
                 }
                 catch(Exception e){
-                    saySorry(update);
+                    handlers[handlers.length-1].handle(update);
                     logger.error("processMessage: exception was thrown in a handler", e);
-
                 }
             }
         } catch (Exception e) {
-            logger.error("process(updates): exception was caught", e);
+            logger.error("process(updates): exception was thrown", e);
         }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
-
-    /**
-     * @return false if and only if the message is null
-     * otherwise it will be assumed that the message is handled
-     * and further handling is not necessary
-     * @throws IllegalArgumentException if message.text() is null
-     */
-    @Override
-    public boolean handle(Update update) {
-        Message message = update.message();
-        saySorry(update);
-        logger.trace("processMessage: there is no suitable handler for text=\"{}\" received from user={} with chat_id={}",
-                message.text(), message.chat().firstName(), message.chat().id());
-        return true;
-    }
-
-    private void saySorry(Update update) {
-        Message message = update.message();
-        UserMessage userMessage = userMessageRepository.findFirstByKeyAndShelterIsNull(NOT_IMPLEMENTED_YET.name())
-                .orElseThrow(()->new IllegalStateException("No user message for key=" + NOT_IMPLEMENTED_YET));
-        telegramBot.execute(new SendMessage(message.chat().id(), userMessage.getMessage() + "\n /menu"));
-    }
-
 }
