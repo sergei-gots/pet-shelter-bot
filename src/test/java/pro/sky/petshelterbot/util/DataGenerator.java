@@ -18,4 +18,8 @@ public class DataGenerator {
                 faker.company().url(),
                 faker.animal().name());
     }
+
+    public static int generateCount() {
+        return  faker.random().nextInt(0, 10);
+    }
 }
