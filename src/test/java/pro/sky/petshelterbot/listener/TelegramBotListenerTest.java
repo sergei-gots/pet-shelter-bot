@@ -36,7 +36,7 @@ class TelegramBotListenerTest {
         );
 
         return BotUtils.fromJson(
-                json.replace("%commdand%", content),
+                json.replace("%command%", content),
                 Update.class
         );
     }
