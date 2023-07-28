@@ -2,6 +2,7 @@ package pro.sky.petshelterbot.entity;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Table(name = "pets")
@@ -54,17 +55,11 @@ public class Pet {
         this.disabled = disabled;
     }
 
-    public Pet(String species,
-               String name,
-               Shelter shelter,
-               boolean disabled,
-               Adopter adopter) {
-        this.species = species;
-        this.name = name;
-        this.shelter = shelter;
-        this.disabled = disabled;
-        this.adopter = adopter;
+    public Pet(Long id, String species, String name, Shelter shelter, boolean disabled) {
+        this(species, name, shelter, disabled);
+        this.id = id;
     }
+
 
     public String getImgPath() {
         return imgPath;
@@ -144,5 +139,18 @@ public class Pet {
                 ", adoptionDate=" + adoptionDate +
                 ", imgPath='" + imgPath + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pet pet = (Pet) o;
+        return disabled == pet.disabled && Objects.equals(id, pet.id) && Objects.equals(species, pet.species) && Objects.equals(name, pet.name) && Objects.equals(shelter, pet.shelter) && Objects.equals(adopter, pet.adopter) && Objects.equals(adoptionDate, pet.adoptionDate) && Objects.equals(imgPath, pet.imgPath);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, species, name, shelter, adopter, disabled, adoptionDate, imgPath);
     }
 }

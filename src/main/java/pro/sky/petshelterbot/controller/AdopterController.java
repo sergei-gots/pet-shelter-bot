@@ -6,44 +6,41 @@ import org.springframework.web.bind.annotation.*;
 import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Pet;
 import pro.sky.petshelterbot.service.AdopterService;
-import pro.sky.petshelterbot.service.PetService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/adopter")
+@RequestMapping(path = "/adopters")
 @Tag(name = "AdopterController")
 public class AdopterController {
 
     private final AdopterService adopterService;
-    private final PetService petService;
 
-    public AdopterController(AdopterService adopterService, PetService petService) {
+    public AdopterController(AdopterService adopterService) {
         this.adopterService = adopterService;
-        this.petService = petService;
     }
 
-    @GetMapping("/{adopterId}")
-    public ResponseEntity<Adopter> getAdopter(@RequestParam Long adopterId) {
-        return ResponseEntity.ok(adopterService.getAdopter(adopterId));
+    @GetMapping("/{id}")
+    public ResponseEntity<Adopter> getAdopter(@PathVariable Long id) {
+        return ResponseEntity.ok(adopterService.getAdopter(id));
     }
 
     /* PUT /pet/setAdopter */
-    @PutMapping("/setAdopter/{petId}")
-    public ResponseEntity<Pet> setAdopter(@PathVariable Long petId, @RequestBody Adopter adopter) {
-        return ResponseEntity.ok(adopterService.setAdopter(petId, adopter));
+    @PutMapping("/setAdopterForPet/{petId}")
+    public ResponseEntity<Pet> setAdopterForPet(@PathVariable Long petId, @RequestBody Adopter adopter) {
+        return ResponseEntity.ok(adopterService.setAdopterForPet(petId, adopter));
     }
 
     /* PUT /pet/prolongTrial14/{petId} */
     @PutMapping("/prolongTrial14/{petId}")
     public ResponseEntity<Pet> prolongTrial14(@PathVariable Long petId) {
-        return ResponseEntity.ok(adopterService.prolongTrialForNDays(petId, 14));
+        return ResponseEntity.ok(adopterService.prolongTrialForNDays(petId, 14L));
     }
 
     /* /pet/prolongTrial30/{petId} */
     @PutMapping("prolongTrial30/{petId}")
     public ResponseEntity<Pet> prolongTrial30(@PathVariable Long petId) {
-        return ResponseEntity.ok(adopterService.prolongTrialForNDays(petId, 30));
+        return ResponseEntity.ok(adopterService.prolongTrialForNDays(petId, 30L));
     }
 
     /* PUT /pet/cancelTrial/{petId} */

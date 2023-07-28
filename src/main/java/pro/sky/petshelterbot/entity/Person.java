@@ -7,9 +7,9 @@ public interface Person extends TelegramChatStates {
      * Person will be identified by its chat_id which is persistent within
      * Telegram
      */
-    long getChatId();
+    Long getChatId();
 
-    void setChatId(long chatId);
+    void setChatId(Long chatId);
 
     String getFirstName();
 

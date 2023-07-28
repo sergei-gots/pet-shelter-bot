@@ -1,106 +1,124 @@
 package pro.sky.petshelterbot.controller;
 
-import com.github.javafaker.Faker;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.*;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Pet;
 import pro.sky.petshelterbot.entity.Shelter;
+import pro.sky.petshelterbot.service.AdopterService;
+import pro.sky.petshelterbot.util.DataGenerator;
+
+import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AdopterControllerTest {
+@WebMvcTest(controllers =  AdopterController.class)
+class AdopterControllerTest {
 
-    @LocalServerPort
-    private int port;
 
     @Autowired
-    private TestRestTemplate testRestTemplate;
+    private MockMvc mockMvc;
 
-    private final Faker faker = new Faker();
+    @MockBean
+    private AdopterService adopterService;
 
-    private Shelter generateShelter() {
-        Shelter shelter = new Shelter();
-        shelter.setName(faker.company().name());
-        shelter.setType("dog");
-        shelter.setTel(faker.phoneNumber().phoneNumber());
-        shelter.setAddress(faker.address().fullAddress());
-        shelter.setEmail(faker.internet().emailAddress());
-        shelter.setWorkTime("Mon-Sun: 09:00AM - 10:00PM");
-        return shelter;
-    }
 
-    private Adopter generateAdopter() {
-        Adopter adopter = new Adopter();
-        adopter.setChatId(faker.random().nextLong(9999999));
-        adopter.setFirstName(faker.funnyName().name());
-        return adopter;
-    }
+    private final String URL = "/adopters/";
+    private final String URL_WITH_ID = "/adopters/{id}";
 
-    private Pet generatePet(Shelter shelter) {
-        Pet pet = new Pet();
-        pet.setName(faker.dog().name());
-        pet.setSpecies("dog");
-        pet.setShelter(shelter);
-        pet.setDisabled(false);
-        pet.setAdopter(generateAdopter());
-        return pet;
-    }
-
-/*    private Pet addPet(Pet pet) {
-        ResponseEntity<Pet> petResponseEntity = testRestTemplate.postForEntity(
-                "http://localhost:" + port + "/pets",
-                pet,
-                Pet.class
-        );
-        assertThat(petResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(petResponseEntity.getBody()).isNotNull();
-        assertThat(petResponseEntity.getBody()).usingRecursiveComparison()
-                .ignoringFields("id").isEqualTo(pet);
-        assertThat(petResponseEntity.getBody().getId()).isNotNull();
-
-        return petResponseEntity.getBody();
-    }
-
-    private Shelter addShelter(Shelter shelter) {
-        ResponseEntity<Shelter> shelterResponseEntity = testRestTemplate.postForEntity(
-                "http://localhost:" + port + "/shelters",
-                shelter,
-                Shelter.class
-        );
-        assertThat(shelterResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(shelterResponseEntity.getBody()).isNotNull();
-        assertThat(shelterResponseEntity.getBody()).usingRecursiveComparison()
-                .ignoringFields("id").isEqualTo(shelter);
-        assertThat(shelterResponseEntity.getBody().getId()).isNotNull();
-
-        return shelterResponseEntity.getBody();
+    @Autowired
+    ObjectMapper objectMapper;
 
     @Test
-    public void setAdopterTest() {
-        /*Shelter shelter = addShelter(generateShelter());
-        Pet pet = addPet(generatePet(shelter));
-        Adopter oldAdopter = pet.getAdopter();
-        Adopter newAdopter = generateAdopter();
+    void get() throws Exception {
+        Adopter adopter = DataGenerator.generateAdopter();
+        when(adopterService.getAdopter(adopter.getChatId())).thenReturn(adopter);
 
-        ResponseEntity<Pet> getForEntityResponse = testRestTemplate.getForEntity(
-                "http://localhost:" + port + "/pets/" + pet.getId(),
-                Pet.class
-        );
-        assertThat(getForEntityResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(getForEntityResponse.getBody()).isNotNull();
-        assertThat(getForEntityResponse.getBody()).usingRecursiveComparison().isEqualTo(pet);
-        assertThat(getForEntityResponse.getBody().getAdopter()).isNotEqualTo(newAdopter);
+        mockMvc.perform(
+                MockMvcRequestBuilders
+                        .get(URL_WITH_ID, adopter.getChatId().toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(result -> {
+            MockHttpServletResponse mockHttpServletResponse =
+                    result.getResponse();
+            Adopter actual = objectMapper.readValue(
+                    mockHttpServletResponse.getContentAsString(StandardCharsets.UTF_8),
+                    Adopter.class
+            );
+            assertThat(mockHttpServletResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
+            assertThat(actual)
+                    .isNotNull()
+                    .isEqualTo(adopter);
+        });
+    }    
 
-        pet.setAdopter(newAdopter);
+    /** Test for @PutMapping 
+    * ResponseEntity<Pet> 
+    *       setAdopter(@PathVariable Long petId, @RequestBody Adopter adopter);
+    **/
+    @Test
+    public void setAdopterForPet() throws Exception {
+        Shelter shelter = DataGenerator.generateShelter();
+        Pet pet = DataGenerator.generatePet(shelter);
+        Adopter adopter = DataGenerator.generateAdopter();
+        when(adopterService.setAdopterForPet(pet.getId(), adopter)).thenReturn(pet);
 
-        assertThat(pet.getAdopter()).usingRecursiveComparison()
-                .isEqualTo(newAdopter);
-    }*/
+        mockMvc.perform(
+                MockMvcRequestBuilders
+                        .put(URL + "/setAdopterForPet/{id}", pet.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(adopter))
+                        )
+                .andExpect(result -> {
+            MockHttpServletResponse mockHttpServletResponse =
+                    result.getResponse();
+            Pet actual = objectMapper.readValue(
+                    mockHttpServletResponse.getContentAsString(StandardCharsets.UTF_8),
+                    Pet.class
+            );
+            assertThat(mockHttpServletResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
+            assertThat(actual)
+                    .isNotNull()
+                    .isEqualTo(pet);
+        });
+        
+    }
+
+    /** Test for @PutMapping("/prolongTrial14/{petId}")
+     *  ResponseEntity<Pet> prolongTrial14(@PathVariable Long petId) 
+     */
+    @Test
+    void prolongTrial14() {
+        
+    }
+
+    /** Test for @PutMapping("/prolongTrial30/{petId}")
+     *  ResponseEntity<Pet> prolongTrial30(@PathVariable Long petId) 
+     */
+    @Test
+    void prolongTrial30() {
+    }
+
+    
+    /**  Test @DeleteMapping("cancelTrial/{petId}")
+     */
+    @Test
+    void cancelTrial() {
+        
+    }
+
+    /** Test @GetMapping(path = "/all-ready-to-adopt") */
+    @Test
+    void getAllReadyToAdopt() {
+        
+    }
+    
 }

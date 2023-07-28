@@ -8,9 +8,6 @@ import javax.persistence.Table;
 @Table(name = "adopters")
 public class Adopter extends AbstractPerson {
 
-
-
-
     public Adopter() {
     }
 
