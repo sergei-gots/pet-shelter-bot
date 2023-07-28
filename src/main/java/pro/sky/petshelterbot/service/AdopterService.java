@@ -17,6 +17,7 @@ import java.util.List;
 @Service
 public class AdopterService {
 
+    public final int BASIC_TRIAL_DAYS = 14;
     private final AdopterRepository adopterRepository;
     private final PetRepository petRepository;
 
@@ -31,26 +32,28 @@ public class AdopterService {
         if (adopters.hasContent()) {
             return adopters.getContent();
         } else {
-            return new ArrayList<Adopter>();
+            return new ArrayList<>();
         }
     }
 
-    public Pet setAdopter(Long petId, Adopter adopter) {
+    public Pet setAdopterForPet(Long petId, Adopter adopter) {
         Pet pet = petRepository.getPetById(petId);
         pet.setAdopter(adopter);
-        pet.setAdoptionDate(LocalDate.now());
+        LocalDate adoptionDate = LocalDate.now();
+        adoptionDate = adoptionDate.plus(BASIC_TRIAL_DAYS, ChronoUnit.DAYS);
+        pet.setAdoptionDate(adoptionDate);
         petRepository.save(pet);
         return pet;
     }
 
-    public Pet prolongTrialForNDays(Long petId, Integer days) {
+    public Pet prolongTrialForNDays(Long petId, Long days) {
         Pet pet = petRepository.getPetById(petId);
         LocalDate adoptionDate = pet.getAdoptionDate();
         if (adoptionDate == null) {
-            pet.setAdoptionDate(LocalDate.now());
-        } else {
-            pet.setAdoptionDate(adoptionDate.plus(days, ChronoUnit.DAYS));
+            adoptionDate = LocalDate.now();
         }
+        adoptionDate = adoptionDate.plus(days, ChronoUnit.DAYS);
+        pet.setAdoptionDate(adoptionDate);
         petRepository.save(pet);
         return pet;
     }

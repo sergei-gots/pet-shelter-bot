@@ -4,6 +4,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import java.util.Objects;
 
 @MappedSuperclass
 public abstract class AbstractPerson implements Person {
@@ -12,7 +13,7 @@ public abstract class AbstractPerson implements Person {
      * Telegram
      */
     @Id
-    private long chatId;
+    private Long chatId;
     private String firstName;
 
     private String phoneNumber;
@@ -31,21 +32,21 @@ public abstract class AbstractPerson implements Person {
     public AbstractPerson() {
     }
 
-    public AbstractPerson(long chatId, String firstName) {
+    public AbstractPerson(Long chatId, String firstName) {
         this.chatId = chatId;
         this.firstName = firstName;
     }
 
-    public AbstractPerson(long chatId, String firstName, Shelter shelter) {
+    public AbstractPerson(Long chatId, String firstName, Shelter shelter) {
         this.chatId = chatId;
         this.firstName = firstName;
         this.shelter = shelter;
     }
-    public long getChatId() {
+    public Long getChatId() {
         return chatId;
     }
 
-    public void setChatId(long chatId) {
+    public void setChatId(Long chatId) {
         this.chatId = chatId;
     }
 
@@ -101,5 +102,18 @@ public abstract class AbstractPerson implements Person {
                 ", chatShelter =" + shelter + "'," +
                 ", chatState =" + chatState + "'," +
                 ", chatMenuMessageId=" + chatMenuMessageId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AbstractPerson that = (AbstractPerson) o;
+        return Objects.equals(chatId, that.chatId) && Objects.equals(firstName, that.firstName) && Objects.equals(phoneNumber, that.phoneNumber) && Objects.equals(shelter, that.shelter) && chatState == that.chatState && Objects.equals(chatMenuMessageId, that.chatMenuMessageId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(chatId, firstName, phoneNumber, shelter, chatState, chatMenuMessageId);
     }
 }

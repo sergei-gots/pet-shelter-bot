@@ -29,7 +29,7 @@ import static pro.sky.petshelterbot.constants.Commands.START;
 @ExtendWith(MockitoExtension.class)
 class TelegramBotListenerTest {
 
-    final private long  CHAT_ID = 123L;
+    final private Long  CHAT_ID = 123L;
 
     @Mock
     private TelegramBot telegramBot;
