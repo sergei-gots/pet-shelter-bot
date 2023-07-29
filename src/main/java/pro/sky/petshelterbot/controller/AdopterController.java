@@ -22,7 +22,7 @@ public class AdopterController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Adopter> getAdopter(@PathVariable Long id) {
-        return ResponseEntity.ok(adopterService.getAdopter(id));
+        return ResponseEntity.ok(adopterService.get(id));
     }
 
     /* PUT /pet/setAdopter */
@@ -49,11 +49,12 @@ public class AdopterController {
         return ResponseEntity.ok(adopterService.cancelTrial(petId));
     }
 
-    @GetMapping(path = "/all-ready-to-adopt")
+    @GetMapping(path = "/all-ready-to-adopt/{shelterId}")
     public ResponseEntity<List<Adopter>> getAllReadyToAdopt(
-            @RequestParam(defaultValue = "0") Integer pageNo,
+            @PathVariable Long shelterId,
+            @RequestParam(defaultValue = "0") Integer pageNb,
             @RequestParam(defaultValue = "10") Integer pageSize) {
-        return ResponseEntity.ok(adopterService.getAllReadyToAdopt(pageNo, pageSize));
+        return ResponseEntity.ok(adopterService.getAllReadyToAdoptByShelterId(shelterId, pageNb, pageSize));
     }
 
 }

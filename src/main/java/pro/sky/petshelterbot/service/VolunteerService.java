@@ -1,8 +1,8 @@
 package pro.sky.petshelterbot.service;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import pro.sky.petshelterbot.entity.Volunteer;
-import pro.sky.petshelterbot.exceptions.ShelterException;
 import pro.sky.petshelterbot.repository.VolunteerRepository;
 
 import java.util.List;
@@ -27,10 +27,8 @@ public class VolunteerService {
         return volunteerRepository.findAllByShelterId(shelterId);
     }
 
-    public Volunteer get(Long chatId) {
-        return
-                volunteerRepository.findByChatId(chatId).orElseThrow(()
-                        -> new ShelterException("Volunteer not found"));
+    public Volunteer get(@NotNull Long chatId) {
+        return volunteerRepository.getByChatId(chatId);
     }
 }
 

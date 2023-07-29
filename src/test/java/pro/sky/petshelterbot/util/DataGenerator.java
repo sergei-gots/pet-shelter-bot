@@ -31,7 +31,15 @@ public class DataGenerator {
                 faker.random().nextLong(),
                 faker.harryPotter().character()
         );
+    }
 
+    public static Adopter generateAdopter(Shelter shelter) {
+        Adopter adopter = new Adopter(
+                faker.random().nextLong(),
+                faker.harryPotter().character()
+        );
+        adopter.setShelter(shelter);
+        return adopter;
     }
 
     public static Pet generatePet() {

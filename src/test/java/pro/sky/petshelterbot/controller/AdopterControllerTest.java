@@ -43,7 +43,7 @@ class AdopterControllerTest {
     @Test
     void get() throws Exception {
         Adopter adopter = DataGenerator.generateAdopter();
-        when(adopterService.getAdopter(adopter.getChatId())).thenReturn(adopter);
+        when(adopterService.get(adopter.getChatId())).thenReturn(adopter);
 
         mockMvc.perform(
                 MockMvcRequestBuilders
@@ -197,16 +197,17 @@ class AdopterControllerTest {
      */
     @Test
     void getAllReadyToAdopt() throws Exception {
+        Shelter shelter = DataGenerator.generateShelter();
         List<Adopter> adopters = Stream
-                .generate(DataGenerator::generateAdopter)
+                .generate(() -> DataGenerator.generateAdopter(shelter))
                 .limit(DataGenerator.generateCount())
                 .collect(Collectors.toList());
 
-        when(adopterService.getAllReadyToAdopt(0, 10))
+        when(adopterService.getAllReadyToAdoptByShelterId(shelter.getId(), 0, 10))
                 .thenReturn(adopters);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get(URL + "/all-ready-to-adopt/")
+                        .get(URL + "/all-ready-to-adopt/{shelterId}", shelter.getId())
                         .contentType(MediaType.APPLICATION_JSON
                         )
                 )

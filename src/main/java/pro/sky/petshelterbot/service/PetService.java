@@ -32,7 +32,7 @@ public class PetService {
         this.volunteerRepository = volunteerRepository;
     }
 
-    private static String UPLOAD_DIRECTORY = "src/main/resources/uploads/pet_images";
+    final private static String UPLOAD_DIRECTORY = "src/main/resources/uploads/pet_images";
 
     private String imgUploader(Long id, MultipartFile img) {
         try {
@@ -46,6 +46,7 @@ public class PetService {
             Files.write(path, data);
             return path.toString();
         } catch (Exception e) {
+            //ToDo handle the exception
         }
         return null;
     }
@@ -69,15 +70,13 @@ public class PetService {
     }
 
     public Pet addImg(Long petId, MultipartFile img) {
-        Pet pet = petRepository.getPetById(petId);
-        if (pet == null) {
-            throw new ShelterException("Питомец не найден.");
-        }
+        Pet pet = petRepository.getById(petId);
         String imgPath = imgUploader(petId, img);
         if (imgPath != null) {
             pet.setImgPath(imgPath);
+            pet = petRepository.save(pet);
         }
-        return petRepository.save(pet);
+        return pet;
     }
 
     public Pet add(String species, String name, Shelter shelter) {
@@ -86,13 +85,7 @@ public class PetService {
     }
 
     public Pet get(Long id) {
-        Pet pet = petRepository.getPetById(id);
-        if (pet == null) {
-            throw new ShelterException(
-                    String.format("Животного с Id# %d не существует.", id)
-            );
-        }
-        return pet;
+        return petRepository.getById(id);
     }
 
     public Pet delete(Pet pet) {
@@ -114,7 +107,6 @@ public class PetService {
         }
     }
 
-    /* POST /dog-shelter/volunteers/ */
     public Volunteer addVolunteerToShelter(Volunteer volunteer) {
         if (volunteer.isAvailable()) {
             return volunteerRepository.save(volunteer);
@@ -122,7 +114,6 @@ public class PetService {
         throw new ShelterException("Пользователь не найден или недоступен для использования в качестве волонтёра.");
     }
 
-    /* GET /dog-shelter/volunteers/ */
     public List<Volunteer> findAllVolunteersByShelterId(Long shelterId) {
         return volunteerRepository.findAllByShelterId(shelterId);
     }

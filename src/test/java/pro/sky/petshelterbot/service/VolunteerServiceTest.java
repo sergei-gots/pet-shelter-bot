@@ -12,7 +12,6 @@ import pro.sky.petshelterbot.util.DataGenerator;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -53,9 +52,10 @@ class VolunteerServiceTest {
     void add_get() {
         Volunteer volunteer = DataGenerator.generateVolunteer();
 
-        when(volunteerRepository.save(any())).thenReturn(volunteer);
-        when(volunteerRepository.findByChatId(volunteer.getChatId()))
-                .thenReturn(Optional.of(volunteer));
+        when(volunteerRepository.save(any()))
+                .thenReturn(volunteer);
+        when(volunteerRepository.getByChatId(volunteer.getChatId()))
+                .thenReturn(volunteer);
 
         Volunteer actual = volunteerService.add(volunteer);
 
