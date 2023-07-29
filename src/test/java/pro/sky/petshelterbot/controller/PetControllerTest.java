@@ -220,7 +220,7 @@ class PetControllerTest {
                 new byte[10]
         );
 
-    when(petService.addImg(pet.getId(), file)).thenReturn(pet);
+        when(petService.addImg(pet.getId(), file)).thenReturn(pet);
 
         mockMvc.perform(
                 MockMvcRequestBuilders
@@ -228,17 +228,17 @@ class PetControllerTest {
                         .file(file)
                         .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
         ).andExpect(result -> {
-        MockHttpServletResponse mockHttpServletResponse =
-                result.getResponse();
-        Pet actual = objectMapper.readValue(
-                mockHttpServletResponse.getContentAsString(StandardCharsets.UTF_8),
-                Pet.class
-        );
-        assertThat(mockHttpServletResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(actual)
-                .isNotNull()
-                .isEqualTo(pet);
-    });
-}
+            MockHttpServletResponse mockHttpServletResponse =
+                    result.getResponse();
+            Pet actual = objectMapper.readValue(
+                    mockHttpServletResponse.getContentAsString(StandardCharsets.UTF_8),
+                    Pet.class
+            );
+            assertThat(mockHttpServletResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
+            assertThat(actual)
+                    .isNotNull()
+                    .isEqualTo(pet);
+        });
+    }
 
 }

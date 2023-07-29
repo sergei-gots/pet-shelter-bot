@@ -40,7 +40,7 @@ public class ReportService {
         return reportRepository.findAllOverdueReports();
     }
 
-    public List<Pet> findOverdueReports(Long shelterId) {
+    public List<Pet> getOverdueReports(Long shelterId) {
 
         return reportRepository.findOverdueReports(shelterId);
     }
