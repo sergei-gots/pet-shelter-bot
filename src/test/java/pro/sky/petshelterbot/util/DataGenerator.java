@@ -5,6 +5,7 @@ import com.github.javafaker.Faker;
 import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Pet;
 import pro.sky.petshelterbot.entity.Shelter;
+import pro.sky.petshelterbot.entity.Volunteer;
 
 public class DataGenerator {
 
@@ -47,5 +48,17 @@ public class DataGenerator {
                 faker.random().nextBoolean(),
                 faker.company().url()
         );
+    }
+
+    public static Volunteer generateVolunteer(Shelter shelter) {
+        return new Volunteer(
+                faker.random().nextLong(),
+                faker.harryPotter().character(),
+                shelter
+        );
+    }
+
+    public static Volunteer generateVolunteer() {
+        return generateVolunteer(generateShelter());
     }
 }
