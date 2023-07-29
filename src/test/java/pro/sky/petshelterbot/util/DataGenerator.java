@@ -21,8 +21,9 @@ public class DataGenerator {
                 faker.animal().name());
     }
 
+    /** @return random int value in range between 4 to 20 inclusive */
     public static int generateCount() {
-        return  faker.random().nextInt(0, 10);
+        return  faker.random().nextInt(4, 20);
     }
 
     public static Adopter generateAdopter() {
@@ -43,7 +44,8 @@ public class DataGenerator {
                 faker.lorem().characters(),
                 faker.cat().name(),
                 shelter,
-                faker.random().nextBoolean()
+                faker.random().nextBoolean(),
+                faker.company().url()
         );
     }
 }

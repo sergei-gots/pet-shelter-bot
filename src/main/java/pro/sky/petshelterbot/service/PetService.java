@@ -11,7 +11,6 @@ import pro.sky.petshelterbot.entity.Shelter;
 import pro.sky.petshelterbot.entity.Volunteer;
 import pro.sky.petshelterbot.exceptions.ShelterException;
 import pro.sky.petshelterbot.repository.PetRepository;
-import pro.sky.petshelterbot.repository.ShelterRepository;
 import pro.sky.petshelterbot.repository.VolunteerRepository;
 
 import java.nio.file.Files;
@@ -106,7 +105,7 @@ public class PetService {
     }
 
     /* GET /dog-shelter/pets */
-    public List<Pet> findAllPets(Long shelterId, Integer pageNo, Integer pageSize) {
+    public List<Pet> getByShelterId(Long shelterId, Integer pageNo, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Pet> petsPage = petRepository.findAllByShelterId(shelterId, pageable);
         if (petsPage.hasContent()) {

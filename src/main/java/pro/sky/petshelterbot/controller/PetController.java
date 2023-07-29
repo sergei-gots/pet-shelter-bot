@@ -23,7 +23,7 @@ public class PetController {
     }
 
     @PostMapping
-    @ApiResponse(description = "" +
+    @ApiResponse(description =
             "Добавляет кота в кошачий шелтер/собаку в собачий шелтер. " +
             "Показывает сохраненные значения из БД и сообщает, " +
             "что данные о животном сохранены или не сохранены.")
@@ -31,10 +31,10 @@ public class PetController {
         return ResponseEntity.ok(petService.add(pet));
     }
 
-    @PostMapping(value = "/img", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/img/{petId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiResponse(description = "Добавление изображения для животного.")
     public ResponseEntity<Pet> addImg(
-            @RequestParam Long petId,
+            @PathVariable Long petId,
             @RequestPart MultipartFile img) {
         return ResponseEntity.ok(petService.addImg(petId, img));
     }
@@ -47,21 +47,21 @@ public class PetController {
 
     /* GET /cat-shelter/pets
     GET /dog-shelter/pets */
-    @GetMapping("/shelter/{shelterId}")
-    @ApiResponse(description = "" +
+    @GetMapping("/in-shelter/{shelterId}")
+    @ApiResponse(description =
             "Распечатывает страницу из списка всех котов, " +
             "то есть как находящихся в приюте, так и адоптируемых или находящихся в адоптации. " +
             "Поиск в методах осуществляется по shelter_id.")
-    public ResponseEntity<List<Pet>> getAllPets(
+    public ResponseEntity<List<Pet>> getShelterPets(
             @PathVariable Long shelterId,
             @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize) {
-        return ResponseEntity.ok(petService.findAllPets(shelterId, pageNo, pageSize));
+        return ResponseEntity.ok(petService.getByShelterId(shelterId, pageNo, pageSize));
     }
 
     @GetMapping("/{petId}")
     @ApiResponse(description = "Получение животного по id")
-    public ResponseEntity<Pet> getPet(@PathVariable Long petId) {
+    public ResponseEntity<Pet> get(@PathVariable Long petId) {
         return ResponseEntity.ok(petService.get(petId));
     }
 
