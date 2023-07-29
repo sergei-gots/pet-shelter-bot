@@ -16,10 +16,7 @@ public class VolunteerService {
     }
 
     public Volunteer add(Volunteer volunteer) {
-        if (volunteer.isAvailable()) {
-            return volunteerRepository.save(volunteer);
-        }
-        throw new ShelterException("Пользователь не найден или недоступен для использования в качестве волонтёра.");
+        return volunteerRepository.save(volunteer);
     }
 
     public Volunteer delete(Volunteer volunteer) {

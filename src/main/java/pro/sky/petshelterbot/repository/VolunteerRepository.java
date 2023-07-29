@@ -11,8 +11,6 @@ public interface VolunteerRepository extends JpaRepository<Volunteer, Long> {
 
     Optional<Volunteer> findByChatId(Long chatId);
   
-    List<Volunteer> findByShelterIdAndAvailable(Long shelterId, boolean available);
-
     List<Volunteer> findAllByShelterId(Long shelterId);
   
     List<Volunteer> findByShelterAndAvailableIsTrue(Shelter shelter);
