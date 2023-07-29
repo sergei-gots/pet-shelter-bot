@@ -1,5 +1,6 @@
 package pro.sky.petshelterbot.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +17,14 @@ import pro.sky.petshelterbot.service.AdopterService;
 import pro.sky.petshelterbot.util.DataGenerator;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@WebMvcTest(controllers =  AdopterController.class)
+@WebMvcTest(controllers = AdopterController.class)
 class AdopterControllerTest {
 
 
@@ -32,7 +36,6 @@ class AdopterControllerTest {
 
 
     private final String URL = "/adopters/";
-    private final String URL_WITH_ID = "/adopters/{id}";
 
     @Autowired
     ObjectMapper objectMapper;
@@ -44,7 +47,7 @@ class AdopterControllerTest {
 
         mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get(URL_WITH_ID, adopter.getChatId().toString())
+                        .get(URL + "{id}", adopter.getChatId().toString())
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(result -> {
             MockHttpServletResponse mockHttpServletResponse =
@@ -58,12 +61,13 @@ class AdopterControllerTest {
                     .isNotNull()
                     .isEqualTo(adopter);
         });
-    }    
+    }
 
-    /** Test for @PutMapping 
-    * ResponseEntity<Pet> 
-    *       setAdopter(@PathVariable Long petId, @RequestBody Adopter adopter);
-    **/
+    /**
+     * Test for @PutMapping
+     * ResponseEntity<Pet>
+     * setAdopter(@PathVariable Long petId, @RequestBody Adopter adopter);
+     **/
     @Test
     public void setAdopterForPet() throws Exception {
         Shelter shelter = DataGenerator.generateShelter();
@@ -72,53 +76,154 @@ class AdopterControllerTest {
         when(adopterService.setAdopterForPet(pet.getId(), adopter)).thenReturn(pet);
 
         mockMvc.perform(
-                MockMvcRequestBuilders
-                        .put(URL + "/setAdopterForPet/{id}", pet.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(adopter))
-                        )
+                        MockMvcRequestBuilders
+                                .put(URL + "/setAdopterForPet/{id}", pet.getId())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(adopter))
+                )
                 .andExpect(result -> {
-            MockHttpServletResponse mockHttpServletResponse =
-                    result.getResponse();
-            Pet actual = objectMapper.readValue(
-                    mockHttpServletResponse.getContentAsString(StandardCharsets.UTF_8),
-                    Pet.class
-            );
-            assertThat(mockHttpServletResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
-            assertThat(actual)
-                    .isNotNull()
-                    .isEqualTo(pet);
-        });
-        
+                    MockHttpServletResponse mockHttpServletResponse =
+                            result.getResponse();
+                    Pet actual = objectMapper.readValue(
+                            mockHttpServletResponse.getContentAsString(StandardCharsets.UTF_8),
+                            Pet.class
+                    );
+                    assertThat(mockHttpServletResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
+                    assertThat(actual)
+                            .isNotNull()
+                            .isEqualTo(pet);
+                });
+
     }
 
-    /** Test for @PutMapping("/prolongTrial14/{petId}")
-     *  ResponseEntity<Pet> prolongTrial14(@PathVariable Long petId) 
+    /**
+     * Test for @PutMapping("/prolongTrial14/{petId}")
+     * ResponseEntity<Pet> prolongTrial14(@PathVariable Long petId)
      */
     @Test
-    void prolongTrial14() {
-        
+    void prolongTrial14() throws Exception {
+        Pet pet = DataGenerator.generatePet();
+        long days = 14L;
+
+        when(adopterService.prolongTrialForNDays(pet.getId(), days)).thenReturn(pet);
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders
+                                .put(URL + "/prolongTrial14/{petId}", pet.getId())
+                                .contentType(MediaType.APPLICATION_JSON)
+
+                )
+                .andExpect(result -> {
+                            MockHttpServletResponse response = result.getResponse();
+                            Pet actual = objectMapper.readValue(
+                                    response.getContentAsString(StandardCharsets.UTF_8),
+                                    Pet.class
+                            );
+                            assertThat(response.getStatus())
+                                    .isEqualTo(HttpStatus.OK.value());
+                            assertThat(actual)
+                                    .isNotNull()
+                                    .isEqualTo(pet);
+                        }
+                );
     }
 
-    /** Test for @PutMapping("/prolongTrial30/{petId}")
-     *  ResponseEntity<Pet> prolongTrial30(@PathVariable Long petId) 
+    /**
+     * Test for @PutMapping("/prolongTrial30/{petId}")
+     * ResponseEntity<Pet> prolongTrial30(@PathVariable Long petId)
      */
     @Test
-    void prolongTrial30() {
+    void prolongTrial30() throws Exception {
+        Pet pet = DataGenerator.generatePet();
+        long days = 30L;
+
+        when(adopterService.prolongTrialForNDays(pet.getId(), days)).thenReturn(pet);
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders
+                                .put(URL + "/prolongTrial30/{petId}", pet.getId())
+                                .contentType(MediaType.APPLICATION_JSON)
+
+                )
+                .andExpect(result -> {
+                            MockHttpServletResponse response = result.getResponse();
+                            Pet actual = objectMapper.readValue(
+                                    response.getContentAsString(StandardCharsets.UTF_8),
+                                    Pet.class
+                            );
+                            assertThat(response.getStatus())
+                                    .isEqualTo(HttpStatus.OK.value());
+                            assertThat(actual)
+                                    .isNotNull()
+                                    .isEqualTo(pet);
+                        }
+                );
     }
 
-    
-    /**  Test @DeleteMapping("cancelTrial/{petId}")
+
+    /**
+     * Test @DeleteMapping("cancelTrial/{petId}")
      */
     @Test
-    void cancelTrial() {
-        
+    void cancelTrial() throws Exception {
+        Pet pet = DataGenerator.generatePet();
+
+        when(adopterService.cancelTrial(pet.getId())).thenReturn(pet);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put(URL + "cancelTrial/{petId}", pet.getId())
+                        .contentType(MediaType.APPLICATION_JSON
+                        )
+
+
+                )
+                .andExpect(result -> {
+                            MockHttpServletResponse response = result.getResponse();
+                            assertThat(response.getStatus())
+                                    .isEqualTo(HttpStatus.OK.value());
+                            Pet actual = objectMapper.readValue(
+                                    response.getContentAsString(StandardCharsets.UTF_8),
+                                    Pet.class
+                            );
+                            assertThat(actual)
+                                    .isNotNull()
+                                    .isEqualTo(pet);
+                        }
+                );
     }
 
-    /** Test @GetMapping(path = "/all-ready-to-adopt") */
+    /**
+     * Test @GetMapping(path = "/all-ready-to-adopt")
+     */
     @Test
-    void getAllReadyToAdopt() {
-        
+    void getAllReadyToAdopt() throws Exception {
+        List<Adopter> adopters = Stream
+                .generate(DataGenerator::generateAdopter)
+                .limit(DataGenerator.generateCount())
+                .collect(Collectors.toList());
+
+        when(adopterService.getAllReadyToAdopt(0, 10))
+                .thenReturn(adopters);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get(URL + "/all-ready-to-adopt/")
+                        .contentType(MediaType.APPLICATION_JSON
+                        )
+                )
+                .andExpect(result -> {
+                            MockHttpServletResponse response = result.getResponse();
+                            assertThat(response.getStatus())
+                                    .isEqualTo(HttpStatus.OK.value());
+                            List<Adopter> actual = objectMapper.readValue(
+                                    response.getContentAsString(StandardCharsets.UTF_8),
+                                    new TypeReference<>() {
+                                    }
+                            );
+                            assertThat(actual)
+                                    .isNotNull()
+                                    .containsExactlyInAnyOrderElementsOf(adopters);
+                        }
+                );
     }
-    
+
 }

@@ -44,7 +44,7 @@ public class AdopterController {
     }
 
     /* PUT /pet/cancelTrial/{petId} */
-    @DeleteMapping("cancelTrial/{petId}")
+    @PutMapping("cancelTrial/{petId}")
     public ResponseEntity<Pet> cancelTrial(@PathVariable Long petId) {
         return ResponseEntity.ok(adopterService.cancelTrial(petId));
     }

@@ -33,6 +33,10 @@ public class DataGenerator {
 
     }
 
+    public static Pet generatePet() {
+        return generatePet(generateShelter());
+    }
+
     public static Pet generatePet (Shelter shelter) {
         return new Pet(
                 faker.random().nextLong(),
