@@ -52,10 +52,10 @@ public class PetController {
             "Распечатывает страницу из списка всех котов, " +
             "то есть как находящихся в приюте, так и адоптируемых или находящихся в адоптации. " +
             "Поиск в методах осуществляется по shelter_id.")
-    public ResponseEntity<List<Pet>> getShelterPets(
+    public ResponseEntity<List<Pet>> getPetsByShelterId(
             @PathVariable Long shelterId,
-            @RequestParam(defaultValue = "0") Integer pageNo,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
+            @RequestParam(defaultValue = "0", required = false)  Integer pageNo,
+            @RequestParam(defaultValue = "10", required = false) Integer pageSize) {
         return ResponseEntity.ok(petService.getByShelterId(shelterId, pageNo, pageSize));
     }
 

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pro.sky.petshelterbot.entity.Pet;
 import pro.sky.petshelterbot.entity.Report;
+import pro.sky.petshelterbot.exceptions.ShelterException;
 import pro.sky.petshelterbot.repository.PetRepository;
 import pro.sky.petshelterbot.repository.ReportRepository;
 
@@ -16,25 +17,22 @@ import java.util.List;
 public class ReportService {
 
     private final ReportRepository reportRepository;
-    private final PetRepository petRepository;
 
     public ReportService(ReportRepository reportRepository, PetRepository petRepository) {
         this.reportRepository = reportRepository;
-        this.petRepository = petRepository;
     }
 
-    private String getPetSpecies(Long petId) {
-        Pet pet = petRepository.getPetById(petId);
-        return pet.getSpecies();
+    public Report get(Long id) {
+        return reportRepository.findById(id)
+                .orElseThrow(()->new ShelterException("Report with id=" + id + " is not listed in the db."));
     }
-
-    public List<Report> findAllByPetId(Long petId, Integer pageNo, Integer pageSize) {
+    public List<Report> getAllByPetId(Long petId, Integer pageNo, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Report> reportPage = reportRepository.findAllByPetId(petId, pageable);
         if (reportPage.hasContent()) {
             return reportPage.getContent();
         } else {
-            return new ArrayList<Report>();
+            return new ArrayList<>();
         }
     }
 
@@ -42,53 +40,32 @@ public class ReportService {
         return reportRepository.findAllOverdueReports();
     }
 
-    /* Нужно добавить shelter_id для выборки - в процессе */
     public List<Pet> findOverdueReports(Long shelterId) {
 
         return reportRepository.findOverdueReports(shelterId);
     }
 
-    /**
-     * GET /dog-shelter/reports/all
-     *
-     * @param shelterId
-     * @param pageNo
-     * @param pageSize
-     * @return
-     */
-    public List<Report> findAllReportsByShelterId(Long shelterId, Integer pageNo, Integer pageSize) {
+    public List<Report> getAllByShelterId(Long shelterId, Integer pageNo, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Report> reportPage = reportRepository.findAllByShelterId(shelterId, pageable);
         if (reportPage.hasContent()) {
             return reportPage.getContent();
         } else {
-            return new ArrayList<Report>();
+            return new ArrayList<>();
         }
     }
 
-    /**
-     * PUT /dog-shelter/reports/
-     *
-     * @param report
-     * @return
-     */
-    public Report updateReport(Report report) {
-        if (!report.isApproved()) {
-            Long adopterId = report.getPet().getAdopter().getChatId();
-            /* Код отправки сообщения пользователю о ненадлежащем заполнении отчета. */
-        }
-        reportRepository.save(report);
-        return report;
+    public Report update(Report report) {
+        return reportRepository.save(report);
     }
 
-    /* GET /dog-shelter/reports/to-review */
-    public List<Report> findAllReportsToReview(Long shelterId, Integer pageNo, Integer pageSize) {
+    public List<Report> getAllReportsByShelterIdToReview(Long shelterId, Integer pageNo, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Report> reportPage = reportRepository.findAllUncheckedReports(shelterId, pageable);
         if (reportPage.hasContent()) {
             return reportPage.getContent();
         } else {
-            return new ArrayList<Report>();
+            return new ArrayList<>();
         }
     }
 }

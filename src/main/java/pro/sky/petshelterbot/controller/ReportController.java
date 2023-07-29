@@ -21,13 +21,19 @@ public class ReportController {
         this.reportService = reportService;
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping("/{id}")
+    @ApiResponse(description = "Получение отчёта по id")
+    public ResponseEntity<Report> get(@PathVariable Long id) {
+        return ResponseEntity.ok(reportService.get(id));
+    }
+
+    @GetMapping(path = "/pet/{petId}")
     @ApiResponse(description = "Распечатывает в хронологическом порядке все отчёты по конкретному животному.")
-    public ResponseEntity<List<Report>> findAllReportsByPetId(
-            @PathVariable Long id,
+    public ResponseEntity<List<Report>> getAllByPetId(
+            @PathVariable Long petId,
             @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize) {
-        return ResponseEntity.ok(reportService.findAllByPetId(id, pageNo, pageSize));
+        return ResponseEntity.ok(reportService.getAllByPetId(petId, pageNo, pageSize));
     }
 
     @GetMapping("/overdue/{shelterId}")
@@ -37,7 +43,7 @@ public class ReportController {
     }
 
     @GetMapping("/all/{shelterId}")
-    @ApiResponse(description = "" +
+    @ApiResponse(description =
             "Распечатывает все имеющиеся в базе данных отчёты пользователей, сортированные по дате. " +
             "В рамках конкретного приюта.")
     public ResponseEntity<List<Report>> findAllReports(
@@ -45,7 +51,7 @@ public class ReportController {
             @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize
     ) {
-        return ResponseEntity.ok(reportService.findAllReportsByShelterId(shelterId, pageNo, pageSize));
+        return ResponseEntity.ok(reportService.getAllByShelterId(shelterId, pageNo, pageSize));
     }
 
     @PutMapping()
@@ -55,7 +61,7 @@ public class ReportController {
             "то пользователю отсылается сообщение с рекомендацией" +
             "заполнять отчёты более полно.")
     public ResponseEntity<Report> updateReport(@RequestBody Report report) {
-        return ResponseEntity.ok(reportService.updateReport(report));
+        return ResponseEntity.ok(reportService.update(report));
     }
 
     @GetMapping("/to-review/{shelterId}")
@@ -65,6 +71,6 @@ public class ReportController {
             @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize
     ) {
-        return ResponseEntity.ok(reportService.findAllReportsToReview(shelterId, pageNo, pageSize));
+        return ResponseEntity.ok(reportService.getAllReportsByShelterIdToReview(shelterId, pageNo, pageSize));
     }
 }

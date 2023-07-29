@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -82,8 +83,8 @@ class PetControllerTest {
     public void getShelterPets() throws Exception  {
 
         int nPetsCount = DataGenerator.generateCount();
-        int pageNb = 1;
-        int pageSize = nPetsCount%2;
+        Integer pageNb = 1;
+        Integer pageSize = nPetsCount/2;
         Shelter shelter = DataGenerator.generateShelter();
         ArrayList<Pet> pets = Stream
                 .generate(() -> DataGenerator.generatePet(shelter))
@@ -92,7 +93,50 @@ class PetControllerTest {
                         Collectors.toCollection(
                                 ArrayList::new)
                 );
-        List<Pet> expected = pets.subList(pageSize, pageSize * 2);
+        List<Pet> expected = pets.subList(0, (pets.size()<10)? pets.size() : 9);//pageSize, pageSize * 2);
+        when(petService.getByShelterId(
+                shelter.getId(),
+                pageNb, pageSize)).thenReturn(expected);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders
+                        .get(URL + "/in-shelter/{shelterId}", shelter.getId())
+                        .queryParam("pageNo", pageNb.toString())
+                        .queryParam("pageSize", pageSize.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(result -> {
+            MockHttpServletResponse mockHttpServletResponse =
+                    result.getResponse();
+            Collection<Pet> actual = objectMapper.readValue(
+                    mockHttpServletResponse.getContentAsString(StandardCharsets.UTF_8),
+                    new TypeReference<>() {
+                    }
+            );
+            assertThat(actual)
+                    .isNotNull()
+                    .hasSize(expected.size())
+                    .containsExactlyInAnyOrderElementsOf(expected);
+        });
+    }
+
+    @Test
+    public void getShelterPetsWithDefaultPageNbAndSize() throws Exception  {
+
+        int nPetsCount = DataGenerator.generateCount();
+        int pageNb = 0;
+        int pageSize = 10;
+        Shelter shelter = DataGenerator.generateShelter();
+        ArrayList<Pet> pets = Stream
+                .generate(() -> DataGenerator.generatePet(shelter))
+                .limit(nPetsCount)
+                .collect(
+                        Collectors.toCollection(
+                                ArrayList::new)
+                );
+        if(pets.size() < pageSize) {
+            pageSize = pets.size();
+        }
+        List<Pet> expected = pets.subList(pageNb, pageSize);
         when(petService.getByShelterId(
                 shelter.getId(),
                 pageNb, pageSize)).thenReturn(expected);
@@ -170,19 +214,19 @@ class PetControllerTest {
         MultipartFile img;
         MockMultipartFile file
                 = new MockMultipartFile(
-                "file",
-                "hello.txt",
+                "img",
+                "test.bin",
                 MediaType.MULTIPART_FORM_DATA_VALUE,
-                new byte[100]
+                new byte[10]
         );
 
-    when(petService.get(pet.getId())).thenReturn(pet);
-        //ToDo serialize multipartFile into request body
+    when(petService.addImg(pet.getId(), file)).thenReturn(pet);
+
         mockMvc.perform(
                 MockMvcRequestBuilders
-                        .post(URL + "img/{petId}", pet.getId().toString())
+                        .multipart(HttpMethod.POST, URL + "img/{petId}", pet.getId().toString())
+                        .file(file)
                         .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-                        .content(objectMapper.writeValueAsBytes(file))
         ).andExpect(result -> {
         MockHttpServletResponse mockHttpServletResponse =
                 result.getResponse();

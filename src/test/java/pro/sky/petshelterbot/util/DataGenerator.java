@@ -2,10 +2,9 @@ package pro.sky.petshelterbot.util;
 
 import com.github.javafaker.Faker;
 
-import pro.sky.petshelterbot.entity.Adopter;
-import pro.sky.petshelterbot.entity.Pet;
-import pro.sky.petshelterbot.entity.Shelter;
-import pro.sky.petshelterbot.entity.Volunteer;
+import pro.sky.petshelterbot.entity.*;
+
+import java.time.LocalDate;
 
 public class DataGenerator {
 
@@ -61,4 +60,24 @@ public class DataGenerator {
     public static Volunteer generateVolunteer() {
         return generateVolunteer(generateShelter());
     }
+
+    public static Report generateReport(Pet pet) {
+        return new Report(faker.random().nextLong(),
+                pet,
+                LocalDate.of(faker.random().nextInt(2023,2023),
+                        faker.random().nextInt(1,12),
+                        faker.random().nextInt(1,28)),
+                faker.lorem().sentence(),
+                faker.lorem().sentence(),
+                faker.lorem().sentence(),
+                faker.company().url(),
+                faker.random().nextBoolean(),
+                faker.random().nextBoolean());
+    }
+
+    public static Report generateReport() {
+      return generateReport(generatePet());
+    }
+
+
 }

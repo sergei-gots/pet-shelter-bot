@@ -77,8 +77,7 @@ public class PetService {
         if (imgPath != null) {
             pet.setImgPath(imgPath);
         }
-        petRepository.save(pet);
-        return pet;
+        return petRepository.save(pet);
     }
 
     public Pet add(String species, String name, Shelter shelter) {
@@ -111,7 +110,7 @@ public class PetService {
         if (petsPage.hasContent()) {
             return petsPage.getContent();
         } else {
-            return new ArrayList<Pet>();
+            return new ArrayList<>();
         }
     }
 

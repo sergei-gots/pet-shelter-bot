@@ -27,7 +27,6 @@ public class VolunteerController {
     }
 
     @GetMapping("/{id}")
-    @ApiResponse(description = "Возвращает список всех волонтёров шелтера")
     public ResponseEntity<Volunteer> get(@PathVariable Long id) {
         return ResponseEntity.ok(volunteerService.get(id));
     }
