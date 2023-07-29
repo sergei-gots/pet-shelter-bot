@@ -69,8 +69,8 @@ class ReportControllerTest {
     void getAllByPetId() throws Exception {
         Pet pet = DataGenerator.generatePet();
         int nReportsCount = DataGenerator.generateCount();
-        int pageNb = 1;
-        int pageSize = nReportsCount>>1;
+        Integer pageNb = 1;
+        Integer pageSize = nReportsCount>>1;
         ArrayList<Report> reports = Stream
                 .generate(() -> DataGenerator.generateReport(pet))
                 .limit(nReportsCount)
@@ -83,6 +83,8 @@ class ReportControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get(URL + "/pet/{petId}", pet.getId().toString())
+                        .queryParam("pageNb", pageNb.toString())
+                        .queryParam("pageSize", pageSize.toString())
                         .contentType(MediaType.APPLICATION_JSON
                         )
                 )

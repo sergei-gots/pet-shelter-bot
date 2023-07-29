@@ -31,9 +31,9 @@ public class ReportController {
     @ApiResponse(description = "Распечатывает в хронологическом порядке все отчёты по конкретному животному.")
     public ResponseEntity<List<Report>> getAllByPetId(
             @PathVariable Long petId,
-            @RequestParam(defaultValue = "0") Integer pageNo,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
-        return ResponseEntity.ok(reportService.getAllByPetId(petId, pageNo, pageSize));
+            @RequestParam(defaultValue = "0", required = false) Integer pageNb,
+            @RequestParam(defaultValue = "10", required = false) Integer pageSize) {
+        return ResponseEntity.ok(reportService.getAllByPetId(petId, pageNb, pageSize));
     }
 
     @GetMapping("/overdue/{shelterId}")
