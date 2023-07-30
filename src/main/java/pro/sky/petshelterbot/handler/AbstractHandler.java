@@ -103,7 +103,7 @@ public abstract class AbstractHandler extends AbstractMetaHandler {
     }
 
     protected void reselectShelter(Adopter adopter) {
-        handleCancelVolunteerCall(adopter, "-");
+        handleCancelVolunteerCall(adopter, RESET_SHELTER);
         adopter.setShelter(null);
         showShelterChoiceMenu(adopter);
         adopter.setChatState(ChatState.ADOPTER_CHOICES_SHELTER);
@@ -364,6 +364,7 @@ public abstract class AbstractHandler extends AbstractMetaHandler {
         if( !key.startsWith(CANCEL_VOLUNTEER_CALL)
                 && !key.equals(CLOSE_DIALOG)
                 && !key.equals(CLOSE_DIALOG_RU)
+                && !key.equals(RESET_SHELTER)
         ) {
             return false;
         }

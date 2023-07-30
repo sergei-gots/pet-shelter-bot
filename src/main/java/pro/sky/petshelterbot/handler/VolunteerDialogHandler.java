@@ -152,14 +152,15 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
             return;
         }
         Adopter adopter = dialog.getAdopter();
+        dialogRepository.delete(dialog);
         logger.debug("processCloseDialog() - Dialog between " +
                         "adopter.getFirstName()=\"{}\" and  volunteer.getFirstName()=\"{}\" will be closed.",
                 adopter.getFirstName(), volunteer.getFirstName());
         sendPersonalizedMessage(volunteer,"консультация закрыта. ваш чат переведён в режим ожидания новых запросов от пользователей.");
         showShelterInfoMenu(adopter);
-        sendPersonalizedMessage(dialog.getAdopter(),"диалог с волонтёром шелтера завершён. Если у вас возникнут новые вопросы, " +
+        sendPersonalizedMessage(adopter,"диалог с волонтёром шелтера завершён. Если у вас возникнут новые вопросы, " +
                 "обращайтесь к нам ещё. Всего вам доброго-)");
-        dialogRepository.delete(dialog);
+
 
         Dialog nextDialog = nextDialogInWaiting(volunteer.getShelter());
         if(nextDialog == null) {
