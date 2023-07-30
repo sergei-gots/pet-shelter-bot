@@ -54,6 +54,12 @@ public class ReportController {
         return ResponseEntity.ok(reportService.getAllByShelterId(shelterId, pageNb, pageSize));
     }
 
+    @PutMapping("/disapprove/{id}")
+    @ApiResponse(description = "Отметить отчёт как заполненный не должным образом")
+    public ResponseEntity<Report> disapprove(@PathVariable Long id) {
+        return ResponseEntity.ok(reportService.disapprove(id));
+    }
+
     @PutMapping()
     @ApiResponse(description = "Обновляет страницу отчётов в базе данных. " +
             "Предполагается, что посылаемые отчёты могут иметь обновление в полях Report.checked и Report.approved. " +

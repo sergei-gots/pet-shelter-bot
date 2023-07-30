@@ -6,8 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pro.sky.petshelterbot.entity.Pet;
 import pro.sky.petshelterbot.entity.Report;
-import pro.sky.petshelterbot.exceptions.ShelterException;
-import pro.sky.petshelterbot.repository.PetRepository;
 import pro.sky.petshelterbot.repository.ReportRepository;
 
 import java.util.ArrayList;
@@ -18,13 +16,12 @@ public class ReportService {
 
     private final ReportRepository reportRepository;
 
-    public ReportService(ReportRepository reportRepository, PetRepository petRepository) {
+    public ReportService(ReportRepository reportRepository) {
         this.reportRepository = reportRepository;
     }
 
     public Report get(Long id) {
-        return reportRepository.findById(id)
-                .orElseThrow(()->new ShelterException("Report with id=" + id + " is not listed in the db."));
+        return reportRepository.getById(id);
     }
     public List<Report> getAllByPetId(Long petId, Integer pageNo, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
@@ -67,5 +64,12 @@ public class ReportService {
         } else {
             return new ArrayList<>();
         }
+    }
+
+    public Report disapprove(Long id) {
+        Report report = get(id);
+        report.setApproved(false);
+        report.setChecked(true);
+        return update(report);
     }
 }
