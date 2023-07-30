@@ -15,7 +15,7 @@ import pro.sky.petshelterbot.repository.*;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 
-public abstract class AbstractHandler extends AbstractUpdateHandler {
+public abstract class AbstractHandler extends AbstractMetaHandler {
 
     final protected TelegramBot telegramBot;
     final protected AdopterRepository adopterRepository;
@@ -360,7 +360,14 @@ public abstract class AbstractHandler extends AbstractUpdateHandler {
                 sender.getFirstName() + "> " + text);
     }
 
-    public void handleCancelVolunteerCall(Adopter adopter, String key) {
+    public boolean handleCancelVolunteerCall(Adopter adopter, String key) {
+        if( !key.startsWith(CANCEL_VOLUNTEER_CALL)
+                && !key.equals(CLOSE_DIALOG)
+                && !key.equals(CLOSE_DIALOG_RU)
+        ) {
+            return false;
+        }
+
         long chatId = adopter.getChatId();
         logger.debug("handleCancelVolunteerCall(adopter.chat_id={})", chatId);
         Dialog dialog = getDialogIfRequested(adopter);
@@ -380,17 +387,13 @@ public abstract class AbstractHandler extends AbstractUpdateHandler {
                     + adopter.getFirstName() + " завершён. Спасибо:)");
             volunteer.setAvailable(true);
             volunteerRepository.save(volunteer);
-            return;
+            return true;
         } else {
             notifyAllAvailableShelterVolunteersAboutNoRequest(adopter.getShelter());
         }
-
         sendMessage(chatId, "Заявка на диалог с волонтёром снята");
-        if(CANCEL_VOLUNTEER_CALL_ADOPTION_INFO_MENU.equals(key)) {
-            showAdoptionInfoMenu(adopter);
-        } else if(CANCEL_VOLUNTEER_CALL_SHELTER_INFO_MENU.equals(key)) {
-            showShelterInfoMenu(adopter);
-        }
+        showCurrentMenu(adopter);
+        return true;
     }
 
     protected void notifyAllAvailableShelterVolunteersAboutNoRequest(Shelter shelter) {
