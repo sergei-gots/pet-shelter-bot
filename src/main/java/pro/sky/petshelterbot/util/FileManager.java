@@ -4,8 +4,6 @@ package pro.sky.petshelterbot.util;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,12 +18,10 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 @Component
-public class FileManager {
+public class FileManager extends Logged {
     public static String REPORT_IMG_DIR = "reports";
     public static String PET_IMG_DIR = "pets";
     private final TelegramBotConfiguration telegramBotConfiguration;
-
-    final protected Logger logger = LoggerFactory.getLogger(getClass());
 
     public FileManager(TelegramBotConfiguration telegramBotConfiguration) {
         this.telegramBotConfiguration = telegramBotConfiguration;
