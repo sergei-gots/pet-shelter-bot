@@ -1,6 +1,14 @@
 package pro.sky.petshelterbot.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.petshelterbot.entity.Adopter;
@@ -25,9 +33,29 @@ public class AdopterController {
         return ResponseEntity.ok(adopterService.get(id));
     }
 
-    /* PUT /pet/setAdopter */
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Assigns the adopter for a pet specified with petID.",
+                    content = {
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = Pet[].class),
+                                    examples = @ExampleObject(
+                                            description = "Example of a Pet is being adopted",
+                                            externalValue = "file://src/main/resources/swagger-doc/pet.json"
+                                    )
+                            )
+                    }
+            )
+    })
     @PutMapping("/setAdopterForPet/{petId}")
-    public ResponseEntity<Pet> setAdopterForPet(@PathVariable Long petId, @RequestBody Adopter adopter) {
+    public ResponseEntity<Pet> setAdopterForPet(
+            @Parameter(description="Pet ID", required = true, example = "1")
+                @NotNull @PathVariable Long petId,
+            @Parameter(description="Adopter", required = true, examples = @ExampleObject(
+                    externalValue = "file://src/main/resources/swagger-doc/adopter.json"))
+                @RequestBody Adopter adopter) {
         return ResponseEntity.ok(adopterService.setAdopterForPet(petId, adopter));
     }
 

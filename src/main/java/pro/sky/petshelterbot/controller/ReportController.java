@@ -94,7 +94,6 @@ public class ReportController {
                     }
             )
     })
-
     @PutMapping("/approve/{id}")
     @ApiResponse(description = "Mark the report as approved")
     public ResponseEntity<Report> approve(
@@ -120,7 +119,6 @@ public class ReportController {
                     }
             )
     })
-
     @PutMapping("/disapprove/{id}")
     public ResponseEntity<Report> disapprove(
             @Parameter(description="Report ID", required = true, example = "1")

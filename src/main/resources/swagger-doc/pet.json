@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "species": "cat",
+    "name": "Муська",
+    "shelter": {
+      "id": 1,
+      "name": "Шелтер для котиков",
+      "workTime": "Вт-Сб 11-19",
+      "address": "ул. Пеликанья, 3",
+      "tel": "8-800-CAT-SHELTER",
+      "email": "cats@shelter.org",
+      "type": "CATS"
+    },
+    "adopter": null,
+    "disabled": false,
+    "adoptionDate": "2023-08-31",
+    "imgPath": "/data/db/pet-shelter-bot/string/img/1/cat-muska.png"
+  }
+]
