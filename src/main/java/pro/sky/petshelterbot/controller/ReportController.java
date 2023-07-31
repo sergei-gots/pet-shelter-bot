@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,14 +49,31 @@ public class ReportController {
         return ResponseEntity.ok(reportService.getOverdueReports(shelterId));
     }
 
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Returns a page from the list of all the reports within the shelter specified with shelter ID." +
+                            "Sorted by date.",
+                    content = {
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = Report[].class),
+                                    examples = @ExampleObject(
+                                            description = "Example of a page then there is the only report in the shelter",
+                                            externalValue = "file://src/main/resources/swagger-doc/non-checked-reports.json"
+                                    )
+                            )
+                    }
+            )
+    })
     @GetMapping("/shelter/{shelterId}")
-    @ApiResponse(description =
-            "Распечатывает все имеющиеся в базе данных отчёты пользователей, сортированные по дате. " +
-            "В рамках конкретного приюта.")
     public ResponseEntity<List<Report>> getAllByShelterId(
-            @PathVariable Long shelterId,
-            @RequestParam(defaultValue = "0") Integer pageNb,
-            @RequestParam(defaultValue = "10") Integer pageSize
+            @Parameter(description="Shelter ID", required = true, example = "1")
+                @NotNull @PathVariable Long shelterId,
+            @Parameter(description="Page number")
+                @RequestParam(defaultValue = "0", required = false)  Integer pageNb,
+            @Parameter(description="Number of got entries within the page")
+            @RequestParam(defaultValue = "10", required = false) Integer pageSize
     ) {
         return ResponseEntity.ok(reportService.getAllByShelterId(shelterId, pageNb, pageSize));
     }
@@ -76,6 +94,7 @@ public class ReportController {
                     }
             )
     })
+
     @PutMapping("/approve/{id}")
     @ApiResponse(description = "Mark the report as approved")
     public ResponseEntity<Report> approve(
@@ -101,6 +120,7 @@ public class ReportController {
                     }
             )
     })
+
     @PutMapping("/disapprove/{id}")
     public ResponseEntity<Report> disapprove(
             @Parameter(description="Report ID", required = true, example = "1")
@@ -118,12 +138,31 @@ public class ReportController {
         return ResponseEntity.ok(reportService.update(report));
     }
 
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Returns a page from the list of all the reports within the shelter specified with shelter ID " +
+                            "which are unchecked.",
+                    content = {
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = Report[].class),
+                                    examples = @ExampleObject(
+                                            description = "Example of a page then there is the only report in the shelter",
+                                            externalValue = "file://src/main/resources/swagger-doc/non-checked-reports.json"
+                                    )
+                            )
+                    }
+            )
+    })
     @GetMapping("/to-review/{shelterId}")
-    @ApiResponse(description = "Распечатывает все отчёты пользователей, требующие проверки.")
     public ResponseEntity<List<Report>> getAllReportsToReview(
-            @PathVariable Long shelterId,
-            @RequestParam(defaultValue = "0") Integer pageNb,
-            @RequestParam(defaultValue = "10") Integer pageSize
+            @Parameter(description="Shelter ID", required = true, example = "1")
+                @NotNull @PathVariable Long shelterId,
+            @Parameter(description="Page number")
+                @RequestParam(defaultValue = "0", required = false)  Integer pageNb,
+            @Parameter(description="Number of got entries within the page")
+                @RequestParam(defaultValue = "10", required = false) Integer pageSize
     ) {
         return ResponseEntity.ok(reportService.getAllReportsByShelterIdToReview(shelterId, pageNb, pageSize));
     }
