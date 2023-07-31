@@ -1,7 +1,7 @@
 {
-  "id": 1,
-  "species": "cat",
-  "name": "Муська",
+  "chatId": 123456789,
+  "firstName": "Sergei",
+  "phoneNumber": "77271234567",
   "shelter": {
     "id": 1,
     "name": "Шелтер для котиков",
@@ -11,8 +11,6 @@
     "email": "cats@shelter.org",
     "type": "CATS"
   },
-  "adopter": null,
-  "disabled": false,
-  "adoptionDate": "2023-08-31",
-  "imgPath": "/data/db/pet-shelter-bot/string/img/1/cat-muska.png"
+  "chatState": "INITIAL_STATE",
+  "chatMenuMessageId": 1017
 }
