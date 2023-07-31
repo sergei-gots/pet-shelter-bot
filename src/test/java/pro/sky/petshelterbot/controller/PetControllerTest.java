@@ -101,7 +101,7 @@ class PetControllerTest {
         mockMvc.perform(
                 MockMvcRequestBuilders
                         .get(URL + "/in-shelter/{shelterId}", shelter.getId())
-                        .queryParam("pageNo", pageNb.toString())
+                        .queryParam("pageNb", pageNb.toString())
                         .queryParam("pageSize", pageSize.toString())
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(result -> {
@@ -144,6 +144,8 @@ class PetControllerTest {
         mockMvc.perform(
                 MockMvcRequestBuilders
                         .get(URL + "/in-shelter/{shelterId}", shelter.getId())
+                        .requestAttr("pageNb", pageNb)
+                        .requestAttr("pageSize", pageSize)
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(result -> {
             MockHttpServletResponse mockHttpServletResponse =

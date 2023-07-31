@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Pet;
+import pro.sky.petshelterbot.entity.Report;
 import pro.sky.petshelterbot.service.AdopterService;
 
 import java.util.List;
@@ -77,11 +78,33 @@ public class AdopterController {
         return ResponseEntity.ok(adopterService.cancelTrial(petId));
     }
 
+
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Returns a page from the list of all the adopters within the shelter specified with shelter ID " +
+                            "which are ready to adopt a pet.",
+                    content = {
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = Report[].class),
+                                    examples = @ExampleObject(
+                                            description = "Example of a page then there is the only adopter ready to adopt within the shelter",
+                                            externalValue = "file://src/main/resources/swagger-doc/adopters.json"
+                                    )
+                            )
+                    }
+            )
+    })
     @GetMapping(path = "/all-ready-to-adopt/{shelterId}")
     public ResponseEntity<List<Adopter>> getAllReadyToAdopt(
-            @PathVariable Long shelterId,
-            @RequestParam(defaultValue = "0") Integer pageNb,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
+            @Parameter(description="Shelter ID", required = true, example = "1")
+            @NotNull @PathVariable Long shelterId,
+            @Parameter(description="Page number")
+            @RequestParam(defaultValue = "0", required = false)  Integer pageNb,
+            @Parameter(description="Number of entries within the page")
+            @RequestParam(defaultValue = "10", required = false) Integer pageSize
+            ) {
         return ResponseEntity.ok(adopterService.getAllReadyToAdoptByShelterId(shelterId, pageNb, pageSize));
     }
 
