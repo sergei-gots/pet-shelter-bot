@@ -14,7 +14,7 @@ public class ShelterService {
         this.shelterRepository = shelterRepository;
     }
 
-    public Collection<Shelter> findAll() {
+    public Collection<Shelter> getAll() {
         return shelterRepository.findAll();
     }
 

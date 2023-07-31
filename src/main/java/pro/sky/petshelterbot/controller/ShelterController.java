@@ -55,8 +55,8 @@ public class ShelterController {
             )
     })
     @GetMapping
-    public ResponseEntity<Collection<Shelter>> findAll() {
-        return ResponseEntity.ok(shelterService.findAll());
+    public ResponseEntity<Collection<Shelter>> getAll() {
+        return ResponseEntity.ok(shelterService.getAll());
     }
 
     @DeleteMapping(path = "/{id}")

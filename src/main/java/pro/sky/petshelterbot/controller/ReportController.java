@@ -1,7 +1,13 @@
 package pro.sky.petshelterbot.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.petshelterbot.entity.Pet;
@@ -54,16 +60,51 @@ public class ReportController {
         return ResponseEntity.ok(reportService.getAllByShelterId(shelterId, pageNb, pageSize));
     }
 
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Marks the report as checked and approved.",
+                    content = {
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = Report[].class),
+                                    examples = @ExampleObject(
+                                            description = "Example of a returned checked report marked as approved",
+                                            externalValue = "file://src/main/resources/swagger-doc/approved-report.json"
+                                    )
+                            )
+                    }
+            )
+    })
     @PutMapping("/approve/{id}")
     @ApiResponse(description = "Mark the report as approved")
-    public ResponseEntity<Report> approve(@PathVariable Long id) {
+    public ResponseEntity<Report> approve(
+            @Parameter(description="Report ID", required = true, example = "1")
+            @PathVariable Long id) {
         return ResponseEntity.ok(reportService.approve(id));
     }
 
 
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Marks the report as filled inappropriately.",
+                    content = {
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = Report[].class),
+                                    examples = @ExampleObject(
+                                            description = "Example of a returned report marked as disapproved",
+                                            externalValue = "file://src/main/resources/swagger-doc/disapproved-report.json"
+                                    )
+                            )
+                    }
+            )
+    })
     @PutMapping("/disapprove/{id}")
-    @ApiResponse(description = "Mark the report as filled inappropriately.")
-    public ResponseEntity<Report> disapprove(@PathVariable Long id) {
+    public ResponseEntity<Report> disapprove(
+            @Parameter(description="Report ID", required = true, example = "1")
+                @PathVariable Long id) {
         return ResponseEntity.ok(reportService.disapprove(id));
     }
 
