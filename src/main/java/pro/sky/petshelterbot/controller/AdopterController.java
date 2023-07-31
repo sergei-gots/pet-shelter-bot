@@ -1,6 +1,8 @@
 package pro.sky.petshelterbot.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -34,29 +36,29 @@ public class AdopterController {
         return ResponseEntity.ok(adopterService.get(id));
     }
 
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Assigns the adopter for a pet specified with petID.",
-                    content = {
-                            @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Pet[].class),
-                                    examples = @ExampleObject(
-                                            description = "Example of a Pet is being adopted",
-                                            externalValue = "file://src/main/resources/swagger-doc/pet.json"
+    @Operation(summary = "Assigns the adopter for a pet specified with petID",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = {
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = Pet.class),
+                                            examples = @ExampleObject(
+                                                    description = "Example of a Pet is being adopted",
+                                                    externalValue = "file://src/main/resources/swagger-doc/pet.json"
+                                            )
                                     )
-                            )
-                    }
-            )
-    })
+                            }
+                    )
+            })
     @PutMapping("/setAdopterForPet/{petId}")
     public ResponseEntity<Pet> setAdopterForPet(
-            @Parameter(description="Pet ID", required = true, example = "1")
-                @NotNull @PathVariable Long petId,
-            @Parameter(description="Adopter", required = true, examples = @ExampleObject(
+            @Parameter(description = "Pet ID", required = true, example = "1")
+            @NotNull @PathVariable Long petId,
+            @Parameter(description = "Adopter", required = true, examples = @ExampleObject(
                     externalValue = "file://src/main/resources/swagger-doc/adopter.json"))
-                @RequestBody Adopter adopter) {
+            @RequestBody Adopter adopter) {
         return ResponseEntity.ok(adopterService.setAdopterForPet(petId, adopter));
     }
 
@@ -79,32 +81,34 @@ public class AdopterController {
     }
 
 
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Returns a page from the list of all the adopters within the shelter specified with shelter ID " +
-                            "which are ready to adopt a pet.",
-                    content = {
-                            @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Report[].class),
-                                    examples = @ExampleObject(
-                                            description = "Example of a page then there is the only adopter ready to adopt within the shelter",
-                                            externalValue = "file://src/main/resources/swagger-doc/adopters.json"
+    @Operation(summary = "Returns a page from the list of all the adopters within the shelter specified with shelter ID " +
+            "which are ready to adopt a pet.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Page from the list of all the adopters within the shelter specified with shelter ID " +
+                                    "which are ready to adopt a pet.",
+                            content = {
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            array =@ArraySchema(schema = @Schema(implementation = Adopter.class)),
+                                            examples = @ExampleObject(
+                                                    description = "Example of a page then there is the only adopter ready to adopt within the shelter",
+                                                    externalValue = "file://src/main/resources/swagger-doc/adopters.json"
+                                            )
                                     )
-                            )
-                    }
-            )
-    })
+                            }
+                    )
+            })
     @GetMapping(path = "/all-ready-to-adopt/{shelterId}")
     public ResponseEntity<List<Adopter>> getAllReadyToAdopt(
-            @Parameter(description="Shelter ID", required = true, example = "1")
-                @NotNull @PathVariable Long shelterId,
-            @Parameter(description="Page number")
-                @RequestParam(defaultValue = "0", required = false)  Integer pageNb,
-            @Parameter(description="Number of entries within the page")
-                @RequestParam(defaultValue = "10", required = false) Integer pageSize
-            ) {
+            @Parameter(description = "Shelter ID", required = true, example = "1")
+            @NotNull @PathVariable Long shelterId,
+            @Parameter(description = "Page number")
+            @RequestParam(defaultValue = "0", required = false) Integer pageNb,
+            @Parameter(description = "Number of entries within the page")
+            @RequestParam(defaultValue = "10", required = false) Integer pageSize
+    ) {
         return ResponseEntity.ok(adopterService.getAllReadyToAdoptByShelterId(shelterId, pageNb, pageSize));
     }
 

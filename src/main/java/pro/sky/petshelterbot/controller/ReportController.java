@@ -1,6 +1,7 @@
 package pro.sky.petshelterbot.controller;
 
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Pet;
 import pro.sky.petshelterbot.entity.Report;
 import pro.sky.petshelterbot.service.ReportService;
@@ -57,7 +59,7 @@ public class ReportController {
                     content = {
                             @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Report[].class),
+                                    array = @ArraySchema(schema = @Schema(implementation = Report.class)),
                                     examples = @ExampleObject(
                                             description = "Example of a page then there is the only report in the shelter",
                                             externalValue = "file://src/main/resources/swagger-doc/non-checked-reports.json"
@@ -85,7 +87,7 @@ public class ReportController {
                     content = {
                             @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Report[].class),
+                                    schema = @Schema(implementation = Report.class),
                                     examples = @ExampleObject(
                                             description = "Example of a returned checked report marked as approved",
                                             externalValue = "file://src/main/resources/swagger-doc/approved-report.json"
@@ -110,7 +112,7 @@ public class ReportController {
                     content = {
                             @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Report[].class),
+                                    schema = @Schema(implementation = Report.class),
                                     examples = @ExampleObject(
                                             description = "Example of a returned report marked as disapproved",
                                             externalValue = "file://src/main/resources/swagger-doc/disapproved-report.json"
@@ -144,7 +146,7 @@ public class ReportController {
                     content = {
                             @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Report[].class),
+                                    array = @ArraySchema(schema = @Schema(implementation = Report.class)),
                                     examples = @ExampleObject(
                                             description = "Example of a page then there is the only report in the shelter",
                                             externalValue = "file://src/main/resources/swagger-doc/non-checked-reports.json"
