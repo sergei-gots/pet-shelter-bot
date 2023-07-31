@@ -99,11 +99,11 @@ public class AdopterController {
     @GetMapping(path = "/all-ready-to-adopt/{shelterId}")
     public ResponseEntity<List<Adopter>> getAllReadyToAdopt(
             @Parameter(description="Shelter ID", required = true, example = "1")
-            @NotNull @PathVariable Long shelterId,
+                @NotNull @PathVariable Long shelterId,
             @Parameter(description="Page number")
-            @RequestParam(defaultValue = "0", required = false)  Integer pageNb,
+                @RequestParam(defaultValue = "0", required = false)  Integer pageNb,
             @Parameter(description="Number of entries within the page")
-            @RequestParam(defaultValue = "10", required = false) Integer pageSize
+                @RequestParam(defaultValue = "10", required = false) Integer pageSize
             ) {
         return ResponseEntity.ok(adopterService.getAllReadyToAdoptByShelterId(shelterId, pageNb, pageSize));
     }
