@@ -54,8 +54,15 @@ public class ReportController {
         return ResponseEntity.ok(reportService.getAllByShelterId(shelterId, pageNb, pageSize));
     }
 
+    @PutMapping("/approve/{id}")
+    @ApiResponse(description = "Mark the report as approved")
+    public ResponseEntity<Report> approve(@PathVariable Long id) {
+        return ResponseEntity.ok(reportService.approve(id));
+    }
+
+
     @PutMapping("/disapprove/{id}")
-    @ApiResponse(description = "Отметить отчёт как заполненный не должным образом")
+    @ApiResponse(description = "Mark the report as filled inappropriately.")
     public ResponseEntity<Report> disapprove(@PathVariable Long id) {
         return ResponseEntity.ok(reportService.disapprove(id));
     }

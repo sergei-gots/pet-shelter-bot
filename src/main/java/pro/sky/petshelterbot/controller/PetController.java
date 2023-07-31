@@ -1,7 +1,13 @@
 package pro.sky.petshelterbot.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,18 +51,33 @@ public class PetController {
         return ResponseEntity.ok(petService.delete(pet));
     }
 
-    /* GET /cat-shelter/pets
-    GET /dog-shelter/pets */
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Returns a page from the list of the pets within the shelter specified with shelter ID",
+                    content = {
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = Pet[].class),
+                                    examples = @ExampleObject(
+                                            description = "Example of a page then there is the only pet in the shelter",
+                                            externalValue = "file://src/main/resources/swagger-doc/pets-in-shelter.json"
+                                    )
+                            )
+                    }
+            )
+    })
     @GetMapping("/in-shelter/{shelterId}")
-    @ApiResponse(description =
-            "Распечатывает страницу из списка всех котов, " +
-            "то есть как находящихся в приюте, так и адоптируемых или находящихся в адоптации. " +
-            "Поиск в методах осуществляется по shelter_id.")
     public ResponseEntity<List<Pet>> getPetsByShelterId(
-            @PathVariable Long shelterId,
-            @RequestParam(defaultValue = "0", required = false)  Integer pageNo,
-            @RequestParam(defaultValue = "10", required = false) Integer pageSize) {
-        return ResponseEntity.ok(petService.getByShelterId(shelterId, pageNo, pageSize));
+            @Parameter(description="Shelter ID", required = true, example = "1")
+                @NotNull @PathVariable Long shelterId,
+            @Parameter(description="Page number")
+                @RequestParam(defaultValue = "0", required = false)  Integer pageNb,
+            @Parameter(description="Number of got entries within the page")
+                @RequestParam(defaultValue = "10", required = false) Integer pageSize) {
+
+        return ResponseEntity.ok(petService.getByShelterId(shelterId, pageNb, pageSize));
+
     }
 
     @GetMapping("/{petId}")

@@ -1,5 +1,6 @@
 package pro.sky.petshelterbot.service;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -66,7 +67,14 @@ public class ReportService {
         }
     }
 
-    public Report disapprove(Long id) {
+    public Report approve(@NotNull Long id) {
+        Report report = get(id);
+        report.setApproved(true);
+        report.setChecked(true);
+        return update(report);
+    }
+
+    public Report disapprove(@NotNull Long id) {
         Report report = get(id);
         report.setApproved(false);
         report.setChecked(true);
