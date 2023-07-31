@@ -1,19 +1,18 @@
 package pro.sky.petshelterbot.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Pet;
 import pro.sky.petshelterbot.service.PetService;
 
@@ -53,22 +52,23 @@ public class PetController {
         return ResponseEntity.ok(petService.delete(pet));
     }
 
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Returns a page from the list of the pets within the shelter specified with shelter ID",
-                    content = {
-                            @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = Pet.class)),
-                                    examples = @ExampleObject(
-                                            description = "Example of a page then there is the only pet in the shelter",
-                                            externalValue = "file://src/main/resources/swagger-doc/pets-in-shelter.json"
+    @Operation(summary = "Returns a page of the list of the pets within the shelter specified with shelter ID",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Page of the list of the pets within the shelter specified with shelter ID",
+                            content = {
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            array = @ArraySchema(schema = @Schema(implementation = Pet.class)),
+                                            examples = @ExampleObject(
+                                                    description = "Example of a page then there is the only pet in the shelter",
+                                                    externalValue = "file://src/main/resources/swagger-doc/pets-in-shelter.json"
+                                            )
                                     )
-                            )
-                    }
-            )
-    })
+                            }
+                    )
+            })
     @GetMapping("/in-shelter/{shelterId}")
     public ResponseEntity<List<Pet>> getPetsByShelterId(
             @Parameter(description="Shelter ID", required = true, example = "1")

@@ -1,5 +1,6 @@
 package pro.sky.petshelterbot.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Pet;
 import pro.sky.petshelterbot.entity.Report;
 import pro.sky.petshelterbot.service.ReportService;
@@ -80,10 +80,12 @@ public class ReportController {
         return ResponseEntity.ok(reportService.getAllByShelterId(shelterId, pageNb, pageSize));
     }
 
-    @ApiResponses({
+    @Operation(
+            summary =  "Marks the report as checked and approved.",
+            responses = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Marks the report as checked and approved.",
+                    description = "The report checked and approved.",
                     content = {
                             @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -105,22 +107,23 @@ public class ReportController {
     }
 
 
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Marks the report as filled inappropriately.",
-                    content = {
-                            @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Report.class),
-                                    examples = @ExampleObject(
-                                            description = "Example of a returned report marked as disapproved",
-                                            externalValue = "file://src/main/resources/swagger-doc/disapproved-report.json"
+    @Operation(summary = "Marks the report as filled inappropriately.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Report marked as filled inappropriately.",
+                            content = {
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = Report.class),
+                                            examples = @ExampleObject(
+                                                    description = "Example of a returned report marked as disapproved",
+                                                    externalValue = "file://src/main/resources/swagger-doc/disapproved-report.json"
+                                            )
                                     )
-                            )
-                    }
-            )
-    })
+                            }
+                    )
+            })
     @PutMapping("/disapprove/{id}")
     public ResponseEntity<Report> disapprove(
             @Parameter(description="Report ID", required = true, example = "1")
@@ -138,23 +141,26 @@ public class ReportController {
         return ResponseEntity.ok(reportService.update(report));
     }
 
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Returns a page from the list of all the reports within the shelter specified with shelter ID " +
-                            "which are unchecked.",
-                    content = {
-                            @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = Report.class)),
-                                    examples = @ExampleObject(
-                                            description = "Example of a page then there is the only report in the shelter",
-                                            externalValue = "file://src/main/resources/swagger-doc/non-checked-reports.json"
+    @Operation(
+            summary = "Returns a page from the list of all the reports within the shelter specified with shelter ID " +
+                    "which are unchecked.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Page of the list of all the reports within the shelter specified with shelter ID " +
+                                    "which are unchecked.",
+                            content = {
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            array = @ArraySchema(schema = @Schema(implementation = Report.class)),
+                                            examples = @ExampleObject(
+                                                    description = "Example of a page then there is the only report in the shelter",
+                                                    externalValue = "file://src/main/resources/swagger-doc/non-checked-reports.json"
+                                            )
                                     )
-                            )
-                    }
-            )
-    })
+                            }
+                    )
+            })
     @GetMapping("/to-review/{shelterId}")
     public ResponseEntity<List<Report>> getAllReportsToReview(
             @Parameter(description="Shelter ID", required = true, example = "1")
