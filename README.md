@@ -23,12 +23,12 @@ Database objects are described with <b>liquibase</b>-log available in <b>resourc
 mvn package 
 
 java -jar target/pet-shelter-bot-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod --spring.datasource.username=<DB_USERNAME> --spring.datasource.password=<DB_PASSWORD> --telegram.bot.token=<YOUR_BOT_TELEGRAM_TOKEN>
-<br>
- where 
+<br><br>
+ where <br>
     <li>DB_USERNAME, DB_PASSWORD -  username/password to your Postgres DB Server
     <li>YOUR_TELEGRAM_BOT_TOKEN - a token you've got with Telegram @BotFather bot 
-<br>
-after successfull launc you can interact with the bot in Telegram.
+<br><br>
+After a successfull launch you can interact with the bot in Telegram.
 <br>There are two different roles/scenarios for users.
 Users can be <b>Vounteers</b> and <b>Adopter</b>
 <br>If the user is listed in the database as a shelter's volunteer 
