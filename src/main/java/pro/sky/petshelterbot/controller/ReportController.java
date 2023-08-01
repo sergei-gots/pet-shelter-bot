@@ -59,11 +59,13 @@ public class ReportController {
                     content = {
                             @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = Report.class)),
-                                    examples = @ExampleObject(
-                                            description = "Example of a page then there is the only report in the shelter",
-                                            externalValue = "file://src/main/resources/swagger-doc/non-checked-reports.json"
-                                    )
+                                    array = @ArraySchema(schema = @Schema(implementation = Report.class))
+                                   /* ToDo
+                                   ,
+                                       examples = @ExampleObject(
+                                            description = "Page then there is the only report in the shelter",
+                                            value = "classpath:swagger-doc/non-checked-reports.json"
+                                    )*/
                             )
                     }
             )
@@ -89,11 +91,15 @@ public class ReportController {
                     content = {
                             @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Report.class),
+                                    schema = @Schema(implementation = Report.class)
+                                    /* ToDo
+                                    ,
                                     examples = @ExampleObject(
                                             description = "Example of a returned checked report marked as approved",
                                             externalValue = "file://src/main/resources/swagger-doc/approved-report.json"
                                     )
+
+                                     */
                             )
                     }
             )
@@ -115,7 +121,9 @@ public class ReportController {
                             content = {
                                     @Content(
                                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = Report.class),
+                                            schema = @Schema(implementation = Report.class)
+                                            ,
+
                                             examples = @ExampleObject(
                                                     description = "Example of a returned report marked as disapproved",
                                                     externalValue = "file://src/main/resources/swagger-doc/disapproved-report.json"

@@ -4,10 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.MediaType;
@@ -15,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.petshelterbot.entity.Adopter;
 import pro.sky.petshelterbot.entity.Pet;
-import pro.sky.petshelterbot.entity.Report;
 import pro.sky.petshelterbot.service.AdopterService;
 
 import java.util.List;
@@ -43,11 +40,15 @@ public class AdopterController {
                             content = {
                                     @Content(
                                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = Pet.class),
+                                            schema = @Schema(implementation = Pet.class)
+                                            /* ToDo
+                                            ,
                                             examples = @ExampleObject(
                                                     description = "Example of a Pet is being adopted",
                                                     externalValue = "file://src/main/resources/swagger-doc/pet.json"
                                             )
+
+                                             */
                                     )
                             }
                     )
@@ -56,8 +57,12 @@ public class AdopterController {
     public ResponseEntity<Pet> setAdopterForPet(
             @Parameter(description = "Pet ID", required = true, example = "1")
             @NotNull @PathVariable Long petId,
-            @Parameter(description = "Adopter", required = true, examples = @ExampleObject(
-                    externalValue = "file://src/main/resources/swagger-doc/adopter.json"))
+            @Parameter(description = "Adopter", required = true
+                    /*ToDo
+                    , examples = @ExampleObject(
+
+                    externalValue = "file://src/main/resources/swagger-doc/adopter.json") */
+            )
             @RequestBody Adopter adopter) {
         return ResponseEntity.ok(adopterService.setAdopterForPet(petId, adopter));
     }
@@ -91,11 +96,15 @@ public class AdopterController {
                             content = {
                                     @Content(
                                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            array =@ArraySchema(schema = @Schema(implementation = Adopter.class)),
+                                            array =@ArraySchema(schema = @Schema(implementation = Adopter.class))
+                                            /* ToDo
+                                            ,
                                             examples = @ExampleObject(
                                                     description = "Example of a page then there is the only adopter ready to adopt within the shelter",
                                                     externalValue = "file://src/main/resources/swagger-doc/adopters.json"
                                             )
+
+                                             */
                                     )
                             }
                     )
