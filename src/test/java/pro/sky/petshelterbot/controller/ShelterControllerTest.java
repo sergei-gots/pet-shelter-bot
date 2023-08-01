@@ -72,7 +72,7 @@ class ShelterControllerTest {
                 .limit(2)
                 .collect(Collectors.toList());
 
-        when(shelterService.findAll()).thenReturn(expected);
+        when(shelterService.getAll()).thenReturn(expected);
 
         mockMvc.perform(
                 MockMvcRequestBuilders

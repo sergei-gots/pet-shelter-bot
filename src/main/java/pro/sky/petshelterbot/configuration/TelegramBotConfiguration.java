@@ -15,6 +15,10 @@ public class TelegramBotConfiguration {
     @Value("${db.img.path}")
     private String imgPath;
 
+    @Value("${img.upload.path}")
+    private String imgUploadPath;
+
+
     @Bean
     public TelegramBot telegramBot() {
         TelegramBot bot = new TelegramBot(token);
@@ -24,6 +28,10 @@ public class TelegramBotConfiguration {
 
     public String getImgPath() {
         return imgPath;
+    }
+
+    public String getImgUploadPath() {
+        return imgUploadPath;
     }
 
 }

@@ -4,9 +4,9 @@ package pro.sky.petshelterbot.util;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import pro.sky.petshelterbot.configuration.TelegramBotConfiguration;
 import pro.sky.petshelterbot.entity.Pet;
 
@@ -14,14 +14,14 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 @Component
-public class FileManager {
+public class FileManager extends Logged {
     public static String REPORT_IMG_DIR = "reports";
+    public static String PET_IMG_DIR = "pets";
     private final TelegramBotConfiguration telegramBotConfiguration;
-
-    final protected Logger logger = LoggerFactory.getLogger(getClass());
 
     public FileManager(TelegramBotConfiguration telegramBotConfiguration) {
         this.telegramBotConfiguration = telegramBotConfiguration;
@@ -36,6 +36,17 @@ public class FileManager {
         path = getPath(path, pet.getShelter().getId());
         path = getPath(path, REPORT_IMG_DIR);
         path = getPath(path, petId);
+        return path;
+    }
+
+    public Path getPetImgPath(Pet pet) throws IOException {
+        Long petId = pet.getId();
+        logger.trace("getPetImgPath(pet.Id={}", petId);
+
+        Path path = validatePath(Path.of(telegramBotConfiguration.getImgPath()) );
+
+        path = getPath(path, pet.getShelter().getId());
+        path = getPath(path, PET_IMG_DIR);
         return path;
     }
 
@@ -58,7 +69,6 @@ public class FileManager {
      * @param dir child directory to be created if it does not exist.
      *            If it is not a directory then IOException will be thrown.
      * @return path build from path and dir
-     * @throws IOException
      */
     @NotNull
     private Path getPath(Path path, String dir) throws IOException {
@@ -77,6 +87,25 @@ public class FileManager {
         }
 
         return path;
+    }
+
+     public String uploadPetImg(Pet pet, MultipartFile img) {
+        try {
+            String fileName = String.format(
+                    "%d.%s",
+                    pet.getId(),
+                    StringUtils.getFilenameExtension(img.getOriginalFilename())
+            );
+            byte[] data = img.getBytes();
+            Path path = Paths.get(telegramBotConfiguration.getImgUploadPath(), fileName);
+            Path savePath = getPetImgPath(pet);
+            Files.write(savePath, data);
+            return path.toString();
+        }
+        catch(IOException e) {
+            return null;
+        }
+
     }
 
     public void saveTelegramFile(String telegramFileId, Path localFilename) throws IOException {

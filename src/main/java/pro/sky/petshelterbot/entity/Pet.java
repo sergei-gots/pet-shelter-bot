@@ -55,9 +55,11 @@ public class Pet {
         this.disabled = disabled;
     }
 
-    public Pet(Long id, String species, String name, Shelter shelter, boolean disabled) {
+    public Pet(Long id, String species, String name, Shelter shelter, boolean disabled,
+               String imgPath) {
         this(species, name, shelter, disabled);
         this.id = id;
+        this.imgPath = imgPath;
     }
 
 

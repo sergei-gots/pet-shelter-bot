@@ -1,7 +1,6 @@
 package pro.sky.petshelterbot.handler;
 
 import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.model.Message;
 import org.springframework.stereotype.Component;
 import pro.sky.petshelterbot.entity.*;
 import pro.sky.petshelterbot.repository.*;
@@ -38,32 +37,8 @@ public abstract class AbstractDialogHandler extends AbstractHandler {
             return dialogsInWaiting.iterator().next();
         }
     }
-
-
     public void sendPersonalizedMessage(Person person, String text) {
         sendMessage(person.getChatId(), person.getFirstName() + ", " + text);
-    }
-
-    @Override
-    public boolean handleCallbackQuery(Message message, String key) {
-
-        Adopter adopter = getAdopter(message);
-        if (isShelterToBeAssigned(adopter, key)) {
-            return true;
-        }
-
-        switch (key) {
-            case CANCEL_VOLUNTEER_CALL:
-            case CANCEL_VOLUNTEER_CALL_ADOPTION_INFO_MENU:
-            case CANCEL_VOLUNTEER_CALL_SHELTER_INFO_MENU:
-            case CLOSE_DIALOG:
-            case CLOSE_DIALOG_RU:
-                handleCancelVolunteerCall(adopter, key);
-                return true;
-
-            default:
-                return false;
-        }
     }
 
     public void sendHandshakes(Dialog dialog) {

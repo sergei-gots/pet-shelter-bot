@@ -83,31 +83,37 @@ public class AdopterDialogHandler extends AbstractDialogHandler {
     @Override
     public boolean handleCallbackQuery(Message message, String key) {
 
-        if(super.handleCallbackQuery(message, key)) {
-            return true;
-        }
-
-        switch(key) {
-            case CALL_VOLUNTEER:
-            case CALL_VOLUNTEER_ADOPTION_INFO_MENU:
-            case CALL_VOLUNTEER_SHELTER_INFO_MENU:
-                handleVolunteerCall(message, key);
+            Adopter adopter = getAdopter(message);
+            if (isShelterToBeAssigned(adopter, key)) {
                 return true;
-            default: return handleDefault(message);
-        }
+            }
+
+            if (handleVolunteerCall(message, key)) {
+                return true;
+            }
+            if (handleCancelVolunteerCall(adopter, key)) {
+                return true;
+            }
+            return handleDefault(message);
     }
 
-    public void handleVolunteerCall(Message message, String key) {
+    public boolean handleVolunteerCall(Message message, String key) {
+
+        if(!key.startsWith(CALL_VOLUNTEER)) {
+            return false;
+        }
+
         logger.debug("handleVolunteerCall(message={})", message);
         Adopter adopter = getAdopter(message);
         long chatId = adopter.getChatId();
         if (getDialogIfRequested(adopter) != null) {
             throw new IllegalStateException("Dialog for chatId=" + chatId + " is already requested");
         }
-        createDialogRequest(adopter, key);
+        createDialogRequest(adopter);
+        return true;
     }
 
-    private void createDialogRequest(Adopter adopter, String key) {
+    private void createDialogRequest(Adopter adopter) {
 
         logger.trace("createDialogRequest(adopter={})", adopter);
 

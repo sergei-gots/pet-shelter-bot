@@ -2,9 +2,9 @@ package pro.sky.petshelterbot.util;
 
 import com.github.javafaker.Faker;
 
-import pro.sky.petshelterbot.entity.Adopter;
-import pro.sky.petshelterbot.entity.Pet;
-import pro.sky.petshelterbot.entity.Shelter;
+import pro.sky.petshelterbot.entity.*;
+
+import java.time.LocalDate;
 
 public class DataGenerator {
 
@@ -21,8 +21,9 @@ public class DataGenerator {
                 faker.animal().name());
     }
 
+    /** @return random int value in range between 4 to 20 inclusive */
     public static int generateCount() {
-        return  faker.random().nextInt(0, 10);
+        return  faker.random().nextInt(4, 20);
     }
 
     public static Adopter generateAdopter() {
@@ -30,7 +31,19 @@ public class DataGenerator {
                 faker.random().nextLong(),
                 faker.harryPotter().character()
         );
+    }
 
+    public static Adopter generateAdopter(Shelter shelter) {
+        Adopter adopter = new Adopter(
+                faker.random().nextLong(),
+                faker.harryPotter().character()
+        );
+        adopter.setShelter(shelter);
+        return adopter;
+    }
+
+    public static Pet generatePet() {
+        return generatePet(generateShelter());
     }
 
     public static Pet generatePet (Shelter shelter) {
@@ -39,7 +52,40 @@ public class DataGenerator {
                 faker.lorem().characters(),
                 faker.cat().name(),
                 shelter,
-                faker.random().nextBoolean()
+                faker.random().nextBoolean(),
+                faker.company().url()
         );
     }
+
+    public static Volunteer generateVolunteer(Shelter shelter) {
+        return new Volunteer(
+                faker.random().nextLong(),
+                faker.harryPotter().character(),
+                shelter
+        );
+    }
+
+    public static Volunteer generateVolunteer() {
+        return generateVolunteer(generateShelter());
+    }
+
+    public static Report generateReport(Pet pet) {
+        return new Report(faker.random().nextLong(),
+                pet,
+                LocalDate.of(faker.random().nextInt(2023,2023),
+                        faker.random().nextInt(1,12),
+                        faker.random().nextInt(1,28)),
+                faker.lorem().sentence(),
+                faker.lorem().sentence(),
+                faker.lorem().sentence(),
+                faker.company().url(),
+                faker.random().nextBoolean(),
+                faker.random().nextBoolean());
+    }
+
+    public static Report generateReport() {
+      return generateReport(generatePet());
+    }
+
+
 }

@@ -13,7 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import pro.sky.petshelterbot.handler.*;
 import pro.sky.petshelterbot.repository.*;
 
@@ -22,14 +21,14 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static pro.sky.petshelterbot.constants.Commands.START;
 
 @ExtendWith(MockitoExtension.class)
 class TelegramBotListenerTest {
 
-    final private Long  CHAT_ID = 123L;
+    final private Long CHAT_ID = 123L;
 
     @Mock
     private TelegramBot telegramBot;
@@ -45,15 +44,8 @@ class TelegramBotListenerTest {
     private ButtonRepository buttonsRepository;
     @Mock
     private DialogRepository dialogRepository;
-    @SpyBean
-    private BasicAdopterHandler basicAdopterHandler =
-            new BasicAdopterHandler(telegramBot,
-                    adopterRepository,
-                    volunteerRepository,
-                    shelterRepository,
-                    userMessageRepository,
-                    buttonsRepository,
-                    dialogRepository );
+    @Mock
+    private BasicAdopterHandler basicAdopterHandler ;
     @Mock
     private VolunteerDialogHandler volunteerDialogHandler;
     @Mock
@@ -69,7 +61,7 @@ class TelegramBotListenerTest {
     @InjectMocks
     private TelegramBotListener telegramBotListener;
 
-    private Update getUpdate(String content) throws URISyntaxException, IOException {
+    private List<Update> getUpdates(String content) throws URISyntaxException, IOException {
         String json = Files.readString(
                 Paths.get(TelegramBotListenerTest.class.getResource(
                                 "text_update.json"
@@ -77,18 +69,17 @@ class TelegramBotListenerTest {
                 )
         );
 
-        return BotUtils.fromJson(
-                json.replace("%command%", content),
-                Update.class
+        return Collections.singletonList(BotUtils.fromJson(
+                        json.replace("%command%", content),
+                        Update.class
+                )
         );
     }
 
     @Test
     void process() throws URISyntaxException, IOException {
 
-        telegramBotListener.process(
-                Collections.singletonList(
-                        getUpdate(START)));
+        telegramBotListener.process(getUpdates(START));
 
         ArgumentCaptor<SendMessage> argumentCaptor = ArgumentCaptor.forClass(SendMessage.class);
         Mockito.verify(telegramBot).execute(argumentCaptor.capture());

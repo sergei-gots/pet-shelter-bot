@@ -36,7 +36,7 @@ class ShelterServiceTest {
 
         when(shelterRepository.findAll()).thenReturn(shelters);
 
-        Collection<Shelter> actual = shelterService.findAll();
+        Collection<Shelter> actual = shelterService.getAll();
         assertThat(actual)
                 .isNotNull()
                 .containsExactlyInAnyOrderElementsOf(shelters);
@@ -56,8 +56,8 @@ class ShelterServiceTest {
         assertThat(actual)
                 .isNotNull()
                 .isEqualTo(shelter)
-                .isIn(shelterService.findAll());
-        assertThat(shelterService.findAll().size())
+                .isIn(shelterService.getAll());
+        assertThat(shelterService.getAll().size())
                 .isEqualTo(1);
 
         Shelter actualGet = shelterService.get(actual.getId());
@@ -102,7 +102,7 @@ class ShelterServiceTest {
         assertThat(actual)
                 .isNotNull()
                 .isEqualTo(shelter)
-                .isIn(shelterService.findAll());
+                .isIn(shelterService.getAll());
 
         Shelter actualGet = shelterService.get(actual.getId());
         assertThat(actualGet)

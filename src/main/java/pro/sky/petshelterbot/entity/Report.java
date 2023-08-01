@@ -2,13 +2,14 @@ package pro.sky.petshelterbot.entity;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Table(name = "reports")
 public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @JoinColumn(name = "pet_id")
     @ManyToOne
@@ -38,13 +39,15 @@ public class Report {
         this.pet = pet;
     }
 
-    public Report(Pet pet,
+    public Report(Long id,
+                  Pet pet,
                   LocalDate sent,
                   String diet, String wellBeing,
                   String behaviour,
                   String imgPath,
                   boolean checked,
                   boolean approved) {
+        this.id = id;
         this.pet = pet;
         this.sent = sent;
         this.diet = diet;
@@ -55,7 +58,7 @@ public class Report {
         this.approved = approved;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -136,5 +139,18 @@ public class Report {
                 ", checked=" + checked +
                 ", approved=" + approved +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Report report = (Report) o;
+        return checked == report.checked && approved == report.approved && Objects.equals(id, report.id) && Objects.equals(pet, report.pet) && Objects.equals(sent, report.sent) && Objects.equals(diet, report.diet) && Objects.equals(wellBeing, report.wellBeing) && Objects.equals(behaviour, report.behaviour) && Objects.equals(imgPath, report.imgPath);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, pet, sent, diet, wellBeing, behaviour, imgPath, checked, approved);
     }
 }
