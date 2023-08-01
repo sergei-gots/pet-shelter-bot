@@ -5,4 +5,38 @@
 Studying team work
 <br>authors: Valery Zavolsky, Anton Tsarjov, Sergei Gots
 <br>
-Telegram bot provides automated interaction between pet shelter and pet adopters.
+Telegram bot is a pet shelter aggreagtor.
+It provides automated interaction between pet shelter and pet adopters, or potential pet adopters and also
+provides interaction between adopters and volunteers who are able to answer to adopter's questions within telegram dialogs.
+
+## How to build and launch
+
+This is a spring-boot based maven project described with <b>pom.xml</b>
+As a database there is postgresQL data base server used described in <b>resources/application.properties</b>
+Name of the database is <b>pet_shelter_bot</b>
+Database objects are described with <b>liquibase</b>-log available in <b>resources/db</b>
+
+<u>Command to launch<u>:
+
+ java pro.sky.petshelterbot.PetShelterBotApplication -classpath <CLASS-PATH> telegram.bot.token=<YOUR-TELEGRAM-BOT-TOKEN>
+
+ where 
+    CLASS-PATH -  class path to !!<b>TODO</b> here!! 
+    YOUR-TELEGRAM-BOT-TOKEN - a token you've got with Telegram @BotFather bot 
+
+after successfull launc you can interact with the bot in Telegram.
+There are two different roles/scenarios for users.
+Users can be <b>Vounteers</b> and <b>Adopter</b>
+If the user is listed in the database as a shelter's volunteer 
+then they have within the bot a notification desk about requests for dialogs 
+and can participate dialogs answering questions asked by adopters.
+Both adopters and volunteers are able to terminate their dialog session.
+
+Also there is API provided for shelter's employees who
+can manage list of volunteeers, asign adopters for pets,
+review reports from adopters about their pets etc.
+To interact with API there is swagger-UI provided available on:
+
+http://localhost:8080/shelter/swagger-ui/index.html#/
+
+
