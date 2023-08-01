@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.springframework.web.multipart.MultipartFile;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -123,8 +122,8 @@ class PetControllerTest {
     public void getShelterPetsWithDefaultPageNbAndSize() throws Exception  {
 
         int nPetsCount = DataGenerator.generateCount();
-        int pageNb = 0;
-        int pageSize = 10;
+        int defaultPageNb = 0;
+        int defaultPageSize = 10;
         Shelter shelter = DataGenerator.generateShelter();
         ArrayList<Pet> pets = Stream
                 .generate(() -> DataGenerator.generatePet(shelter))
@@ -133,19 +132,16 @@ class PetControllerTest {
                         Collectors.toCollection(
                                 ArrayList::new)
                 );
-        if(pets.size() < pageSize) {
-            pageSize = pets.size();
-        }
-        List<Pet> expected = pets.subList(pageNb, pageSize);
+
+        List<Pet> expected = pets.subList(0,
+                Math.min(pets.size(), defaultPageSize));
         when(petService.getByShelterId(
                 shelter.getId(),
-                pageNb, pageSize)).thenReturn(expected);
+                defaultPageNb, defaultPageSize)).thenReturn(expected);
 
         mockMvc.perform(
                 MockMvcRequestBuilders
                         .get(URL + "/in-shelter/{shelterId}", shelter.getId())
-                        .requestAttr("pageNb", pageNb)
-                        .requestAttr("pageSize", pageSize)
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(result -> {
             MockHttpServletResponse mockHttpServletResponse =
@@ -213,7 +209,6 @@ class PetControllerTest {
     @Test
     void addImg() throws Exception {
         Pet pet = DataGenerator.generatePet();
-        MultipartFile img;
         MockMultipartFile file
                 = new MockMultipartFile(
                 "img",

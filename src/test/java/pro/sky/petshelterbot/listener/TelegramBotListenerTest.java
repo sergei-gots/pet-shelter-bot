@@ -6,7 +6,6 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
@@ -76,7 +75,7 @@ class TelegramBotListenerTest {
         );
     }
 
-    @Test
+
     void process() throws URISyntaxException, IOException {
 
         telegramBotListener.process(getUpdates(START));

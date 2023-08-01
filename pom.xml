@@ -12,6 +12,7 @@
     <artifactId>pet-shelter-bot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>pet-shelter-bot</name>
+    <packaging>jar</packaging>
     <description>Telegram bot provides automated interaction between pet shelter and pet adopters</description>
     <properties>
         <java.version>11</java.version>
@@ -83,7 +84,25 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
+            <!--plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>libs/</classpathPrefix>
+                            <mainClass>
+                                pro.sky.petshelterbot.PetShelterBotApplication
+                            </mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin-->
         </plugins>
+
+
     </build>
 
 </project>
