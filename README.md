@@ -30,7 +30,7 @@ java -jar target/pet-shelter-bot-0.0.1-SNAPSHOT.jar --spring.profiles.active=pro
 <br><br>
 After a successfull launch you can interact with the bot in Telegram.
 <br>There are two different roles/scenarios for users.
-Users can be <b>Vounteers</b> and <b>Adopter</b>
+Users can have role either of a <b>Vounteers</b> or an <b>Adopter</b>
 <br>If the user is listed in the database as a shelter's volunteer 
 then they have within the bot a notification desk about requests for dialogs 
 and can participate dialogs answering questions asked by adopters.
