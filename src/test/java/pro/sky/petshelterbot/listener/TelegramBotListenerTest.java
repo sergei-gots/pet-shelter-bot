@@ -12,8 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pro.sky.petshelterbot.handler.*;
-import pro.sky.petshelterbot.repository.*;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -31,32 +29,6 @@ class TelegramBotListenerTest {
 
     @Mock
     private TelegramBot telegramBot;
-    @Mock
-    private AdopterRepository adopterRepository;
-    @Mock
-    private VolunteerRepository volunteerRepository;
-    @Mock
-    private ShelterRepository shelterRepository;
-    @Mock
-    private UserMessageRepository userMessageRepository;
-    @Mock
-    private ButtonRepository buttonsRepository;
-    @Mock
-    private DialogRepository dialogRepository;
-    @Mock
-    private BasicAdopterHandler basicAdopterHandler ;
-    @Mock
-    private VolunteerDialogHandler volunteerDialogHandler;
-    @Mock
-    private AdopterInputHandler adopterInputHandler;
-    @Mock
-    AdopterDialogHandler adopterDialogHandler;
-    @Mock
-    ShelterInfoHandler shelterInfoHandler;
-    @Mock
-    DefaultHandler defaultHandler;
-
-
     @InjectMocks
     private TelegramBotListener telegramBotListener;
 
