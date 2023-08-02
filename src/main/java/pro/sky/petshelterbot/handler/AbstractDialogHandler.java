@@ -28,14 +28,12 @@ public abstract class AbstractDialogHandler extends AbstractHandler {
         super(telegramBot, adopterRepository, volunteerRepository, shelterRepository, userMessageRepository, buttonRepository, dialogRepository);
     }
 
-    protected Dialog nextDialogInWaiting(Shelter shelter) {
+    protected Dialog nextDialogWaiting(Shelter shelter) {
         Collection<Dialog> dialogsInWaiting
                 = dialogRepository.findWaitingDialogsByVolunteerShelterOrderByIdAsc(shelter);
-        if (dialogsInWaiting.isEmpty()) {
-            return null;
-        } else {
-            return dialogsInWaiting.iterator().next();
-        }
+        return (dialogsInWaiting.isEmpty()) ?
+                null :
+                dialogsInWaiting.iterator().next();
     }
     public void sendPersonalizedMessage(Person person, String text) {
         sendMessage(person.getChatId(), person.getFirstName() + ", " + text);

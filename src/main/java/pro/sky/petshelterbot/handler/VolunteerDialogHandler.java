@@ -102,7 +102,7 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
         logger.debug("processJoinDialog()-method. Volunteer.first_name=\"{}\"",
                 volunteer.getFirstName());
 
-        Dialog dialogToJoin = nextDialogInWaiting(volunteer.getShelter());
+        Dialog dialogToJoin = nextDialogWaiting(volunteer.getShelter());
 
         if(dialogToJoin == null) {
             logger.debug("processJoinDialog()-method. dialogToJoin == null is true");
@@ -135,7 +135,7 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
         sendMenu(volunteer, DIALOG_VOLUNTEER_PART);
         sendUserMessage(volunteer, DIALOG_INIT_CLARIFICATION_FOR_VOLUNTEER);
 
-        Dialog nextDialog = nextDialogInWaiting(volunteer.getShelter());
+        Dialog nextDialog = nextDialogWaiting(volunteer.getShelter());
         if(nextDialog == null) {
             logger.debug("processJoinDialog()-method. nextToJoin == null is true");
             notifyAllAvailableShelterVolunteersAboutNoRequest(volunteer.getShelter());
@@ -161,8 +161,7 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
         sendPersonalizedMessage(adopter,"диалог с волонтёром шелтера завершён. Если у вас возникнут новые вопросы, " +
                 "обращайтесь к нам ещё. Всего вам доброго-)");
 
-
-        Dialog nextDialog = nextDialogInWaiting(volunteer.getShelter());
+        Dialog nextDialog = nextDialogWaiting(volunteer.getShelter());
         if(nextDialog == null) {
             volunteer.setChatState(INITIAL_STATE);
             volunteer.setAvailable(true);
@@ -173,8 +172,5 @@ public class VolunteerDialogHandler extends AbstractDialogHandler {
             sendHandshakes(dialog);
         }
     }
-
-
-
 
 }

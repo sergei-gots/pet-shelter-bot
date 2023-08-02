@@ -15,6 +15,8 @@ import pro.sky.petshelterbot.repository.*;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 
+import static pro.sky.petshelterbot.constants.TelegramChatStates.ChatState.ADOPTER_CHOICES_SHELTER;
+
 public abstract class AbstractHandler extends AbstractMetaHandler {
 
     final protected TelegramBot telegramBot;
@@ -53,8 +55,14 @@ public abstract class AbstractHandler extends AbstractMetaHandler {
         return true;
     }
 
-    protected boolean handleChatStateDefault(Adopter adopter) {
-        switch (adopter.getChatState()) {
+    protected boolean handleByChatState(Adopter adopter) {
+        if(checkIfShelterIsNotSet(adopter)) {
+            return true;
+        }
+        ChatState chatState = adopter.getChatState();
+        logger.trace("handByChatState(adopter={}): chat_state={}",
+                adopter.getFirstName(), chatState.name());
+        switch (chatState) {
             case ADOPTER_IN_SHELTER_INFO_MENU:
                 showShelterInfoMenu(adopter);
                 return true;
@@ -65,7 +73,7 @@ public abstract class AbstractHandler extends AbstractMetaHandler {
                 processShelterChoice(adopter, "");
                 return true;
         }
-        return checkIfShelterIsNotSet(adopter);
+        return false;
     }
 
 
@@ -84,6 +92,12 @@ public abstract class AbstractHandler extends AbstractMetaHandler {
         return false;
     }
 
+    /** Returns the existing adopter's entry or
+     * creates a new one in the database
+     * if the adopter with received from the message chat id
+     * is not yet listed out there.
+     *
+     */
     @NotNull
     protected Adopter getAdopter(Message message) {
         Long chatId = message.chat().id();
@@ -109,7 +123,7 @@ public abstract class AbstractHandler extends AbstractMetaHandler {
         if (adopter.getShelter() != null) {
             return false;
         }
-        if (adopter.getChatState() == ChatState.ADOPTER_CHOICES_SHELTER) {
+        if (adopter.getChatState() == ADOPTER_CHOICES_SHELTER) {
             processShelterChoice(adopter, currentKey);
         } else {
             reselectShelter(adopter);
@@ -122,7 +136,7 @@ public abstract class AbstractHandler extends AbstractMetaHandler {
         handleCancelVolunteerCall(adopter, RESET_SHELTER);
         adopter.setShelter(null);
         showShelterChoiceMenu(adopter);
-        adopter.setChatState(ChatState.ADOPTER_CHOICES_SHELTER);
+        adopter.setChatState(ADOPTER_CHOICES_SHELTER);
         adopterRepository.save(adopter);
     }
 
@@ -137,7 +151,7 @@ public abstract class AbstractHandler extends AbstractMetaHandler {
     public void showShelterChoiceMenu(Adopter adopter) {
 
         //If menu has been already sent
-        if (adopter.getChatState().equals(ChatState.ADOPTER_CHOICES_SHELTER)) {
+        if (adopter.getChatState().equals(ADOPTER_CHOICES_SHELTER)) {
             return;
         }
 

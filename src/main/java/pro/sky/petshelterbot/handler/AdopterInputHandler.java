@@ -123,9 +123,7 @@ public class AdopterInputHandler extends AbstractHandler {
         Adopter adopter = getAdopter(message);
         ChatState chatState = adopter.getChatState();
         if (chatState != ChatState.ADOPTER_INPUTS_REPORT_IMAGE) {
-            logger.trace("handleImg(): chat_state={} != {}",
-                    chatState, ChatState.ADOPTER_INPUTS_REPORT_IMAGE);
-            return handleChatStateDefault(adopter);
+            return handleByChatState(adopter);
         }
 
         Pet pet = getPet(adopter);
