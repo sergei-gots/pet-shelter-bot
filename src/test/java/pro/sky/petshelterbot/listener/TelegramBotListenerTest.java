@@ -6,12 +6,12 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -22,15 +22,16 @@ import java.util.List;
 
 import static pro.sky.petshelterbot.constants.Commands.START;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class TelegramBotListenerTest {
 
     final private Long CHAT_ID = 123L;
 
-    @Mock
+    @MockBean
     private TelegramBot telegramBot;
-    @InjectMocks
+    @Autowired
     private TelegramBotListener telegramBotListener;
+
 
     private List<Update> getUpdates(String content) throws URISyntaxException, IOException {
         String json = Files.readString(
@@ -48,6 +49,7 @@ class TelegramBotListenerTest {
     }
 
 
+    @Test
     void process() throws URISyntaxException, IOException {
 
         telegramBotListener.process(getUpdates(START));
