@@ -103,7 +103,9 @@ public abstract class AbstractHandler extends AbstractMetaHandler {
         Long chatId = message.chat().id();
         Adopter adopter = adopterRepository.findByChatId(chatId).orElse(null);
         if (adopter == null) {
-            adopter = adopterRepository.save(new Adopter(message.chat().id(), message.chat().firstName()));
+            String firstName = message.chat().firstName();
+            logger.trace("getAdopter: save new Adopter.firstName={} in db", firstName);
+            adopter = adopterRepository.save(new Adopter(chatId, firstName));
         }
         return adopter;
     }
@@ -225,6 +227,7 @@ public abstract class AbstractHandler extends AbstractMetaHandler {
     }
 
     protected void greetUser(Person person) {
+        logger.trace("greetUser(person.chatId={})", person.getChatId());
         sendMessage(person.getChatId(), "Здравствуйте, " + person.getFirstName());
     }
 
@@ -333,10 +336,10 @@ public abstract class AbstractHandler extends AbstractMetaHandler {
         Collection<Button> buttons = buttonsRepository.findByShelterAndChapterOrderById(shelter, chapter);
         buttons.addAll(buttonsRepository.findByChapterAndShelterIsNullOrderById(chapter));
 
-        if (buttons.size() == 0) {
-            logger.error("makeButtonList(): There isn't button list in db for person={}, shelter.id={}, chapter=\"{}\".",
+        if (buttons.isEmpty()) {
+            logger.error("createMenu(): There isn't button list in db for person={}, shelter.id={}, chapter=\"{}\".",
                     chatId, chapter, shelter);
-            throw (new IllegalStateException("makeButtonList(): There isn't button list in db for chatId=" +
+            throw (new IllegalStateException("createMenu(): There isn't button list in db for chatId=" +
                     chatId + ", shelter.id=" + shelter.getId() + ", chapter=\"" + chapter + "\"."));
         }
 

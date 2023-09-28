@@ -1,8 +1,8 @@
 # pet-shelter-bot😼
-<u>Pet Shelter Telegram bot<u>
+<u>Pet Shelter Telegram bot</u>
 <br>
 <br>
-Studying team work
-<br>authors: Valery Zavolsky, Anton Tsarjov, Sergei Gots
+Study team work.
+<br>authors: Anton Tsarjov, Sergei Gots, Valerii Zavolskii
 <br>
 Telegram bot provides automated interaction between pet shelter and pet adopters.
