@@ -11,10 +11,10 @@ public class UserMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String key;
+    private String name;
     @Lob
     @Type(type = "org.hibernate.type.TextType")
-    private String message;
+    private String content;
     @JoinColumn(name="shelter_id")
     @ManyToOne
     private Shelter shelter;
@@ -31,20 +31,20 @@ public class UserMessage {
         this.shelter = shelter;
     }
 
-    public String getKey() {
-        return key;
+    public String getName() {
+        return name;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setName(String key) {
+        this.name = key;
     }
 
-    public String getMessage() {
-        return message;
+    public String getContent() {
+        return content;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setContent(String message) {
+        this.content = message;
     }
 
     public UserMessage() {}

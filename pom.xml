@@ -12,6 +12,7 @@
     <artifactId>pet-shelter-bot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>pet-shelter-bot</name>
+    <packaging>jar</packaging>
     <description>Telegram bot provides automated interaction between pet shelter and pet adopters</description>
     <properties>
         <java.version>11</java.version>
@@ -75,6 +76,14 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.1-api</artifactId>
+            <version>1.0.2.Final</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Thanks for using https://jar-download.com -->
+
     </dependencies>
 
     <build>
@@ -83,7 +92,10 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
         </plugins>
+
+
     </build>
 
 </project>

@@ -39,9 +39,9 @@ public class DefaultHandler extends AbstractHandler {
 
     private void saySorryToUser(Update update) {
         Message message = update.message();
-        UserMessage userMessage = userMessageRepository.findFirstByKeyAndShelterIsNull(NOT_IMPLEMENTED_YET.name())
+        UserMessage userMessage = userMessageRepository.findFirstByNameAndShelterIsNull(NOT_IMPLEMENTED_YET.name())
                 .orElseThrow(()->new IllegalStateException("No user message for key=" + NOT_IMPLEMENTED_YET));
-        telegramBot.execute(new SendMessage(message.chat().id(), userMessage.getMessage() + "\n /menu"));
+        telegramBot.execute(new SendMessage(message.chat().id(), userMessage.getContent() + "\n /menu"));
     }
 
 }

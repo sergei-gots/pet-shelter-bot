@@ -30,16 +30,8 @@ public class BasicAdopterHandler extends AbstractHandler {
         ChatState chatState = adopter.getChatState();
         logger.debug("handle(): adopter.chatState={}", chatState);
 
-        if(chatState == ChatState.ADOPTER_CHOICES_SHELTER) {
+        if (chatState == ChatState.ADOPTER_CHOICES_SHELTER) {
             processShelterChoice(adopter, key);
-            return true;
-        }
-
-        if (adopter.getShelter() == null) {
-            greetUser(adopter);
-            sendMessage(adopter.getChatId(), "По каким-то причинам мы не можем вспомнить, " +
-                    "с каким из приютов вы взаимодействовали в последний раз.");
-            reselectShelter(adopter);
             return true;
         }
 
@@ -71,7 +63,7 @@ public class BasicAdopterHandler extends AbstractHandler {
                 processShelterChoice(adopter, key);
                 return true;
         }
-        return false;
+        return  checkIfShelterIsNotSet(adopter);
     }
 
 }

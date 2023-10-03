@@ -9,8 +9,8 @@
 
         <insert tableName="pets">
             <column name="id"               valueNumeric="1"/>
-            <column name="name"             value="cat"/>
-            <column name="species"          value="Мурзик"/>
+            <column name="species"             value="cat"/>
+            <column name="name"          value="Мурзик"/>
             <column name="shelter_id"       valueNumeric="1"/>
             <column name="img_path"         value="src\main\resources\uploads\pet_images\1.jpg"/>
             <column name="disabled"         value="false"/>
@@ -19,8 +19,8 @@
 
         <insert tableName="pets">
             <column name="id"               valueNumeric="2"/>
-            <column name="name"             value="cat"/>
-            <column name="species"          value="Маша"/>
+            <column name="species"             value="cat"/>
+            <column name="name"          value="Муська"/>
             <column name="shelter_id"       valueNumeric="1"/>
             <column name="img_path"         value=""/>
             <column name="disabled"         value="false"/>
@@ -29,8 +29,8 @@
 
         <insert tableName="pets">
             <column name="id"               valueNumeric="3"/>
-            <column name="name"             value="cat"/>
-            <column name="species"          value="Барсик"/>
+            <column name="species"             value="cat"/>
+            <column name="name"          value="Барсик"/>
             <column name="shelter_id"       valueNumeric="1"/>
             <column name="img_path"         value=""/>
             <column name="disabled"         value="false"/>
@@ -39,8 +39,8 @@
 
         <insert tableName="pets">
             <column name="id"               valueNumeric="4"/>
-            <column name="name"             value="dog"/>
-            <column name="species"          value="Шарик"/>
+            <column name="species"             value="dog"/>
+            <column name="name"          value="Шарик"/>
             <column name="shelter_id"       valueNumeric="2"/>
             <column name="img_path"         value=""/>
             <column name="disabled"         value="false"/>
@@ -49,8 +49,8 @@
 
         <insert tableName="pets">
             <column name="id"               valueNumeric="5"/>
-            <column name="name"             value="dog"/>
-            <column name="species"          value="Фунтик"/>
+            <column name="species"             value="dog"/>
+            <column name="name"          value="Фунтик"/>
             <column name="shelter_id"       valueNumeric="2"/>
             <column name="img_path"         value=""/>
             <column name="disabled"         value="false"/>
@@ -59,8 +59,8 @@
 
         <insert tableName="pets">
             <column name="id"               valueNumeric="6"/>
-            <column name="name"             value="dog"/>
-            <column name="species"          value="Голиаф"/>
+            <column name="species"             value="dog"/>
+            <column name="name"          value="Голиаф"/>
             <column name="shelter_id"       valueNumeric="2"/>
             <column name="img_path"         value=""/>
             <column name="disabled"         value="false"/>

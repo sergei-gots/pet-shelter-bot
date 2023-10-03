@@ -16,13 +16,13 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="key" type="VARCHAR">
+            <column name="name" type="VARCHAR">
                 <constraints nullable="false"/>
             </column>
             <column name="shelter_id" type="BIGINT">
                 <constraints nullable="true"/>
             </column>
-            <column name="message" type="CLOB">
+            <column name="content" type="CLOB">
                 <constraints nullable="false"/>
             </column>
         </createTable>

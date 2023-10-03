@@ -29,14 +29,11 @@ public class Handlers
         handlers = new Handler[]{
                 //Important: volunteerHandler MUST BE at first place
                 volunteerDialogHandler,
+                //then - all the other,
                 basicAdopterHandler,
-                //then - adopterInputHandler,
                 adopterInputHandler,
-                //the last one should be shelterInfoHandler
                 shelterInfoHandler,
-                //then - adopter dialog handler
                 adopterDialogHandler,
-                //and if an update is still unhandled, then use the last try here in the listener
                 defaultHandler
         };
     }

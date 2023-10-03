@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface UserMessageRepository extends JpaRepository<UserMessage, Long> {
 
 
-    Optional<UserMessage> findFirstByKeyAndShelterId(String key, Long shelterId);
-    Optional<UserMessage> findFirstByKeyAndShelterIsNull(String key);
+    Optional<UserMessage> findFirstByNameAndShelterId(String name, Long shelterId);
+    Optional<UserMessage> findFirstByNameAndShelterIsNull(String name);
 
 }
