@@ -12,8 +12,8 @@ public class Button implements Commands {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String key;
-    private String text;
+    private String name;
+    private String label;
     @JoinColumn(name = "shelter_id")
     @ManyToOne
     private Shelter shelter;
@@ -44,20 +44,20 @@ public class Button implements Commands {
         this.shelter = shelter;
     }
 
-    public String getKey() {
-        return key;
+    public String getName() {
+        return name;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getText() {
-        return text;
+    public String getLabel() {
+        return label;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public Long getId() {

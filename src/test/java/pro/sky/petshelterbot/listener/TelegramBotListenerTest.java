@@ -5,6 +5,7 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.response.SendResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -20,6 +21,9 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
 import static pro.sky.petshelterbot.constants.Commands.START;
 
 @SpringBootTest
@@ -33,13 +37,16 @@ class TelegramBotListenerTest {
     private TelegramBotListener telegramBotListener;
 
 
-    private List<Update> getUpdates(String content) throws URISyntaxException, IOException {
-        String json = Files.readString(
+    private String readJsonFromResource(String filename) throws URISyntaxException, IOException {
+        return Files.readString(
                 Paths.get(TelegramBotListenerTest.class.getResource(
-                                "text_update.json"
-                        ).toURI()
-                )
+                        filename
+                ).toURI()
+            )
         );
+    }
+    private List<Update> getUpdates(String content) throws URISyntaxException, IOException {
+        String json = readJsonFromResource( "text_update.json");
 
         return Collections.singletonList(BotUtils.fromJson(
                         json.replace("%command%", content),
@@ -52,15 +59,24 @@ class TelegramBotListenerTest {
     @Test
     void process() throws URISyntaxException, IOException {
 
+        when(telegramBot.execute(any())).thenReturn(
+                BotUtils.fromJson(readJsonFromResource("send_response.json"),
+                        SendResponse.class));
+
         telegramBotListener.process(getUpdates(START));
 
         ArgumentCaptor<SendMessage> argumentCaptor = ArgumentCaptor.forClass(SendMessage.class);
-        Mockito.verify(telegramBot).execute(argumentCaptor.capture());
+        //Verify SendMessage-s:
+        //  1) Greet User
+        //  2) Next Level Menu
+        Mockito.verify(telegramBot, times(2)).execute(argumentCaptor.capture());
         SendMessage actual = argumentCaptor.getValue();
-
+        // Check Menu Message:
         Assertions.assertThat(actual.getParameters().get("chat_id")).isEqualTo(CHAT_ID);
+        Assertions.assertThat(actual.getParameters().size()).isEqualTo(4);
         Assertions.assertThat(actual.getParameters().get("text")).isEqualTo(
-                "Для планирования задачи отправьте её в формате:\n*01.01.2022 20:00 Сделать домашнюю работу*");
+                "Выберите приют:");
+        Assertions.assertThat(actual.getParameters().get("reply_markup")).isNotNull();
         Assertions.assertThat(actual.getParameters().get("parse_mode"))
                 .isEqualTo(ParseMode.Markdown.name());
     }

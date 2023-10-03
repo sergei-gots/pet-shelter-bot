@@ -204,9 +204,9 @@ public abstract class AbstractHandler extends AbstractMetaHandler {
 
     protected String getUserMessage(String key) {
         logger.trace("getUserMessage(key={})", key);
-        return userMessageRepository.findFirstByKeyAndShelterIsNull(key)
+        return userMessageRepository.findFirstByNameAndShelterIsNull(key)
                 .orElse(new UserMessage())
-                .getMessage();
+                .getContent();
     }
 
     protected String getUserMessage(String key, Shelter shelter) {
@@ -214,16 +214,16 @@ public abstract class AbstractHandler extends AbstractMetaHandler {
         logger.trace("getUserMessage(key={}, shelter.id={})",
                 key, shelterId);
         UserMessage userMessage = userMessageRepository
-                .findFirstByKeyAndShelterId(key, shelterId)
+                .findFirstByNameAndShelterId(key, shelterId)
                 .orElse(null);
         if (userMessage == null) {
             logger.trace("getUserMessage: try to find by key={}, shelter.id=null", key);
-            userMessage = userMessageRepository.findFirstByKeyAndShelterIsNull(key)
+            userMessage = userMessageRepository.findFirstByNameAndShelterIsNull(key)
                     .orElseThrow(() -> new NoSuchElementException(
                             "The user_message with key=\"" + key + "\" is not listed in the db.")
                     );
         }
-        return userMessage.getMessage();
+        return userMessage.getContent();
     }
 
     protected void greetUser(Person person) {
@@ -236,17 +236,16 @@ public abstract class AbstractHandler extends AbstractMetaHandler {
         if (text == null) {
             return;
         }
-
         telegramBot.execute(new SendMessage(chatId, text).parseMode(ParseMode.HTML).replyMarkup(keyboard));
     }
 
     protected void sendMessage(Adopter adopter, String text) {
-        telegramBot.execute(new SendMessage(adopter.getChatId(), text).parseMode(ParseMode.HTML)).message().messageId();
+        telegramBot.execute(new SendMessage(adopter.getChatId(), text).parseMode(ParseMode.HTML));
     }
 
     protected void sendMessage(Long chatId, String text) {
         logger.trace("sendMessage(chatId={}, text=\"{}\")", chatId, text);
-        telegramBot.execute(new SendMessage(chatId, text).parseMode(ParseMode.HTML)).message().messageId();
+        telegramBot.execute(new SendMessage(chatId, text).parseMode(ParseMode.HTML));
     }
 
     /**
@@ -303,7 +302,7 @@ public abstract class AbstractHandler extends AbstractMetaHandler {
         deletePreviousMenu(person);
         SendResponse response = telegramBot
                 .execute(new SendMessage(chatId, header)
-                        .replyMarkup(markup));
+                        .replyMarkup(markup).parseMode(ParseMode.Markdown));
         int messageId = response.message().messageId();
         logger.trace("sendMenu(): menu-message-Id()={}", messageId);
         person.setChatMenuMessageId(messageId);
@@ -345,7 +344,7 @@ public abstract class AbstractHandler extends AbstractMetaHandler {
 
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         for (Button button : buttons) {
-            String key = button.getKey();
+            String key = button.getName();
             if (getDialogIfRequested(chatId) != null) {
                 if (key.startsWith(CALL_VOLUNTEER) ||
                         key.equals(ENTER_CONTACTS) ||
@@ -358,7 +357,7 @@ public abstract class AbstractHandler extends AbstractMetaHandler {
                     continue;
                 }
             }
-            markup.addRow(new InlineKeyboardButton(button.getText()).callbackData(key));
+            markup.addRow(new InlineKeyboardButton(button.getLabel()).callbackData(key));
         }
 
         return markup;
