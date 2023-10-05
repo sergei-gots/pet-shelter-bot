@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd"
+>
+    <changeSet id="create-table-adopters" author="S">
+        <preConditions>
+            <not>
+                <tableExists tableName="adopters"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="adopters">
+            <column name="chat_id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="first_name" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="alter-table-adopters-add-column-chat-menu-message-id" author="S">
+        <!-- contains message.id for the message in chat containing the last depicted menu -->
+        <addColumn tableName="adopters">
+            <column name="chat_menu_message_id" type="INT">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="alter-table-adopters-add-column-chat-shelter-id" author="S">
+        <!-- chat_shelter_id contains shelter_id which is active for adopter within telegram bot chat -->
+        <addColumn tableName="adopters">
+            <column name="shelter_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <addForeignKeyConstraint baseColumnNames="shelter_id"
+                                 baseTableName="adopters"
+                                 constraintName="fk_chat_adopter_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="shelters"/>
+
+    </changeSet>
+
+    <changeSet id="alter-table-adopters-add-column-chat-state" author="S">
+        <!-- contains current state of telegram bot for the adopter -->
+        <addColumn tableName="adopters">
+            <column name="chat_state" type="INT" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="alter-table-adopters-add-column-phone-number-id" author="S">
+        <!-- contains only digits of phone number; formatted output is on the UI-side -->
+        <addColumn tableName="adopters">
+            <column name="phone_number" type="VARCHAR">
+                <constraints
+                        nullable="true"
+                        unique="true"
+                />
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

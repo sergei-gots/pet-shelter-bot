@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd"
+>
+    <changeSet id="insert-into-volunteers-1" author="S">
+        <!--This is a test-volunteer-entry.
+        It works only within running telegram bot "https://t.me/to_do_task_reminder_bot"
+        A developer can add their own changeSet that assign test-volunteer-entry
+        -->
+        <insert tableName="volunteers">
+            <!-- to play with dialogs at the dev-stage  you should change value for "chat_id" below to some real one -->
+            <column name="chat_id"      valueNumeric="0"/>
+            <column name="first_name"   value="👨‍🦱 Volunteer-A"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="available"   value="false"/>
+        </insert>
+        <insert tableName="volunteers">
+            <!-- to play with dialogs at the dev-stage  you should change value for "chat_id" below to some real one -->
+            <column name="chat_id"      valueNumeric="1"/>
+            <column name="first_name"   value="👨‍🦱 Volunteer-B"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="available"   value="false"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="remove-Anton_from-volunteers" author="S">
+        <delete tableName="volunteers">
+            <where>first_name = '👨‍🦱 A'</where>
+        </delete>
+    </changeSet>
+
+</databaseChangeLog>

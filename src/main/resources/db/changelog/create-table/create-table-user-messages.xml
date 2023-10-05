@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd"
+>
+    <changeSet id="create-table-user-messages" author="S">
+        <preConditions>
+            <not>
+                <tableExists tableName="user_messages"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="user_messages">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="shelter_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="content" type="CLOB">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="shelter_id"
+                                 baseTableName="user_messages"
+                                 constraintName="fk_message_shelter_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="shelters"/>
+    </changeSet>
+
+</databaseChangeLog>

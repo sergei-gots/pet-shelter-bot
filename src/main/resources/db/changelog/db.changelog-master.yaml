@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/create-table/create-table-shelters.xml
+  - include:
+      file: db/changelog/create-table/create-table-buttons.xml
+  - include:
+      file: db/changelog/create-table/create-table-user-messages.xml
+  - include:
+      file: db/changelog/create-table/create-table-adopters.xml
+  - include:
+      file: db/changelog/create-table/create-table-pets.xml
+  - include:
+      file: db/changelog/create-table/create-table-volunteers.xml
+  - include:
+      file: db/changelog/create-table/create-table-adopter-volunteer-dialogs.xml
+  - include:
+      file: db/changelog/create-table/create-table-reports.xml
+
+
+  - include:
+      file: db/changelog/insert-into/insert-into-shelters.xml
+  - include:
+      file: db/changelog/insert-into/insert-into-buttons.xml
+  - include:
+      file: db/changelog/insert-into/insert-into-user-messages.xml
+  - include:
+      file: db/changelog/insert-into/insert-into-volunteers.xml
+  - include:
+      file: db/changelog/insert-into/insert-info-pets.xml
+  - include:
+      file: db/changelog/insert-into/insert-into-reports.xml

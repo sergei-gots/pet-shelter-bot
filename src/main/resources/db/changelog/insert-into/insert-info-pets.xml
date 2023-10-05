@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd"
+>
+    <changeSet id="insert-into-pets" author="V">
+
+        <insert tableName="pets">
+            <column name="id"               valueNumeric="1"/>
+            <column name="species"             value="cat"/>
+            <column name="name"          value="Мурзик"/>
+            <column name="shelter_id"       valueNumeric="1"/>
+            <column name="img_path"         value="src\main\resources\uploads\pet_images\1.jpg"/>
+            <column name="disabled"         value="false"/>
+            <column name="adoption_date"    type="DATE" value="2023-07-20"/>
+        </insert>
+
+        <insert tableName="pets">
+            <column name="id"               valueNumeric="2"/>
+            <column name="species"             value="cat"/>
+            <column name="name"          value="Муська"/>
+            <column name="shelter_id"       valueNumeric="1"/>
+            <column name="img_path"         value=""/>
+            <column name="disabled"         value="false"/>
+            <column name="adoption_date"    type="DATE" value="null"/>
+        </insert>
+
+        <insert tableName="pets">
+            <column name="id"               valueNumeric="3"/>
+            <column name="species"             value="cat"/>
+            <column name="name"          value="Барсик"/>
+            <column name="shelter_id"       valueNumeric="1"/>
+            <column name="img_path"         value=""/>
+            <column name="disabled"         value="false"/>
+            <column name="adoption_date"    type="DATE" value="null"/>
+        </insert>
+
+        <insert tableName="pets">
+            <column name="id"               valueNumeric="4"/>
+            <column name="species"             value="dog"/>
+            <column name="name"          value="Шарик"/>
+            <column name="shelter_id"       valueNumeric="2"/>
+            <column name="img_path"         value=""/>
+            <column name="disabled"         value="false"/>
+            <column name="adoption_date"    type="DATE" value="null"/>
+        </insert>
+
+        <insert tableName="pets">
+            <column name="id"               valueNumeric="5"/>
+            <column name="species"             value="dog"/>
+            <column name="name"          value="Фунтик"/>
+            <column name="shelter_id"       valueNumeric="2"/>
+            <column name="img_path"         value=""/>
+            <column name="disabled"         value="false"/>
+            <column name="adoption_date"    type="DATE" value="null"/>
+        </insert>
+
+        <insert tableName="pets">
+            <column name="id"               valueNumeric="6"/>
+            <column name="species"             value="dog"/>
+            <column name="name"          value="Голиаф"/>
+            <column name="shelter_id"       valueNumeric="2"/>
+            <column name="img_path"         value=""/>
+            <column name="disabled"         value="false"/>
+            <column name="adoption_date"    type="DATE" value="null"/>
+        </insert>
+
+    </changeSet>
+</databaseChangeLog>

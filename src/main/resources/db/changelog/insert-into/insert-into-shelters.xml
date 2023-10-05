@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd"
+>
+    <changeSet id="insert-into-shelters" author="S">
+
+        <insert tableName="shelters">
+            <column name="id"           valueNumeric="1"/>
+            <column name="type"         value="cat"/>
+            <column name="name"         value="Для кошек🐈"/>
+            <column name="address"      value="ул. Пушкина, 123"/>
+            <column name="work_time"    value="понедельник-пятница: 9:00-18:00"/>
+            <column name="email"        value="cat@shelter.org"/>
+            <column name="tel"          value="+7 (123) 456-78-90"/>
+        </insert>
+
+        <insert tableName="shelters">
+            <column name="id"           valueNumeric="2"/>
+            <column name="type"         value="dog"/>
+            <column name="name"         value="Для собак"/>
+            <column name="address"      value="ул. Лермонтова, 12"/>
+            <column name="work_time"    value="понедельник-суббота: 9:00-19:00"/>
+            <column name="email"        value="dog@shelter.org"/>
+            <column name="tel"          value="+7 (234) 456-78-91"/>
+        </insert>
+
+    </changeSet>
+</databaseChangeLog>

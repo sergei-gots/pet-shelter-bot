@@ -1,0 +1,43 @@
+{
+  "id": 1,
+  "pet": {
+    "id": 1,
+    "species": "cat",
+    "name": "Муська",
+    "shelter": {
+      "id": 1,
+      "name": "Шелтер для котиков",
+      "workTime": "Вт-Сб 11-19",
+      "address": "ул. Пеликанья, 3",
+      "tel": "8-800-CAT-SHELTER",
+      "email": "cats@shelter.org",
+      "type": "CATS"
+    },
+    "adopter": {
+      "chatId": 123456789,
+      "firstName": "Sergei",
+      "phoneNumber": "77271234567",
+      "shelter": {
+        "id": 1,
+        "name": "Шелтер для котиков",
+        "workTime": "Вт-Сб 11-19",
+        "address": "ул. Пеликанья, 3",
+        "tel": "8-800-CAT-SHELTER",
+        "email": "cats@shelter.org",
+        "type": "CATS"
+      },
+      "chatState": "INITIAL_STATE",
+      "chatMenuMessageId": 1017
+    },
+    "disabled": false,
+    "adoptionDate": "2023-08-31",
+    "imgPath": "/data/db/pet-shelter-bot/string/img/1/cat-muska.png"
+  },
+  "sent": "2023-07-31",
+  "diet": "fish",
+  "wellBeing": "good-)",
+  "behaviour": "excellent",
+  "imgPath": "data/db/pet_shelter_bot/img/1/reports/1/1-2023-07-31-201820.png",
+  "checked": true,
+  "approved": false
+}

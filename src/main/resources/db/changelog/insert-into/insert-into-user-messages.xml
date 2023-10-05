@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd"
+>
+    <changeSet id="insert-into-user_messages" author="S">
+
+        <insert tableName="user_messages">
+            <column name="name"          value="shelter_info_menu"/>
+            <column name="content"      value="Меню информации о шелтере (используйте также команду /menu или /меню для отображения данного меню, если оно будет где-то далеко наверху потока чата)"/>
+        </insert>
+        <insert tableName="user_messages">
+            <column name="name"          value="adoption_info_menu"/>
+            <column name="content"      value="Выберите интересующую вас информацию:"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="name"          value="choose_info"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="content"      value="Выберите интересующую вас информацию:"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="name"          value="about_shelter_info"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="content"      valueClobFile="../../../initial-data/about_shelter_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="name"          value="about_shelter_info"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="content"      valueClobFile="../../../initial-data/about_shelter_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="name"          value="documents_info"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="content"      valueClobFile="../../../initial-data/documents_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="name"          value="documents_info"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="content"      valueClobFile="../../../initial-data/documents_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="name"          value="requirements_info"/>
+            <column name="content"      valueClobFile="../../../initial-data/requirements_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="name"          value="refusal_info"/>
+            <column name="content"      valueClobFile="../../../initial-data/refusal_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="name"          value="adoption_steps"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="content"      valueClobFile="../../../initial-data/adoption_steps.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="name"          value="adoption_steps"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="content"      valueClobFile="../../../initial-data/adoption_steps.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="name"          value="transfer_info"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="content"      valueClobFile="../../../initial-data/transfer_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="name"          value="transfer_info"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="content"      valueClobFile="../../../initial-data/transfer_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="name"          value="safety_info"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="content"      valueClobFile="../../../initial-data/safety_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="name"          value="safety_info"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="content"      valueClobFile="../../../initial-data/safety_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="name"          value="adult_at_home_info"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="content"      valueClobFile="../../../initial-data/adult_at_home_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="name"          value="adult_at_home_info"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="content"      valueClobFile="../../../initial-data/adult_at_home_info.txt"/>
+        </insert>
+
+
+        <insert tableName="user_messages">
+            <column name="name"          value="disabled_at_home_info"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="content"      valueClobFile="../../../initial-data/disabled_at_home_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="name"          value="disabled_at_home_info"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="content"      valueClobFile="../../../initial-data/disabled_at_home_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="name"          value="kitty_at_home_info"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="content"      valueClobFile="../../../initial-data/cat/kitty_at_home_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="name"          value="dog_at_home_info"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="content"      valueClobFile="../../../initial-data/dog/dog_at_home_info.txt"/>
+        </insert>
+
+
+        <insert tableName="user_messages">
+            <column name="name"          value="cynologist_advice_info"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="content"      valueClobFile="../../../initial-data/dog/cynologist_advice_info.txt"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="name"          value="best_cynologists_info"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="content"      valueClobFile="../../../initial-data/dog/best_cynologists_info.txt"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-into-user-messages--command-descriptions" author="S">
+        <insert tableName="user_messages">
+            <column name="name"          value="DIALOG"/>
+            <column name="content"      value="Для завершения диалога нажмите эту клавишу или введите команду /завершить или /close"/>
+        </insert>
+        <insert tableName="user_messages">
+            <column name="name"          value="PRESS_OK_TO_CONTINUE"/>
+            <column name="content"      value="Нажмите для /ok продолжения"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-into-user-messages--join" author="S">
+        <insert tableName="user_messages">
+            <column name="name"          value="WAIT_FOR_VOLUNTEER_BOT_RESTRICTIONS"/>
+            <column name="content"      value="На этапе ожидания подключения волонтёра часть функциональности, связанной с вводом данных будет закрыта. Всё в порядке)"/>
+        </insert>
+
+
+        <insert tableName="user_messages">
+            <column name="name"          value="/join"/>
+            <column name="content"      value="Нажмите кнопку 'Присоединиться к чату' для начала общения:"/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="name"          value="DIALOG_INIT_CLARIFICATION_FOR_VOLUNTEER"/>
+            <column name="content"      value="Пользователю направлено приветствие и предложение сформировать интересующий его вопрос."/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="name"          value="DIALOG_VOLUNTEER_PART"/>
+            <column name="content"      value="Отлично, вы в чате. Для завершения диалога кнопку ниже или используйте команды: /close и /завершить"/>
+        </insert>
+     </changeSet>
+
+    <changeSet id="insert-into-user-messages--you-dont-have-animal-on-trial" author="S">
+        <insert tableName="user_messages">
+            <column name="name"          value="WAIT_FOR_VOLUNTEER_BOT_RESTRICTIONS"/>
+            <column name="content"      value="На этапе ожидания подключения волонтёра часть функциональности, связанной с вводом данных будет закрыта. Всё в порядке)"/>
+        </insert>
+
+
+        <insert tableName="user_messages">
+            <column name="name"          value="YOU_DONT_HAVE_ANIMAL_ON_TRIAL"/>
+            <column name="shelter_id"   valueNumeric="1"/>
+            <column name="content"      value="В настоящее время у вас нет животного  на испытательном периоде из шелтера для кошек. "/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="name"          value="YOU_DONT_HAVE_ANIMAL_ON_TRIAL"/>
+            <column name="shelter_id"   valueNumeric="2"/>
+            <column name="content"      value="В настоящее время у вас нет животного  на испытательном периоде из шелтера для собак."/>
+        </insert>
+
+        <insert tableName="user_messages">
+            <column name="name"          value="ADVICE_TO_IMPROVE_REPORTS"/>
+            <column name="content"      valueClobFile="../../../initial-data/advice_to_improve_reports.txt"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-into-user-messages--not-implemented-yet" author="S">
+        <insert tableName="user_messages">
+            <column name="name" value="NOT_IMPLEMENTED_YET"/>
+            <column name="content"
+                    value="Раздел находится на этапе разработки. Наши программисты работают над этим разделом. Приносим свои извинения."/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-into-user-messages--got-it" author="S">
+        <insert tableName="user_messages">
+            <column name="name" value="GOT_IT"/>
+            <column name="content"
+                    value="После ознакомления нажмите клавишу:"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-into-user-messages--continue" author="S">
+        <insert tableName="user_messages">
+            <column name="name" value="CONTINUE"/>
+            <column name="content"
+                    value="Для продолжения нажмите:"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-into-user-messages--not-supported-image-format" author="S">
+        <insert tableName="user_messages">
+            <column name="name" value="NOT_SUPPORTED_IMAGE_FORMAT"/>
+            <column name="content"
+                    value="Формат изображения не распознан. Фото принимаются в форматах .png и .jpg. Кроме того предпочтительнее, чтобы вы выбрали опцию 'сжать изображение' в телеграм при отправке фотографии. Пожалуйста, повторите отправку  фотографии."/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-into-user-messages--volunteer-is-notified" author="S">
+        <insert tableName="user_messages">
+            <column name="name" value="VOLUNTEER_IS_NOTIFIED"/>
+            <column name="content"
+                    value="Волонтёру отослано уведомление. Волонтёр свяжется с вами
+                    насколько это возможно скоро. Во время ожидания волонтёра функции,
+                    связанные с вводом данных (отчёты, контактные данные) будет недоступна.
+                    Вы можете также отменить заявку на диалог с волонтёром. "/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
